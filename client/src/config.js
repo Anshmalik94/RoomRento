@@ -1,3 +1,2 @@
-const BASE_URL = 'http://localhost:5000';  // Deploy pe change kar dena
-
+const BASE_URL = 'https://roomrento-backend.onrender.com';
 export default BASE_URL;
