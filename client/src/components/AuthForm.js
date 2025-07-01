@@ -6,13 +6,17 @@ import { useNavigate } from "react-router-dom";
 
 function AuthForm({ setToken }) {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "renter", // Default role
+  });
   const navigate = useNavigate();
 
-  const handleChange = e =>
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isLogin ? "/auth/login" : "/auth/register";
 
@@ -20,11 +24,12 @@ function AuthForm({ setToken }) {
       const res = await axios.post(`${BASE_URL}${endpoint}`, formData);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role); // ✅ Role also stored
       alert(isLogin ? "Login Successful!" : "Registration Successful!");
       navigate("/");
     } catch (err) {
       console.log(err);
-      alert("Failed, please try again.");
+      alert(err.response?.data?.msg || "Failed, please try again.");
     }
   };
 
@@ -37,6 +42,7 @@ function AuthForm({ setToken }) {
           type="email"
           name="email"
           placeholder="Email"
+          value={formData.email}
           onChange={handleChange}
           required
         />
@@ -45,9 +51,22 @@ function AuthForm({ setToken }) {
           type="password"
           name="password"
           placeholder="Password"
+          value={formData.password}
           onChange={handleChange}
           required
         />
+
+        {!isLogin && (
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            required
+          >
+            <option value="renter">Renter</option>
+            <option value="owner">Owner</option>
+          </select>
+        )}
 
         <button type="submit">{isLogin ? "Login" : "Register"}</button>
 

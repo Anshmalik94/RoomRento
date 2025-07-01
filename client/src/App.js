@@ -5,14 +5,15 @@ import AddRoom from "./components/AddRoom";
 import AuthForm from "./components/AuthForm";
 import HelpSupport from "./components/HelpSupport";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   useEffect(() => {
-    localStorage.setItem("token", token);
+    if (token) {
+      localStorage.setItem("token", token);
+    }
   }, [token]);
 
   return (
@@ -26,8 +27,6 @@ function App() {
         <Route path="/login" element={<AuthForm setToken={setToken} />} />
         <Route path="/help" element={<HelpSupport />} />
       </Routes>
-
-      <Footer />
     </Router>
   );
 }

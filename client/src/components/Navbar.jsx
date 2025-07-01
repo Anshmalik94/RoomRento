@@ -3,10 +3,12 @@ import "./Navbar.css";
 
 function Navbar({ token, setToken }) {
   const navigate = useNavigate();
+  const role = localStorage.getItem("role"); // Getting role from localStorage
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setToken(null);
+    localStorage.removeItem("role");
+    setToken("");
     navigate("/login");
   };
 
@@ -21,8 +23,10 @@ function Navbar({ token, setToken }) {
       </div>
 
       <div className="navbar-right">
-        {token && <Link to="/add-room" className="navbar-btn">Add Room</Link>}
-        
+        {token && role === "owner" && (
+          <Link to="/add-room" className="navbar-btn">Add Room</Link>
+        )}
+
         {token ? (
           <button className="navbar-btn logout-btn" onClick={handleLogout}>Logout</button>
         ) : (
