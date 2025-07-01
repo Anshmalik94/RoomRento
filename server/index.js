@@ -5,9 +5,17 @@ const dotenv = require('dotenv');
 const roomRoutes = require('./routes/rooms');
 const authRoutes = require('./routes/auth');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
 
 dotenv.config();
 const app = express();
+
+// Cloudinary Config
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // Middleware
 app.use(cors());
@@ -17,18 +25,15 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.error('MongoDB Connection Error:', err));
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.error('MongoDB Connection Error:', err));
 
 // Routes
 app.use('/rooms', roomRoutes);
 app.use('/auth', authRoutes);
 
-// Health check route (optional, useful for Render)
+// Health check route (optional)
 app.get('/', (req, res) => {
     res.send('RoomRento Backend is running');
 });
