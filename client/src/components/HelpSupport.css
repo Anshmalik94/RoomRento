@@ -1,0 +1,21 @@
+.help-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.help-heading {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.help-text {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.5;
+}

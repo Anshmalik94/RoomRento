@@ -1,0 +1,73 @@
+/* Overall container */
+.room-details-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.room-details-container h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.room-details-container p {
+  font-size: 1rem;
+  color: #555;
+  margin: 8px 0;
+}
+
+.room-details-container .description {
+  margin-bottom: 15px;
+}
+
+/* Image gallery */
+.room-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.room-images img {
+  width: 180px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.room-images img:hover {
+  transform: scale(1.05);
+}
+
+/* Loading style */
+.loading {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .room-images img {
+    width: 100%;
+    height: auto;
+  }
+
+  .room-details-container {
+    padding: 15px;
+  }
+
+  .room-details-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .room-details-container p {
+    font-size: 0.95rem;
+  }
+}

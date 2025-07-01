@@ -1,0 +1,14 @@
+# dependencies
+client/node_modules
+server/node_modules
+
+# build folders
+client/build
+
+# dotenv files
+client/.env
+server/.env
+
+# misc
+.DS_Store
+.env
