@@ -17,8 +17,12 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Middleware
-app.use(cors());
+// CORS Config
+app.use(cors({
+    origin: ['http://localhost:3000', 'https://room-rento-ni9n.vercel.app'],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Static folder for uploads
