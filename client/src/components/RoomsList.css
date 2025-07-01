@@ -1,57 +1,69 @@
 .rooms-container {
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 0 20px;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
 }
 
 .rooms-heading {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
+  font-size: 28px;
   color: #333;
+  margin-bottom: 20px;
 }
 
+/* Filter Section */
 .filter-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 15px;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .filter-input,
 .filter-select {
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  flex: 1 1 200px;
-  max-width: 250px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  min-width: 180px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  background: #fff;
 }
 
+.filter-input:focus,
+.filter-select:focus {
+  border-color: #4da6ff;
+  box-shadow: 0 0 5px rgba(77, 166, 255, 0.3);
+}
+
+/* Room List Grid */
 .room-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 20px;
 }
 
+/* Room Card Styling */
 .room-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  background-color: #fff;
-  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease;
 }
 
 .room-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 .room-link {
-  text-decoration: none;
   color: inherit;
-  display: block;
+  text-decoration: none;
 }
 
 .room-image-container {
@@ -64,63 +76,69 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.room-card:hover .room-image {
-  transform: scale(1.05);
 }
 
 .room-details {
-  padding: 10px;
-  text-align: center;
+  padding: 15px;
 }
 
 .room-details h3 {
-  margin: 10px 0 5px;
-  font-size: 1.2rem;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
 }
 
 .room-details p {
-  margin: 4px 0;
+  font-size: 14px;
   color: #555;
+  margin: 4px 0;
 }
-.filter-container {
+
+.available {
+  color: green;
+  font-weight: 500;
+}
+
+.not-available {
+  color: red;
+  font-weight: 500;
+}
+
+/* Action Buttons - All Light Blue */
+.room-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 25px;
-  background: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px;
+  border-top: 1px solid #eee;
+  background: #f7f9fb;
 }
 
-.filter-input,
-.filter-select {
-  padding: 10px 12px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  flex: 1 1 180px;
-  max-width: 220px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+.whatsapp-btn,
+.call-btn,
+.toggle-btn {
+  padding: 8px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  color: white;
+  background-color: #4da6ff;
 }
 
-.filter-input:focus,
-.filter-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0,123,255,0.3);
-  outline: none;
+.whatsapp-btn:hover,
+.call-btn:hover,
+.toggle-btn:hover {
+  background-color: #3399ff;
 }
-.rooms-container {
-  max-width: 1000px;
-  margin: 80px auto 20px auto;
-  padding: 0 20px;
-}
-.rooms-container {
-  max-width: 1000px;
-  margin: 80px auto 20px auto;
-  padding: 0 20px;
+
+/* Responsive */
+@media (max-width: 600px) {
+  .filter-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }

@@ -27,7 +27,13 @@ function AuthForm({ setToken }) {
       navigate("/");
     } catch (err) {
       console.log(err);
-      alert("Failed, please try again.");
+
+      // Yeh proper alert karega error message ko
+      if (err.response && err.response.data && err.response.data.msg) {
+        alert(err.response.data.msg);
+      } else {
+        alert("Failed, please try again.");
+      }
     }
   };
 

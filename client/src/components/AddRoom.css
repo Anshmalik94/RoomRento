@@ -1,29 +1,46 @@
+/* Container Styling */
+.add-room-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  background: #f7f9fb;
+  padding: 20px;
+}
+
+/* Form Styling */
 .add-room-form {
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 25px;
-  background: #fff;
+  background: #ffffff;
+  padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
+/* Heading */
 .add-room-form h2 {
   text-align: center;
-  color: #333;
   margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
 }
 
+/* Input, Select, Textarea Styling */
 .add-room-form input,
-.add-room-form textarea,
-.add-room-form select {
-  padding: 10px;
+.add-room-form select,
+.add-room-form textarea {
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
   width: 100%;
+  background: #fefefe;
 }
 
 .add-room-form textarea {
@@ -31,28 +48,50 @@
   min-height: 80px;
 }
 
+.add-room-form input:focus,
+.add-room-form select:focus,
+.add-room-form textarea:focus {
+  border-color: #4da6ff;
+  box-shadow: 0 0 5px rgba(77, 166, 255, 0.4);
+}
+
+/* File Upload Label */
+.file-label {
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.file-label input[type="file"] {
+  padding: 5px;
+  border: none;
+}
+
+/* Button Styling */
 .add-room-form button {
   padding: 12px;
-  background: #4CAF50;
-  color: #fff;
+  background-color: #4da6ff;
+  color: white;
+  font-size: 16px;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .add-room-form button:hover {
-  background: #45a049;
+  background-color: #3399ff;
 }
 
-/* Responsive tweaks */
+/* Responsive */
 @media (max-width: 600px) {
   .add-room-form {
     padding: 20px;
   }
 
   .add-room-form h2 {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 }

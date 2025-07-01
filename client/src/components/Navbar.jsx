@@ -23,6 +23,8 @@ function Navbar({ token, setToken }) {
       </div>
 
       <div className="navbar-right">
+        <Link to="/help" className="navbar-btn">Help & Support</Link>
+
         {token && role === "owner" && (
           <Link to="/add-room" className="navbar-btn">Add Room</Link>
         )}
