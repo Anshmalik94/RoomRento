@@ -17,12 +17,23 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// CORS Config
+// Smart CORS Config
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://room-rento-ni9n.vercel.app',
+    'https://roomrento.vercel.app'
+];
+
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'https://room-rento-ni9n.vercel.app'
-    ],
+    origin: function (origin, callback) {
+        // Allow requests with no origin like Postman or server-to-server
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error('CORS policy violation'));
+        }
+    },
     credentials: true
 }));
 
