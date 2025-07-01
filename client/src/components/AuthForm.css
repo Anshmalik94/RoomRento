@@ -1,49 +1,39 @@
-.add-room-container {
-  max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
+.auth-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 25px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
 
-.add-room-form {
+.auth-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.add-room-form h2 {
+.auth-form h2 {
   text-align: center;
   margin-bottom: 10px;
   color: #333;
 }
 
-.add-room-form input,
-.add-room-form textarea,
-.add-room-form select {
-  padding: 10px;
+.auth-form input {
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.add-room-form textarea {
-  resize: vertical;
-  min-height: 80px;
+.auth-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+  outline: none;
 }
 
-.file-label {
-  font-size: 0.95rem;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.add-room-form button {
+.auth-form button {
   padding: 12px;
   background-color: #007bff;
   color: #fff;
@@ -54,13 +44,25 @@
   transition: background 0.3s;
 }
 
-.add-room-form button:hover {
+.auth-form button:hover {
   background-color: #0056b3;
 }
 
+.toggle-text {
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.toggle-text span {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
 @media (max-width: 600px) {
-  .add-room-container {
-    margin: 15px;
-    padding: 15px;
+  .auth-container {
+    margin: 20px;
+    padding: 20px;
   }
 }

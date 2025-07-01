@@ -1,9 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
 import AddRoom from "./components/AddRoom";
 import AuthForm from "./components/AuthForm";
 import HelpSupport from "./components/HelpSupport";
+import Navbar from "./components/Navbar";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -15,23 +16,13 @@ function App() {
 
   return (
     <Router>
-      <nav>
-        <Link to="/">Home</Link>
-        {token ? (
-          <>
-            <Link to="/add-room">Add Room</Link>
-            <button onClick={() => setToken("")}>Logout</button>
-          </>
-        ) : (
-          <Link to="/auth">Login/Register</Link>
-        )}
-      </nav>
+      <Navbar token={token} setToken={setToken} />
 
       <Routes>
         <Route path="/" element={<RoomsList />} />
         <Route path="/room/:id" element={<RoomDetails />} />
         <Route path="/add-room" element={<AddRoom token={token} />} />
-        <Route path="/auth" element={<AuthForm setToken={setToken} />} />
+        <Route path="/login" element={<AuthForm setToken={setToken} />} />
         <Route path="/help" element={<HelpSupport />} />
       </Routes>
     </Router>
