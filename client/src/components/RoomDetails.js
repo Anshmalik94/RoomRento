@@ -21,7 +21,7 @@ function RoomDetails() {
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: room.images.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1
@@ -31,23 +31,27 @@ function RoomDetails() {
     <div className="details-container">
       <h2 className="details-title">{room.title}</h2>
 
-      <div className="slider-wrapper">
-        <Slider {...settings}>
-          {room.images.map((img, idx) => (
-            <div key={idx}>
-              <img className="slider-image" src={img} alt="room" />
-            </div>
-          ))}
-        </Slider>
-      </div>
+      {room.images.length > 0 && (
+        <div className="slider-wrapper">
+          <Slider {...settings}>
+            {room.images.map((img, idx) => (
+              <div key={idx} className="slider-img-container">
+                <img className="slider-image" src={img} alt={`room ${idx + 1}`} />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      )}
 
       <div className="details-info">
-        <p>{room.description}</p>
-        <p><strong>Price:</strong> ₹{room.price}</p>
-        <p><strong>Location:</strong> {room.location}</p>
-        <p><strong>Type:</strong> {room.roomType}</p>
-        <p><strong>Furnished:</strong> {room.furnished}</p>
-        <p><strong>Available From:</strong> {room.availableFrom}</p>
+        <p className="description">{room.description}</p>
+        <div className="info-grid">
+          <div><strong>Price:</strong> ₹{room.price}</div>
+          <div><strong>Location:</strong> {room.location}</div>
+          <div><strong>Type:</strong> {room.roomType}</div>
+          <div><strong>Furnished:</strong> {room.furnished}</div>
+          <div><strong>Available From:</strong> {room.availableFrom}</div>
+        </div>
       </div>
     </div>
   );

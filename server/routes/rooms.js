@@ -1,29 +1,44 @@
 const express = require('express');
-const multer = require('multer');
 const Room = require('../models/Room');
 const auth = require('../middleware/auth');
 const router = express.Router();
-const path = require('path');
+const multer = require('multer');
+const { v2: cloudinary } = require('cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+require('dotenv').config();
 
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
+// Cloudinary Config
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Multer Storage with Cloudinary
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'RoomRento',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp']
     }
 });
-const upload = multer({ storage: storage });
+
+const upload = multer({ storage });
 
 router.post('/', auth, upload.array('images', 10), async (req, res) => {
     try {
-        const images = req.files.map(file => `${process.env.BASE_URL}/${file.path.replace(/\\/g, '/')}`);
+        const images = req.files.map(file => file.path);
+
         const room = new Room({
             ...req.body,
             images,
             user: req.user.id
         });
+
         await room.save();
         res.json(room);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -33,6 +48,7 @@ router.get('/', async (req, res) => {
         const rooms = await Room.find().sort({ createdAt: -1 });
         res.json(rooms);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -42,6 +58,7 @@ router.get('/:id', async (req, res) => {
         const room = await Room.findById(req.params.id);
         res.json(room);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });

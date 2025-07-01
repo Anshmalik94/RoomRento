@@ -33,37 +33,45 @@ function AddRoom({ token }) {
       navigate("/");
     } catch (err) {
       console.log(err);
+      alert("Failed to add room.");
     }
   };
 
   return (
-    <form className="add-room-form" onSubmit={handleSubmit}>
-      <h2>Add New Room</h2>
-      <input name="title" placeholder="Title" onChange={handleChange} required />
-      <textarea name="description" placeholder="Description" onChange={handleChange} required />
-      <input name="price" type="number" placeholder="Price" onChange={handleChange} required />
-      <input name="location" placeholder="Location" onChange={handleChange} required />
+    <div className="add-room-container">
+      <form className="add-room-form" onSubmit={handleSubmit}>
+        <h2>Add New Room</h2>
+        
+        <input name="title" placeholder="Title" onChange={handleChange} required />
+        <textarea name="description" placeholder="Description" onChange={handleChange} required />
+        <input name="price" type="number" placeholder="Price (₹)" onChange={handleChange} required />
+        <input name="location" placeholder="Location" onChange={handleChange} required />
 
-      <select name="roomType" onChange={handleChange} required>
-        <option value="">Room Type</option>
-        <option value="Single">Single</option>
-        <option value="Shared">Shared</option>
-        <option value="Double">Double</option>
-        <option value="Normal">Normal</option>
-        <option value="Separate">Separate</option>
-      </select>
+        <select name="roomType" onChange={handleChange} required>
+          <option value="">Room Type</option>
+          <option value="Single">Single</option>
+          <option value="Shared">Shared</option>
+          <option value="Double">Double</option>
+          <option value="Normal">Normal</option>
+          <option value="Separate">Separate</option>
+        </select>
 
-      <select name="furnished" onChange={handleChange} required>
-        <option value="">Furnished?</option>
-        <option value="Furnished">Furnished</option>
-        <option value="Unfurnished">Unfurnished</option>
-      </select>
+        <select name="furnished" onChange={handleChange} required>
+          <option value="">Furnished?</option>
+          <option value="Furnished">Furnished</option>
+          <option value="Unfurnished">Unfurnished</option>
+        </select>
 
-      <input name="availableFrom" type="date" onChange={handleChange} required />
-      <input type="file" multiple onChange={e => setImages(e.target.files)} required />
+        <input name="availableFrom" type="date" onChange={handleChange} required />
 
-      <button type="submit">Add Room</button>
-    </form>
+        <label className="file-label">
+          Upload Images (max 10):
+          <input type="file" multiple onChange={e => setImages(e.target.files)} required />
+        </label>
+
+        <button type="submit">Add Room</button>
+      </form>
+    </div>
   );
 }
 

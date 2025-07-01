@@ -94,10 +94,15 @@ function RoomsList() {
       <div className="room-list">
         {filteredRooms.map(room => (
           <div key={room._id} className="room-card">
-            <Link to={`/room/${room._id}`}>
-              <img src={room.images[0]} alt="room" />
-              <h3>{room.title}</h3>
-              <p>₹{room.price} | {room.location}</p>
+            <Link to={`/room/${room._id}`} className="room-link">
+              <div className="room-image-container">
+                <img src={room.images[0]} alt="room" className="room-image" />
+              </div>
+              <div className="room-details">
+                <h3>{room.title}</h3>
+                <p>₹{room.price}</p>
+                <p>{room.location}</p>
+              </div>
             </Link>
           </div>
         ))}
