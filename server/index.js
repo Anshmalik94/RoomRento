@@ -19,7 +19,10 @@ cloudinary.config({
 
 // CORS Config
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://room-rento-ni9n.vercel.app'],
+    origin: [
+        'http://localhost:3000',
+        'https://room-rento-ni9n.vercel.app'
+    ],
     credentials: true
 }));
 
