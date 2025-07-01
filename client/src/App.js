@@ -5,6 +5,7 @@ import AddRoom from "./components/AddRoom";
 import AuthForm from "./components/AuthForm";
 import HelpSupport from "./components/HelpSupport";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
         <Route path="/login" element={<AuthForm setToken={setToken} />} />
         <Route path="/help" element={<HelpSupport />} />
       </Routes>
+
+      <Footer />
     </Router>
   );
 }
