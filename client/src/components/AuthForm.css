@@ -2,72 +2,86 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: 85vh;
+  background-color: #f0f2f5;
   padding: 20px;
 }
 
 .auth-form {
   background: #fff;
-  padding: 30px;
+  padding: 35px 30px;
   border-radius: 12px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .auth-form h2 {
-  margin-bottom: 20px;
-  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 25px;
   color: #333;
+  font-size: 24px;
 }
 
-.auth-form input,
-.auth-form select {
+.auth-form select,
+.auth-form input {
   width: 100%;
-  padding: 12px 15px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 1rem;
-  outline: none;
+  font-size: 15px;
+  transition: border 0.3s;
 }
 
-.auth-form input:focus,
-.auth-form select:focus {
-  border-color: #4CAF50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+.auth-form select:focus,
+.auth-form input:focus {
+  border-color: #4caf50;
+  outline: none;
 }
 
 .auth-form button {
   width: 100%;
   padding: 12px;
-  background: #4CAF50;
-  color: #fff;
+  background-color: #4caf50;
+  color: white;
   border: none;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 16px;
   cursor: pointer;
-  margin-top: 15px;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
 
 .auth-form button:hover {
-  background: #45a049;
+  background-color: #43a047;
 }
 
 .toggle-text {
+  text-align: center;
   margin-top: 15px;
-  font-size: 0.95rem;
+  font-size: 14px;
   color: #555;
 }
 
 .toggle-text span {
-  color: #4CAF50;
+  color: #4caf50;
   cursor: pointer;
-  font-weight: 500;
+  text-decoration: underline;
 }
 
-.toggle-text span:hover {
-  text-decoration: underline;
+.google-btn {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .auth-form {
+    padding: 25px 20px;
+  }
+
+  .auth-form h2 {
+    font-size: 20px;
+  }
 }
