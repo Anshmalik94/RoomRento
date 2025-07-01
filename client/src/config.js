@@ -1,2 +1,2 @@
-const BASE_URL = 'https://roomrento-backend.onrender.com';
+const BASE_URL = 'https://roomrento.onrender.com';
 export default BASE_URL;
