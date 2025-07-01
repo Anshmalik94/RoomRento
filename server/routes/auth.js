@@ -14,17 +14,19 @@ router.post("/register", async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ msg: "User already exists" });
+    if (existingUser) {
+      return res.status(400).json({ msg: "User already exists" });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ email, password: hashedPassword, role });
     await user.save();
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
-    res.json({ token, role: user.role });
+    return res.json({ token, role: user.role });
   } catch (err) {
     console.error("Register Error:", err);
-    res.status(500).json({ error: "Registration failed" });
+    return res.status(500).json({ msg: "Registration failed, please try again" });
   }
 });
 
@@ -38,16 +40,20 @@ router.post("/login", async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "User does not exist" });
+    if (!user) {
+      return res.status(400).json({ msg: "User does not exist" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Invalid credentials" });
+    }
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
-    res.json({ token, role: user.role });
+    return res.json({ token, role: user.role });
   } catch (err) {
     console.error("Login Error:", err);
-    res.status(500).json({ error: "Login failed" });
+    return res.status(500).json({ msg: "Login failed, please try again" });
   }
 });
 
@@ -65,17 +71,17 @@ router.post("/google-login", async (req, res) => {
     if (!user) {
       user = new User({
         email,
-        password: "", // Password blank for Google users
-        role: "renter", // Default role for Google login, can customize
+        password: "", 
+        role: "renter", 
       });
       await user.save();
     }
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
-    res.json({ token, role: user.role });
+    return res.json({ token, role: user.role });
   } catch (err) {
     console.error("Google Login Error:", err);
-    res.status(500).json({ error: "Google login failed" });
+    return res.status(500).json({ msg: "Google login failed, please try again" });
   }
 });
 
