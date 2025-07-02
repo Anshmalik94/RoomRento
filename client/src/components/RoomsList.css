@@ -1,144 +1,57 @@
 .rooms-container {
-  max-width: 1200px;
-  margin: 30px auto;
   padding: 20px;
+  max-width: 1200px;
+  margin: auto;
 }
 
 .rooms-heading {
-  text-align: center;
-  font-size: 28px;
-  color: #333;
+  font-size: 1.8rem;
   margin-bottom: 20px;
+  color: #333;
+  text-align: center;
 }
 
-/* Filter Section */
 .filter-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 10px;
+  margin-bottom: 20px;
   justify-content: center;
-  margin-bottom: 25px;
 }
 
 .filter-input,
 .filter-select {
-  padding: 10px 12px;
+  padding: 8px 12px;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 14px;
-  min-width: 180px;
-  outline: none;
-  transition: border-color 0.3s ease;
-  background: #fff;
+  width: 200px;
 }
 
-.filter-input:focus,
-.filter-select:focus {
-  border-color: #4da6ff;
-  box-shadow: 0 0 5px rgba(77, 166, 255, 0.3);
-}
-
-/* Room List Grid */
 .room-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
-/* Room Card Styling */
-.room-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease;
-}
-
-.room-card:hover {
-  transform: translateY(-5px);
-}
-
-.room-link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.room-image-container {
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
-}
-
-.room-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.room-details {
-  padding: 15px;
-}
-
-.room-details h3 {
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.room-details p {
-  font-size: 14px;
-  color: #555;
-  margin: 4px 0;
-}
-
-.available {
-  color: green;
-  font-weight: 500;
-}
-
-.not-available {
-  color: red;
-  font-weight: 500;
-}
-
-/* Action Buttons - All Light Blue */
-.room-actions {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 12px;
-  border-top: 1px solid #eee;
-  background: #f7f9fb;
-}
-
-.whatsapp-btn,
-.call-btn,
-.toggle-btn {
-  padding: 8px 12px;
-  font-size: 13px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  color: white;
-  background-color: #4da6ff;
-}
-
-.whatsapp-btn:hover,
-.call-btn:hover,
-.toggle-btn:hover {
-  background-color: #3399ff;
-}
-
-/* Responsive */
 @media (max-width: 600px) {
-  .filter-container {
-    flex-direction: column;
-    align-items: center;
+  .filter-input,
+  .filter-select {
+    width: 100%;
   }
+}
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #4da6ff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

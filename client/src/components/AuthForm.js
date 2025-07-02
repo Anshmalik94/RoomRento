@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 function AuthForm({ setToken }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ email: "", password: "", role: "renter" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) =>
@@ -17,6 +18,7 @@ function AuthForm({ setToken }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isLogin ? "/auth/login" : "/auth/register";
+    setLoading(true);
 
     try {
       const res = await axios.post(`${BASE_URL}${endpoint}`, formData);
@@ -27,24 +29,24 @@ function AuthForm({ setToken }) {
       navigate("/");
     } catch (err) {
       console.log(err);
-
-      // Yeh proper alert karega error message ko
       if (err.response && err.response.data && err.response.data.msg) {
         alert(err.response.data.msg);
       } else {
         alert("Failed, please try again.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
     try {
       const decoded = jwtDecode(credentialResponse.credential);
       const res = await axios.post(`${BASE_URL}/auth/google-login`, {
         email: decoded.email,
         name: decoded.name,
       });
-
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
@@ -53,6 +55,8 @@ function AuthForm({ setToken }) {
     } catch (err) {
       console.log(err);
       alert("Google Login Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,7 +93,9 @@ function AuthForm({ setToken }) {
           required
         />
 
-        <button type="submit">{isLogin ? "Login" : "Register"}</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <div className="loader"></div> : isLogin ? "Login" : "Register"}
+        </button>
 
         <p className="toggle-text">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
@@ -99,7 +105,10 @@ function AuthForm({ setToken }) {
         </p>
 
         <div className="google-btn">
-          <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => alert("Google Login Failed")} />
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => alert("Google Login Failed")}
+          />
         </div>
       </form>
     </div>

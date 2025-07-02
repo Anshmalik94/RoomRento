@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import RoomCard from "./RoomCard";
 import BASE_URL from "../config";
 import "./RoomsList.css";
 
@@ -13,8 +13,6 @@ function RoomsList() {
     roomType: "",
     furnished: "",
   });
-
-  const currentUserRole = localStorage.getItem("role");
 
   useEffect(() => {
     axios.get(`${BASE_URL}/rooms`)
@@ -45,19 +43,6 @@ function RoomsList() {
 
   const handleFilterChange = e => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
-
-  const toggleAvailability = async (roomId, currentStatus) => {
-    try {
-      await axios.put(`${BASE_URL}/rooms/${roomId}/toggle`);
-      const updatedRooms = rooms.map(r =>
-        r._id === roomId ? { ...r, available: !currentStatus } : r
-      );
-      setRooms(updatedRooms);
-    } catch (err) {
-      console.log(err);
-      alert("Failed to update availability");
-    }
   };
 
   return (
@@ -108,37 +93,7 @@ function RoomsList() {
 
       <div className="room-list">
         {filteredRooms.map(room => (
-          <div key={room._id} className="room-card">
-            <Link to={`/room/${room._id}`} className="room-link">
-              <div className="room-image-container">
-                <img src={room.images[0]} alt="room" className="room-image" />
-              </div>
-              <div className="room-details">
-                <h3>{room.title}</h3>
-                <p>₹{room.price}</p>
-                <p>{room.location}</p>
-                <p className={room.available ? "available" : "not-available"}>
-                  {room.available ? "Available" : "Not Available"}
-                </p>
-              </div>
-            </Link>
-
-            <div className="room-actions">
-              <a href={`https://wa.me/91XXXXXXXXXX`} target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
-                WhatsApp
-              </a>
-              <a href="tel:91XXXXXXXXXX" className="call-btn">Call</a>
-
-              {currentUserRole === "owner" && (
-                <button
-                  className="toggle-btn"
-                  onClick={() => toggleAvailability(room._id, room.available)}
-                >
-                  {room.available ? "Mark as Unavailable" : "Mark as Available"}
-                </button>
-              )}
-            </div>
-          </div>
+          <RoomCard key={room._id} room={room} />
         ))}
       </div>
     </div>

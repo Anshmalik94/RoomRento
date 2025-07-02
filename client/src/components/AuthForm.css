@@ -58,10 +58,34 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
 }
 
 .auth-form button:hover {
   background-color: #3399ff;
+}
+
+.auth-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loader Inside Button */
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Toggle Text Styling */
@@ -98,4 +122,18 @@
   .auth-form h2 {
     font-size: 20px;
   }
+}
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #4da6ff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

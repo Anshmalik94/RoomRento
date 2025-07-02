@@ -15,12 +15,15 @@ function AddRoom({ token }) {
     availableFrom: ""
   });
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = e => setData({ ...data, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData();
     Object.keys(data).forEach(key => formData.append(key, data[key]));
     Array.from(images).forEach(img => formData.append("images", img));
@@ -34,6 +37,8 @@ function AddRoom({ token }) {
     } catch (err) {
       console.log(err);
       alert("Failed to add room.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,7 +74,9 @@ function AddRoom({ token }) {
           <input type="file" multiple onChange={e => setImages(e.target.files)} required />
         </label>
 
-        <button type="submit">Add Room</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <div className="loader"></div> : "Add Room"}
+        </button>
       </form>
     </div>
   );
