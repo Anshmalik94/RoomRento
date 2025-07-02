@@ -3,14 +3,10 @@ const multer = require('multer');
 const Room = require('../models/Room');
 const auth = require('../middleware/auth');
 const router = express.Router();
-const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// Yaha dubara config mat kar. Index.js me already ho chuka hai.
 
 const storage = new CloudinaryStorage({
     cloudinary,
@@ -22,6 +18,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
+// Add Room
 router.post('/', auth, upload.array('images', 10), async (req, res) => {
     try {
         const images = req.files.map(file => file.path);
@@ -35,11 +32,12 @@ router.post('/', auth, upload.array('images', 10), async (req, res) => {
         await room.save();
         res.json(room);
     } catch (err) {
-        console.log("Room Add Error:", err);
-        res.status(500).json({ error: err.message });
+        console.log("Room Add Error:", JSON.stringify(err, null, 2));
+        res.status(500).json({ error: err.message || "Server Error" });
     }
 });
 
+// Get All Rooms
 router.get('/', async (req, res) => {
     try {
         const rooms = await Room.find().sort({ createdAt: -1 });
@@ -50,6 +48,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get Room By ID
 router.get('/:id', async (req, res) => {
     try {
         const room = await Room.findById(req.params.id);
