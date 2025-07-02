@@ -10,83 +10,95 @@
 
 /* Form Styling */
 .add-room-form {
-  background: #ffffff;
+  background: #fff;
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+  max-width: 550px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1.2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Heading */
 .add-room-form h2 {
   text-align: center;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 24px;
+  color: #222;
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.02em;
 }
 
-/* Input, Select, Textarea Styling */
+/* Inputs, Selects & Textarea Styling */
 .add-room-form input,
 .add-room-form select,
 .add-room-form textarea {
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.3s ease;
   width: 100%;
-  background: #fefefe;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fafafa;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 500;
+  resize: none;
+  color: #333;
 }
 
 .add-room-form textarea {
+  min-height: 90px;
   resize: vertical;
-  min-height: 80px;
 }
 
 .add-room-form input:focus,
 .add-room-form select:focus,
 .add-room-form textarea:focus {
-  border-color: #4da6ff;
-  box-shadow: 0 0 5px rgba(77, 166, 255, 0.4);
+  outline: none;
+  border-color: #e53935; /* DeepSleep/OYO inspired red */
+  box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
+  background: #fff;
 }
 
 /* File Upload Label */
 .file-label {
-  font-size: 14px;
+  font-size: 0.9rem;
   color: #555;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+  font-weight: 600;
 }
 
 .file-label input[type="file"] {
-  padding: 5px;
+  padding: 8px 0;
   border: none;
+  cursor: pointer;
+  font-weight: 400;
 }
 
-/* Button Styling */
+/* Buttons */
 .add-room-form button {
-  padding: 12px;
-  background-color: #4da6ff;
+  background-color: #e53935;
   color: white;
-  font-size: 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
+  padding: 0.85rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.15s ease;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 45px;
+  height: 48px;
 }
 
-.add-room-form button:hover {
-  background-color: #3399ff;
+.add-room-form button:hover:not(:disabled) {
+  background-color: #b71c1c;
+  transform: translateY(-2px);
 }
 
 .add-room-form button:disabled {
@@ -94,42 +106,60 @@
   cursor: not-allowed;
 }
 
-/* Loader Inside Button */
+/* Detect City/State Button */
+.detect-btn {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+.detect-btn:hover {
+  background-color: #004ba0;
+}
+
+/* Loader inside button */
 .loader {
   border: 3px solid #f3f3f3;
-  border-top: 3px solid white;
+  border-top: 3px solid #e53935;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .add-room-form {
-    padding: 20px;
-  }
-
-  .add-room-form h2 {
-    font-size: 20px;
-  }
-}
-.loader {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #4da6ff;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   animation: spin 1s linear infinite;
   display: inline-block;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Map Picker Heading */
+.add-room-form h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .add-room-form {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .add-room-form h2 {
+    font-size: 1.5rem;
+  }
 }
