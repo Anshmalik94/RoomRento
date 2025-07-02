@@ -22,6 +22,10 @@ function AddRoom({ token }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
+    const confirmAdd = window.confirm("Confirm publishing this room?");
+    if (!confirmAdd) return;
+
     setLoading(true);
 
     const formData = new FormData();
@@ -57,7 +61,7 @@ function AddRoom({ token }) {
           <option value="Single">Single</option>
           <option value="Shared">Shared</option>
           <option value="Double">Double</option>
-          <option value="Normal">Normal</option>
+          <option value="Normal">Shop</option>
           <option value="Separate">Separate</option>
         </select>
 
@@ -75,7 +79,7 @@ function AddRoom({ token }) {
         </label>
 
         <button type="submit" disabled={loading}>
-          {loading ? <div className="loader"></div> : "Add Room"}
+          {loading ? <div className="loader"></div> : "Publish Now"}
         </button>
       </form>
     </div>
