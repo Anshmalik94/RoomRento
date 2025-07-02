@@ -26,6 +26,7 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin like Postman or server-to-server
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
@@ -50,7 +51,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/rooms', roomRoutes);
 app.use('/auth', authRoutes);
 
-// Health check route
+// Health check route (optional)
 app.get('/', (req, res) => {
     res.send('RoomRento Backend is running');
 });
