@@ -44,8 +44,9 @@
   background: #fafafa;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   font-weight: 500;
-  resize: none;
   color: #333;
+  resize: none;
+  box-sizing: border-box;
 }
 
 .add-room-form textarea {
@@ -57,7 +58,7 @@
 .add-room-form select:focus,
 .add-room-form textarea:focus {
   outline: none;
-  border-color: #e53935; /* DeepSleep/OYO inspired red */
+  border-color: #e53935;
   box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
   background: #fff;
 }
@@ -94,6 +95,8 @@
   justify-content: center;
   align-items: center;
   height: 48px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .add-room-form button:hover:not(:disabled) {
@@ -160,6 +163,15 @@
   }
 
   .add-room-form h2 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+  }
+
+  .detect-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .add-room-form button {
+    width: 100%;
   }
 }

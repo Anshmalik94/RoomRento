@@ -50,6 +50,7 @@
   font-weight: 500;
   color: #333;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-form input:focus,
@@ -73,6 +74,8 @@
   justify-content: center;
   align-items: center;
   height: 48px;
+  width: 100%;
+  box-sizing: border-box;
   transition: background-color 0.3s ease, transform 0.15s ease;
 }
 

@@ -1,33 +1,50 @@
+/* Container */
 .rooms-container {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Heading */
 .rooms-heading {
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-bottom: 20px;
   color: #333;
   text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
+/* Filter Section */
 .filter-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 25px;
   justify-content: center;
 }
 
 .filter-input,
 .filter-select {
-  padding: 8px 12px;
+  padding: 10px 14px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1.5px solid #ccc;
   border-radius: 8px;
   width: 200px;
+  background: #fafafa;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.filter-input:focus,
+.filter-select:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
+  outline: none;
+  background: #fff;
+}
+
+/* Room List Grid */
 .room-list {
   display: flex;
   flex-wrap: wrap;
@@ -35,40 +52,43 @@
   justify-content: center;
 }
 
-@media (max-width: 600px) {
-  .filter-input,
-  .filter-select {
-    width: 100%;
-  }
-}
+/* Loader */
 .loader {
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #4da6ff;
+  border-top: 3px solid #e53935;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   animation: spin 1s linear infinite;
   display: inline-block;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
+/* Navigate Button */
 .navigate-btn {
   display: inline-block;
-  background-color: #d32f2f;
-  color: white;
-  padding: 8px 16px;
+  background-color: #e53935;
+  color: #fff;
+  padding: 10px 16px;
   margin-top: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   text-decoration: none;
   text-align: center;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.15s ease;
 }
 
 .navigate-btn:hover {
   background-color: #b71c1c;
+  transform: translateY(-2px);
 }
+
+/* Map Wrapper */
 .map-wrapper {
   margin-top: 20px;
   border: 1px solid #ddd;
@@ -77,16 +97,14 @@
   padding: 10px;
 }
 
-.navigate-btn {
-  display: inline-block;
-  margin-top: 10px;
-  background-color: #f44336;
-  color: #fff;
-  padding: 8px 16px;
-  text-decoration: none;
-  border-radius: 4px;
-}
+/* Responsive */
+@media (max-width: 768px) {
+  .filter-input,
+  .filter-select {
+    width: 100%;
+  }
 
-.navigate-btn:hover {
-  background-color: #d32f2f;
+  .rooms-heading {
+    font-size: 1.6rem;
+  }
 }
