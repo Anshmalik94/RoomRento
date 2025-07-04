@@ -6,8 +6,6 @@ const router = express.Router();
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 
-// Yaha dubara config mat kar. Index.js me already ho chuka hai.
-
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
@@ -23,8 +21,11 @@ router.post('/', auth, upload.array('images', 10), async (req, res) => {
     try {
         const images = req.files.map(file => file.path);
 
+        // Safely convert latitude & longitude to Number
         const room = new Room({
             ...req.body,
+            latitude: parseFloat(req.body.latitude) || 0,
+            longitude: parseFloat(req.body.longitude) || 0,
             images,
             user: req.user.id,
         });
