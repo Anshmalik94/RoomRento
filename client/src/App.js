@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
 import AddRoom from "./components/AddRoom";
@@ -17,16 +17,56 @@ function App() {
     }
   }, [token]);
 
+  // Protected route wrapper
+  const PrivateRoute = ({ children }) => {
+    return token ? children : <Navigate to="/login" />;
+  };
+
   return (
     <Router>
       <Navbar token={token} setToken={setToken} />
-
       <Routes>
-        <Route path="/" element={<RoomsList />} />
-        <Route path="/room/:id" element={<RoomDetails />} />
-        <Route path="/add-room" element={<AddRoom token={token} />} />
-        <Route path="/login" element={<AuthForm setToken={setToken} />} />
-        <Route path="/help" element={<HelpSupport />} />
+        {/* If logged in, redirect away from login page */}
+        <Route
+          path="/login"
+          element={
+            token ? <Navigate to="/" /> : <AuthForm setToken={setToken} />
+          }
+        />
+
+        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <RoomsList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/room/:id"
+          element={
+            <PrivateRoute>
+              <RoomDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/add-room"
+          element={
+            <PrivateRoute>
+              <AddRoom token={token} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/help"
+          element={
+            <PrivateRoute>
+              <HelpSupport />
+            </PrivateRoute>
+          }
+        />
       </Routes>
       <Footer />
     </Router>
