@@ -84,10 +84,13 @@
   font-size: 1.2rem;
 }
 
-.map-wrapper div {
+.map-container {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  height: 300px;
+  width: 100%;
+  margin-top: 10px;
 }
 
 /* Navigate Button */

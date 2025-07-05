@@ -22,7 +22,7 @@ function RoomDetails() {
   }, [id]);
 
   useEffect(() => {
-    if (room && mapsLoaded && room.latitude && room.longitude) {
+    if (room && mapsLoaded && window.google && room.latitude && room.longitude) {
       const map = new window.google.maps.Map(mapRef.current, {
         center: { lat: room.latitude, lng: room.longitude },
         zoom: 15,
@@ -76,10 +76,13 @@ function RoomDetails() {
         </div>
       </div>
 
-      {room.latitude && room.longitude && mapsLoaded && (
+      {(room.latitude && room.longitude && mapsLoaded) ? (
         <div className="map-wrapper">
           <h3>Room Location:</h3>
-          <div ref={mapRef} style={{ height: "300px", width: "100%", marginTop: "10px" }}></div>
+          <div 
+            ref={mapRef} 
+            style={{ height: "300px", width: "100%", marginTop: "10px", borderRadius: "8px", overflow: "hidden" }} 
+          ></div>
 
           <a 
             href={`https://www.google.com/maps/search/?api=1&query=${room.latitude},${room.longitude}`} 
@@ -90,6 +93,8 @@ function RoomDetails() {
             Navigate with Google Maps
           </a>
         </div>
+      ) : (
+        <p style={{ marginTop: "10px" }}>Location not available</p>
       )}
     </div>
   );
