@@ -18,6 +18,7 @@
   font-family: "Inter", sans-serif;
   max-width: 350px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-form h2 {
@@ -30,6 +31,11 @@
 .flex {
   display: flex;
   gap: 10px;
+  flex-direction: row;
+}
+
+.flex label {
+  flex: 1;
 }
 
 .auth-form input,
@@ -41,6 +47,7 @@
   outline: none;
   border: 1px solid #e5e5e5;
   transition: 0.3s ease;
+  box-sizing: border-box;
 }
 
 .auth-form input:focus,
@@ -111,4 +118,17 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* ---------- Mobile Responsive Fixes ---------- */
+
+@media (max-width: 480px) {
+  .auth-form {
+    padding: 20px 15px;
+  }
+
+  .flex {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

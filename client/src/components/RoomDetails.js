@@ -56,7 +56,14 @@ function RoomDetails() {
           <Slider {...settings}>
             {room.images.map((img, idx) => (
               <div key={idx} className="slider-img-container">
-                <img className="slider-image" src={img} alt={`Room ${idx + 1}`} loading="lazy" />
+                <img
+                  className="slider-image"
+                  src={img}
+                  alt={`Room ${idx + 1}`}
+                  loading="lazy"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => window.open(img, "_blank")}
+                />
               </div>
             ))}
           </Slider>
@@ -72,7 +79,7 @@ function RoomDetails() {
           {room.address && <div><strong>Address:</strong> {room.address}</div>}
           <div><strong>Type:</strong> {room.roomType}</div>
           <div><strong>Furnished:</strong> {room.furnished}</div>
-          <div><strong>Available From:</strong> {room.availableFrom}</div>
+          {room.pincode && <div><strong>Pincode:</strong> {room.pincode}</div>}
         </div>
       </div>
 
@@ -81,7 +88,7 @@ function RoomDetails() {
           <h3>Room Location:</h3>
           <div 
             ref={mapRef} 
-            style={{ height: "300px", width: "100%", marginTop: "10px", borderRadius: "8px", overflow: "hidden" }} 
+            className="map-container"
           ></div>
 
           <a 
@@ -96,6 +103,20 @@ function RoomDetails() {
       ) : (
         <p style={{ marginTop: "10px" }}>Location not available</p>
       )}
+
+      <div className="contact-buttons">
+        <a
+          href={`https://wa.me/91${room.phone}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="whatsapp-btn"
+        >
+          WhatsApp Owner
+        </a>
+        <a href={`tel:91${room.phone}`} className="call-btn">
+          Call Owner
+        </a>
+      </div>
     </div>
   );
 }

@@ -10,27 +10,13 @@ function RoomCard({ room }) {
 
       <div className="room-details">
         <h3>{room.title}</h3>
-        <p className="price">₹{room.price}</p>
-        <p className="location">{room.location}</p>
-        <p className={room.available ? "available" : "not-available"}>
-          {room.available ? "Available" : "Not Available"}
-        </p>
+        <p className="description">{room.description}</p>
+        <p className="location">{room.city}</p>
       </div>
 
       <div className="room-actions">
-        <a
-          href={`https://wa.me/918920664202`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="whatsapp-btn"
-        >
-          WhatsApp
-        </a>
-        <a href="tel:918920664202" className="call-btn">
-          Call
-        </a>
         <Link to={`/room/${room._id}`} className="book-now-btn">
-          View Details
+          Book Now
         </Link>
       </div>
     </div>

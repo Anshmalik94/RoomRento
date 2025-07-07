@@ -76,7 +76,7 @@ function AuthForm({ setToken }) {
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>{isLogin ? "Login to your Account" : "Register"}</h2>
+        <h2>{isLogin ? "Login And Continue" : "Register"}</h2>
         {!isLogin && (
           <>
             <div className="flex">
