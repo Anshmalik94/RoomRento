@@ -8,7 +8,14 @@ import { jwtDecode } from "jwt-decode";
 
 function AuthForm({ setToken }) {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ email: "", password: "", role: "renter" });
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "renter",
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -17,11 +24,21 @@ function AuthForm({ setToken }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     const endpoint = isLogin ? "/auth/login" : "/auth/register";
     setLoading(true);
 
     try {
-      const res = await axios.post(`${BASE_URL}${endpoint}`, formData);
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : formData;
+
+      const res = await axios.post(`${BASE_URL}${endpoint}`, payload);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
@@ -29,11 +46,7 @@ function AuthForm({ setToken }) {
       navigate("/");
     } catch (err) {
       console.log(err);
-      if (err.response && err.response.data && err.response.data.msg) {
-        alert(err.response.data.msg);
-      } else {
-        alert("Failed, please try again.");
-      }
+      alert(err.response?.data?.msg || "Failed, please try again.");
     } finally {
       setLoading(false);
     }
@@ -63,24 +76,44 @@ function AuthForm({ setToken }) {
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>{isLogin ? "Login" : "Register"}</h2>
-
+        <h2>{isLogin ? "Login to your Account" : "Register"}</h2>
         {!isLogin && (
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="renter">Renter</option>
-            <option value="owner">Owner</option>
-          </select>
+          <>
+            <div className="flex">
+              <input
+                type="text"
+                name="firstname"
+                placeholder="Firstname"
+                value={formData.firstname}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="lastname"
+                placeholder="Lastname"
+                value={formData.lastname}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="renter">Renter</option>
+              <option value="owner">Owner</option>
+            </select>
+          </>
         )}
 
         <input
           type="email"
           name="email"
           placeholder="Email"
+          value={formData.email}
           onChange={handleChange}
           required
         />
@@ -89,9 +122,21 @@ function AuthForm({ setToken }) {
           type="password"
           name="password"
           placeholder="Password"
+          value={formData.password}
           onChange={handleChange}
           required
         />
+
+        {!isLogin && (
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+        )}
 
         <button type="submit" disabled={loading}>
           {loading ? <div className="loader"></div> : isLogin ? "Login" : "Register"}
@@ -104,12 +149,21 @@ function AuthForm({ setToken }) {
           </span>
         </p>
 
-        <div className="google-btn">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => alert("Google Login Failed")}
-          />
-        </div>
+        {isLogin && (
+          <>
+            <div className="separator">
+              <hr className="line" />
+              <span>Or</span>
+              <hr className="line" />
+            </div>
+            <div className="google-btn">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => alert("Google Login Failed")}
+              />
+            </div>
+          </>
+        )}
       </form>
     </div>
   );

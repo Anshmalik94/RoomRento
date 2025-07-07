@@ -22,11 +22,14 @@ function App() {
     return token ? children : <Navigate to="/login" />;
   };
 
+  const showLayout = token;  // Check if Navbar and Footer should show
+
   return (
     <Router>
-      <Navbar token={token} setToken={setToken} />
+      {showLayout && <Navbar token={token} setToken={setToken} />}
+
       <Routes>
-        {/* If logged in, redirect away from login page */}
+        {/* Login Route */}
         <Route
           path="/login"
           element={
@@ -68,7 +71,8 @@ function App() {
           }
         />
       </Routes>
-      <Footer />
+
+      {showLayout && <Footer />}
     </Router>
   );
 }

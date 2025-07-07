@@ -1,13 +1,15 @@
+const dotenv = require('dotenv');
+dotenv.config();
+console.log("MONGO_URI:", process.env.MONGO_URI);  // Test ke liye lagayi hai
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const roomRoutes = require('./routes/rooms');
 const authRoutes = require('./routes/auth');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
 
-dotenv.config();
 const app = express();
 
 // Cloudinary Config
@@ -26,7 +28,6 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin like Postman or server-to-server
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
@@ -51,7 +52,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/rooms', roomRoutes);
 app.use('/auth', authRoutes);
 
-// Health check route (optional)
+// Health check route
 app.get('/', (req, res) => {
     res.send('RoomRento Backend is running');
 });
