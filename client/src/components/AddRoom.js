@@ -48,20 +48,49 @@ function AddRoom({ token }) {
         try {
           const { latitude, longitude } = position.coords;
 
-          const res = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          // Google Maps Geocoding API se address aur pincode nikaalo
+          // React me env variable sahi se use karne ke liye import karo
+          const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+          if (!GOOGLE_API_KEY) {
+            alert('Google Maps API key missing! Client ke root me .env file banao aur key daalo.');
+            return;
+          }
+          const geoRes = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`
           );
-          const result = await res.json();
+          const geoData = await geoRes.json();
+          console.log('Google Geocoding API result:', geoData);
+
+          let address = "";
+          let city = "";
+          let state = "";
+          let pincode = "";
+
+          if (geoData.results && geoData.results.length > 0) {
+            const components = geoData.results[0].address_components;
+            address = geoData.results[0].formatted_address || "";
+            for (const comp of components) {
+              if (comp.types.includes("postal_code")) {
+                pincode = comp.long_name;
+              }
+              if (comp.types.includes("locality")) {
+                city = comp.long_name;
+              }
+              if (comp.types.includes("administrative_area_level_1")) {
+                state = comp.long_name;
+              }
+            }
+          }
 
           setData((prev) => ({
             ...prev,
             latitude,
             longitude,
-            address: result.locality || "",
-            city: result.city || "",
-            state: result.principalSubdivision || "",
-            location: `${result.city}, ${result.principalSubdivision}`,
-            pincode: result.postcode || "",
+            address: address,
+            city: city,
+            state: state,
+            location: city && state ? `${city}, ${state}` : "",
+            pincode: pincode,
           }));
 
           alert("Location detected and all fields auto-filled!");
