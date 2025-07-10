@@ -8,5 +8,5 @@
 
 .testimonial-img {
   object-fit: cover;
-  border: 3px solid #e63946;
+  border: 3px solid #007bff; /* Blue border instead of red */
 }

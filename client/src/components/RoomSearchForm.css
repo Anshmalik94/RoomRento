@@ -1,4 +1,3 @@
-/* RoomSearchForm.css - based on previous PropertySearchForm.css, but with .room- prefix */
 .room-search-form-section {
   margin-top: -50px;
   z-index: 10;
@@ -8,6 +7,7 @@
 .room-search-form-card {
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08);
+  background: #ffffff;
 }
 
 .room-search-form-card .form-label {
@@ -15,9 +15,9 @@
 }
 
 .room-search-form-card .input-group-text {
-  background: #fff;
+  background: #ffffff;
   border-right: 0;
-  color: #198754;
+  color: #007bff; /* light blue replacement for green */
 }
 
 .room-search-form-card .form-control,
@@ -26,13 +26,13 @@
 }
 
 .room-search-form-card .btn-success {
-  background: #198754;
+  background: #007bff; /* blue */
   border: none;
   border-radius: 8px;
 }
 
 .room-search-form-card .btn-success:hover {
-  background: #157347;
+  background: #0056b3; /* darker blue */
 }
 
 @media (max-width: 768px) {
@@ -48,6 +48,7 @@
 .room-stats-section {
   background: transparent;
 }
+
 /* Zoom animation when section comes into view */
 .zoom-highlight {
   animation: zoomEffect 0.5s ease-in-out forwards;
@@ -61,6 +62,6 @@
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 25px rgba(0, 128, 0, 0.2);
+    box-shadow: 0 0 25px rgba(0, 123, 255, 0.2); /* blue glow */
   }
 }
