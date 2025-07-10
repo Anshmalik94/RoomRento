@@ -4,7 +4,6 @@ import RoomCard from "./RoomCard";
 import BASE_URL from "../config";
 import "./RoomsList.css";
 
-
 function RoomsList({ filters }) {
   const [rooms, setRooms] = useState([]);
   const [filteredRooms, setFilteredRooms] = useState([]);
@@ -33,7 +32,6 @@ function RoomsList({ filters }) {
     }
 
     if (filters.roomCategory) {
-      // roomCategory can be: Furnished, Semi-Furnished, Unfurnished, PgType, GirlsPg, BoysPg
       if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(filters.roomCategory)) {
         result = result.filter(r => r.furnished === filters.roomCategory);
       } else if (filters.roomCategory === "PgType") {
@@ -48,20 +46,18 @@ function RoomsList({ filters }) {
     setFilteredRooms(result);
   }, [filters, rooms]);
 
-
-
   return (
-    <div className="rooms-container">
-      <h2 className="rooms-heading">Available Rooms</h2>
+    <section className="container my-5">
+      <h2 className="mb-4 fw-bold text-dark">Available Rooms</h2>
 
-      {/* Filter section removed as per user request */}
-
-      <div className="room-list">
+      <div className="row g-4">
         {filteredRooms.map(room => (
-          <RoomCard key={room._id} room={room} />
+          <div key={room._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <RoomCard room={room} />
+          </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 

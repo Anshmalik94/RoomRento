@@ -24,3 +24,7 @@
     height: 200px;
   }
 }
+.map-container:hover {
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+  transform: scale(1.01);
+}

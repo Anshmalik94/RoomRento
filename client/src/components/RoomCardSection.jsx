@@ -24,25 +24,25 @@ const RoomCardSection = () => {
             />
           </div>
           <div className="room-info-overlay">
-            <div className="room-price">$925,000</div>
+            <div className="room-price">Starting at ₹1999/</div>
             <div className="room-location">
               <i className="bi bi-geo-alt-fill me-1"></i>Downtown District
             </div>
             <div className="room-details">
-              <span><i className="bi bi-house-door me-1"></i>4 Bed</span>
+              <span><i className="bi bi-house-door me-1"></i>All Type Of Room</span>
               <span className="mx-2">|</span>
-              <span><i className="bi bi-bathtub me-1"></i>3 Bath</span>
+              <span><i className="bi bi-bathtub me-1"></i>Also avail for Shared Rooms</span>
             </div>
           </div>
         </div>
         <div className="agent-card d-flex align-items-center shadow-sm">
-          <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
-            alt="Agent"
-            className="agent-photo"
-          />
+        <img
+  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+  alt="Room"
+  className="agent-photo"
+/>
           <div className="agent-info ms-3">
-            <div className="agent-name fw-semibold">Michael Chen</div>
+            <div className="agent-name fw-semibold">Kumar Sanjeev Mishra</div>
             <div className="agent-role text-muted small">Senior Room Advisor</div>
             <div className="agent-rating d-flex align-items-center mt-1">
               <i className="bi bi-star-fill text-warning me-1"></i>

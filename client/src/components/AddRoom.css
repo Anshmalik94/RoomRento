@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   min-height: 90vh;
-  background: #f7f9fb;
+  background: #d0e7ff; /* Light Blue Background */
   padding: 20px;
 }
 
@@ -22,7 +22,7 @@
 
 .add-room-form h2 {
   text-align: center;
-  color: #222;
+  color: #007bff; /* Blue Heading */
   font-size: 1.9rem;
   font-weight: 700;
   margin-bottom: 0.8rem;
@@ -50,8 +50,8 @@
 .add-room-form select:focus,
 .add-room-form textarea:focus {
   outline: none;
-  border-color: #e53935;
-  box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
   background: #fff;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .add-room-form button {
-  background-color: #e53935;
+  background-color: #007bff; /* Blue Submit */
   color: white;
   border: none;
   border-radius: 8px;
@@ -98,7 +98,7 @@
 }
 
 .add-room-form button:hover:not(:disabled) {
-  background-color: #b71c1c;
+  background-color: #0056b3; /* Darker Blue */
   transform: translateY(-2px);
 }
 
@@ -108,7 +108,7 @@
 }
 
 .detect-btn {
-  background-color: #1976d2;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 0.7rem 1rem;
@@ -122,12 +122,12 @@
 }
 
 .detect-btn:hover {
-  background-color: #004ba0;
+  background-color: #0056b3;
 }
 
 .loader {
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #e53935;
+  border-top: 3px solid #007bff;
   border-radius: 50%;
   width: 20px;
   height: 20px;

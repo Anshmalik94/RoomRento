@@ -32,16 +32,16 @@
   border: 1.5px solid #ccc;
   border-radius: 8px;
   width: 200px;
-  background: #fafafa;
+  background: #d0e7ff;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .filter-input:focus,
 .filter-select:focus {
-  border-color: #e53935;
-  box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
   outline: none;
-  background: #fff;
+  background: #ffffff;
 }
 
 /* Room List Grid */
@@ -55,7 +55,7 @@
 /* Loader */
 .loader {
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #e53935;
+  border-top: 3px solid #007bff;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -72,7 +72,7 @@
 /* Navigate Button */
 .navigate-btn {
   display: inline-block;
-  background-color: #e53935;
+  background-color: #007bff;
   color: #fff;
   padding: 10px 16px;
   margin-top: 10px;
@@ -84,14 +84,14 @@
 }
 
 .navigate-btn:hover {
-  background-color: #b71c1c;
+  background-color: #0056b3;
   transform: translateY(-2px);
 }
 
 /* Map Wrapper */
 .map-wrapper {
   margin-top: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid #cfd8e2;
   border-radius: 8px;
   overflow: hidden;
   padding: 10px;

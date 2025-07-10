@@ -4,24 +4,26 @@
   align-items: center;
   justify-content: center;
   min-height: 70vh;
-  background: #f7f9fb;
+  background: #d0e7ff; /* light blue background */
   padding: 20px;
   text-align: center;
 }
 
 .help-heading {
   font-size: 26px;
-  color: #333;
+  color: #007bff; /* blue heading */
   margin-bottom: 10px;
+  font-weight: 700;
 }
 
 .help-text {
   font-size: 16px;
-  color: #555;
+  color: #444; /* darker neutral for readability */
   max-width: 500px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
+/* Responsive */
 @media (max-width: 600px) {
   .help-heading {
     font-size: 22px;
