@@ -1,75 +1,40 @@
+/* HomeSpace Navbar Custom Styling */
+
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #ffffff;
-  padding: 15px 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  transition: all 0.3s ease-in-out;
 }
 
-.navbar-left,
-.navbar-center,
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.navbar-home {
-  font-size: 22px;
+.navbar-brand {
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #4da6ff;
+  color: #e63946; /* Red accent */
+}
+
+.navbar-brand:hover {
+  color: #c71c35;
   text-decoration: none;
-  transition: color 0.3s ease;
 }
 
-.navbar-home:hover {
-  color: #3399ff;
+.navbar-light .navbar-nav .nav-link {
+  color: #333;
+  font-weight: 500;
+  margin-right: 1rem;
+  transition: color 0.2s;
 }
 
-.navbar-btn {
-  padding: 8px 16px;
-  background-color: #4da6ff;
-  color: white;
+.navbar-light .navbar-nav .nav-link:hover {
+  color: #e63946;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+  color: #e63946;
+  font-weight: 600;
+}
+
+.navbar-toggler {
   border: none;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.navbar-btn:hover {
-  background-color: #3399ff;
-}
-
-.logout-btn {
-  background-color: #ff4d4d;
-}
-
-.logout-btn:hover {
-  background-color: #e60000;
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
-    padding: 10px 15px;
-  }
-
-  .navbar-left {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-
-  .navbar-right {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+.navbar-toggler:focus {
+  box-shadow: none;
 }

@@ -4,15 +4,10 @@ import RoomCard from "./RoomCard";
 import BASE_URL from "../config";
 import "./RoomsList.css";
 
-function RoomsList() {
+
+function RoomsList({ filters }) {
   const [rooms, setRooms] = useState([]);
-  const [search, setSearch] = useState("");
   const [filteredRooms, setFilteredRooms] = useState([]);
-  const [filters, setFilters] = useState({
-    location: "",
-    roomType: "",
-    furnished: "",
-  });
 
   useEffect(() => {
     axios.get(`${BASE_URL}/rooms`)
@@ -26,70 +21,40 @@ function RoomsList() {
   useEffect(() => {
     let result = rooms;
 
-    if (search)
-      result = result.filter(r => r.title.toLowerCase().includes(search.toLowerCase()));
-
     if (filters.location)
-      result = result.filter(r => r.location.toLowerCase().includes(filters.location.toLowerCase()));
+      result = result.filter(r => r.location && r.location.toLowerCase().includes(filters.location.toLowerCase()));
 
     if (filters.roomType)
       result = result.filter(r => r.roomType === filters.roomType);
 
-    if (filters.furnished)
-      result = result.filter(r => r.furnished === filters.furnished);
+    if (filters.budget) {
+      const maxBudget = parseInt(filters.budget, 10);
+      result = result.filter(r => !isNaN(maxBudget) ? Number(r.price) <= maxBudget : true);
+    }
+
+    if (filters.roomCategory) {
+      // roomCategory can be: Furnished, Semi-Furnished, Unfurnished, PgType, GirlsPg, BoysPg
+      if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(filters.roomCategory)) {
+        result = result.filter(r => r.furnished === filters.roomCategory);
+      } else if (filters.roomCategory === "PgType") {
+        result = result.filter(r => r.roomType && r.roomType.toLowerCase().includes("pg"));
+      } else if (filters.roomCategory === "GirlsPg") {
+        result = result.filter(r => r.roomType && r.roomType.toLowerCase().includes("girls"));
+      } else if (filters.roomCategory === "BoysPg") {
+        result = result.filter(r => r.roomType && r.roomType.toLowerCase().includes("boys"));
+      }
+    }
 
     setFilteredRooms(result);
-  }, [search, filters, rooms]);
+  }, [filters, rooms]);
 
-  const handleFilterChange = e => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
+
 
   return (
     <div className="rooms-container">
       <h2 className="rooms-heading">Available Rooms</h2>
 
-      <div className="filter-container">
-        <input
-          className="filter-input"
-          placeholder="Search by Title"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-
-        <input
-          className="filter-input"
-          placeholder="Filter by Location"
-          name="location"
-          value={filters.location}
-          onChange={handleFilterChange}
-        />
-
-        <select
-          className="filter-select"
-          name="roomType"
-          value={filters.roomType}
-          onChange={handleFilterChange}
-        >
-          <option value="">Room Type</option>
-          <option value="Single">Single</option>
-          <option value="Shared">Shared</option>
-          <option value="Double">Double</option>
-          <option value="Normal">Normal</option>
-          <option value="Separate">Separate</option>
-        </select>
-
-        <select
-          className="filter-select"
-          name="furnished"
-          value={filters.furnished}
-          onChange={handleFilterChange}
-        >
-          <option value="">Furnished?</option>
-          <option value="Furnished">Furnished</option>
-          <option value="Unfurnished">Unfurnished</option>
-        </select>
-      </div>
+      {/* Filter section removed as per user request */}
 
       <div className="room-list">
         {filteredRooms.map(room => (

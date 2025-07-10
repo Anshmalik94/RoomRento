@@ -1,0 +1,8 @@
+.about-section {
+  background-color: #f9f9f9;
+}
+
+.about-section img {
+  max-height: 400px;
+  object-fit: cover;
+}

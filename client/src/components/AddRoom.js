@@ -156,6 +156,28 @@ function AddRoom({ token }) {
       <form className="add-room-form" onSubmit={handleSubmit}>
         <h2>Add New Room</h2>
 
+        {/* Map and Detect Location Button sabse upar */}
+        <h4>Pin Room Location on Map:</h4>
+        <button type="button" className="detect-btn mb-3" onClick={handleUseCurrentLocation}>
+          Use My Current Location
+        </button>
+        {mapsLoaded ? (
+          <MapPicker
+            setLatLng={(latlng) =>
+              setData((prev) => ({
+                ...prev,
+                latitude: latlng.lat,
+                longitude: latlng.lng,
+              }))
+            }
+            latitude={data.latitude}
+            longitude={data.longitude}
+          />
+        ) : (
+          <p>Loading map...</p>
+        )}
+
+        {/* Baaki form fields neeche */}
         <input
           name="title"
           placeholder="Title"
@@ -243,21 +265,25 @@ function AddRoom({ token }) {
           >
             <option value="">Room Type</option>
             <option value="Single">Single</option>
-            <option value="Shared">Shared</option>
             <option value="Double">Double</option>
-            <option value="Normal">Shop</option>
+            <option value="Shop">Shop</option>
             <option value="Separate">Separate</option>
+            <option value="Shared">Shared</option>
           </select>
 
           <select
-            name="furnished"
-            value={safeValue(data.furnished)}
+            name="roomCategory"
+            value={safeValue(data.roomCategory)}
             onChange={handleChange}
             required
           >
-            <option value="">Furnished?</option>
+            <option value="">Room Category</option>
             <option value="Furnished">Furnished</option>
+            <option value="Semi-Furnished">Semi-Furnished</option>
             <option value="Unfurnished">Unfurnished</option>
+            <option value="PgType">PG Type</option>
+            <option value="GirlsPg">Girls PG</option>
+            <option value="BoysPg">Boys PG</option>
           </select>
         </div>
 
@@ -270,27 +296,6 @@ function AddRoom({ token }) {
             required
           />
         </label>
-
-        <h4>Pin Room Location on Map:</h4>
-        <button type="button" className="detect-btn" onClick={handleUseCurrentLocation}>
-          Use My Current Location
-        </button>
-
-        {mapsLoaded ? (
-          <MapPicker
-            setLatLng={(latlng) =>
-              setData((prev) => ({
-                ...prev,
-                latitude: latlng.lat,
-                longitude: latlng.lng,
-              }))
-            }
-            latitude={data.latitude}
-            longitude={data.longitude}
-          />
-        ) : (
-          <p>Loading map...</p>
-        )}
 
         <button type="submit" disabled={loading}>
           {loading ? <div className="loader"></div> : "Publish Now"}

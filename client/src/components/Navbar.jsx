@@ -1,3 +1,5 @@
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
@@ -13,27 +15,45 @@ function Navbar({ token, setToken }) {
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-left">
-        <Link to="/" className="navbar-home">RoomRento</Link>
-      </div>
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+      <div className="container">
+        <Link className="navbar-brand fw-bold" to="/">RoomRento</Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-      <div className="navbar-center">
-        {/* Future logo space */}
-      </div>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/rooms">Rooms</Link>
+            </li>
 
-      <div className="navbar-right">
-        <Link to="/help" className="navbar-btn">Help & Support</Link>
+            {token && role === "owner" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/add-room">Add Room</Link>
+              </li>
+            )}
 
-        {token && role === "owner" && (
-          <Link to="/add-room" className="navbar-btn">Add Room</Link>
-        )}
-
-        {token ? (
-          <button className="navbar-btn logout-btn" onClick={handleLogout}>Logout</button>
-        ) : (
-          <Link to="/login" className="navbar-btn">Login</Link>
-        )}
+            <li className="nav-item">
+              {token ? (
+                <button className="btn btn-outline-primary ms-2" onClick={handleLogout} type="button">Logout</button>
+              ) : (
+                <Link className="btn btn-primary ms-2" to="/login">Login</Link>
+              )}
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   );

@@ -11,6 +11,11 @@
   margin-top: 40px;
 }
 
+.footer a:hover {
+  text-decoration: underline;
+  color: #f8d7da;
+}
+
 @media (max-width: 600px) {
   .footer {
     font-size: 12px;

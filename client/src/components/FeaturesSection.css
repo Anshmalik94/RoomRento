@@ -1,0 +1,10 @@
+/* Features Section Custom Styles */
+
+.features-section {
+  background-color: #fff;
+}
+
+.features-section .card:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
