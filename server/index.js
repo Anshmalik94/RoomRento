@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
-console.log("MONGO_URI:", process.env.MONGO_URI);  // Test ke liye lagayi hai
+
+console.log("MONGO_URI:", process.env.MONGO_URI); // Test ke liye lagayi hai
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,29 +15,35 @@ const app = express();
 
 // Cloudinary Config
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Smart CORS Config
+// ✅ Updated CORS Config
 const allowedOrigins = [
-    'http://localhost:3000',
-    'https://room-rento-ni9n.vercel.app',
-    'https://roomrento.vercel.app'
+  'http://localhost:3000',
+  'https://room-rento-lyym.vercel.app',
+  'https://room-rento-ni9n.vercel.app',
+  'https://roomrento.vercel.app',
 ];
 
-app.use(cors({
+app.use(
+  cors({
     origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        } else {
-            return callback(new Error('CORS policy violation'));
-        }
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        /\.vercel\.app$/.test(origin) // ✅ allow Vercel preview URLs
+      ) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('CORS policy violation'));
+      }
     },
-    credentials: true
-}));
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
@@ -44,9 +51,10 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.error('MongoDB Connection Error:', err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => console.error('MongoDB Connection Error:', err));
 
 // Routes
 app.use('/rooms', roomRoutes);
@@ -54,7 +62,7 @@ app.use('/auth', authRoutes);
 
 // Health check route
 app.get('/', (req, res) => {
-    res.send('RoomRento Backend is running');
+  res.send('RoomRento Backend is running');
 });
 
 // Server start
