@@ -51,11 +51,17 @@ function RoomsList({ filters }) {
       <h2 className="mb-4 fw-bold text-dark">Available Rooms</h2>
 
       <div className="row g-4">
-        {filteredRooms.map(room => (
-          <div key={room._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-            <RoomCard room={room} />
+        {filteredRooms.length > 0 ? (
+          filteredRooms.map(room => (
+            <div key={room._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+              <RoomCard room={room} />
+            </div>
+          ))
+        ) : (
+          <div className="col-12">
+            <p className="text-center text-muted">No rooms available with current filters.</p>
           </div>
-        ))}
+        )}
       </div>
     </section>
   );

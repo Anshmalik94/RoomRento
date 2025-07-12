@@ -1,4 +1,3 @@
-// App.js
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
@@ -49,73 +48,74 @@ function App() {
     <Router>
       {showLayout && <Navbar token={token} setToken={setToken} />}
 
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            token ? <Navigate to="/" /> : <AuthForm setToken={setToken} />
-          }
-        />
+      {/* Main content wrapper to avoid navbar overlap */}
+      <div style={{ paddingTop: '90px' }}>
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              token ? <Navigate to="/" /> : <AuthForm setToken={setToken} />
+            }
+          />
 
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <>
-                <HeroSection />
-                <div className="container my-5">
-                  <div className="row g-4 align-items-stretch">
-                    <div className="col-lg-7 col-12">
-                      <RoomSearchForm
-                        filters={filters}
-                        onChange={handleRoomSearchChange}
-                        onSubmit={handleRoomSearchSubmit}
-                      />
-                    </div>
-                    <div className="col-lg-5 col-12 d-flex justify-content-center align-items-start">
-                      <RoomCardSection />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <>
+                  <HeroSection />
+                  <div className="container my-5">
+                    <div className="row g-4 align-items-stretch">
+                      <div className="col-lg-7 col-12">
+                        <RoomSearchForm
+                          filters={filters}
+                          onChange={handleRoomSearchChange}
+                          onSubmit={handleRoomSearchSubmit}
+                        />
+                      </div>
+                      <div className="col-lg-5 col-12 d-flex justify-content-center align-items-start">
+                        <RoomCardSection />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* 👇 RoomsList moved here just after filters */}
-                <RoomsList filters={filters} />
+                  <RoomsList filters={filters} />
+                  <FeaturesSection />
+                  <AboutSection />
+                  <TestimonialsSection />
+                </>
+              </PrivateRoute>
+            }
+          />
 
-                {/* 👇 Other sections moved below */}
-                <FeaturesSection />
-                <AboutSection />
-                <TestimonialsSection />
-              </>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/room/:id"
-          element={
-            <PrivateRoute>
-              <RoomDetails />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/add-room"
-          element={
-            <PrivateRoute>
-              <AddRoom token={token} />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/help"
-          element={
-            <PrivateRoute>
-              <HelpSupport />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
+          <Route
+            path="/room/:id"
+            element={
+              <PrivateRoute>
+                <RoomDetails />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/add-room"
+            element={
+              <PrivateRoute>
+                <AddRoom token={token} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <PrivateRoute>
+                <HelpSupport />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
 
-      {showLayout && <Footer />}
+        {showLayout && <Footer />}
+      </div>
     </Router>
   );
 }
