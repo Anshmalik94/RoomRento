@@ -1,0 +1,22 @@
+# dependencies
+client/node_modules
+server/node_modules
+
+# build folders
+client/build
+
+# dotenv files
+client/.env
+server/.env
+
+# uploaded files
+server/uploads/*
+!server/uploads/.gitkeep
+
+# misc
+.DS_Store
+.env
+*.png
+*.jpg
+*.jpeg
+*.gif

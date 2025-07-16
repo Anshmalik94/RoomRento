@@ -1,0 +1,77 @@
+/* MyBookingRequests Component Styles */
+
+.booking-request-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.booking-request-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.status-pending {
+  border-left: 4px solid #ffc107;
+}
+
+.status-accepted {
+  border-left: 4px solid #198754;
+}
+
+.status-declined {
+  border-left: 4px solid #dc3545;
+}
+
+.status-booked {
+  border-left: 4px solid #0dcaf0;
+}
+
+.status-completed {
+  border-left: 4px solid #6c757d;
+}
+
+.status-cancelled {
+  border-left: 4px solid #495057;
+}
+
+/* Badge styles */
+.badge {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.badge i {
+  font-size: 0.9rem;
+}
+
+/* Card body improvements */
+.booking-request-card .card-body {
+  padding: 1.25rem;
+}
+
+.booking-request-card .card-header {
+  background: rgba(248, 249, 250, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #dee2e6;
+}
+
+.booking-request-card .card-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 0.75rem 1.25rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .booking-request-card {
+    margin-bottom: 1rem;
+  }
+  
+  .d-flex.gap-3 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+  
+  .d-flex.gap-3 span {
+    text-align: center;
+  }
+}

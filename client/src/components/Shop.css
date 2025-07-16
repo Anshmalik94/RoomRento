@@ -1,0 +1,118 @@
+/* Shop Component Styles */
+
+.shop-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.shop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.shop-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.shop-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.shop-card .badge {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+}
+
+.shop-card .card-body {
+  padding: 1.5rem;
+}
+
+.shop-card .card-title {
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+}
+
+.shop-card .card-text {
+  line-height: 1.6;
+}
+
+.shop-card .btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.shop-card .btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .shop-card .card-body {
+    padding: 1rem;
+  }
+  
+  .shop-card .card-img-top {
+    height: 200px !important;
+  }
+}
+
+/* Loading spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Empty state styling */
+.bi-shop.display-1 {
+  font-size: 5rem;
+  opacity: 0.6;
+}
+
+/* Header styling */
+.display-4 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+/* Price styling */
+.text-success {
+  color: #28a745 !important;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Badge improvements */
+.badge.bg-light {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  border: 1px solid #e9ecef;
+}
+
+.badge.bg-primary {
+  background: linear-gradient(45deg, #007bff, #0056b3) !important;
+  border: none;
+}
+
+/* Card hover effects */
+.shop-card .position-relative::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+.shop-card:hover .position-relative::after {
+  background: rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,60 @@
+/* Custom Bootstrap Overrides - Clean Light Theme */
+
+* {
+  box-sizing: border-box;
+}
+
+/* Light navbar styling */
+.navbar {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  background-color: #ffffff !important;
+}
+
+/* Ensure navbar text is dark and visible */
+.navbar-nav .nav-link {
+  color: #212529 !important;
+  font-weight: 500 !important;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #0d6efd !important;
+}
+
+.navbar-brand {
+  color: #212529 !important;
+}
+
+.navbar-brand:hover {
+  color: #0d6efd !important;
+}
+
+/* Remove any unwanted underlines or borders */
+.nav-link {
+  text-decoration: none !important;
+  border: none !important;
+}
+
+/* Ensure dropdown works properly */
+.dropdown-menu {
+  border: 1px solid #dee2e6 !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+}
+
+/* Remove any conflicting styles */
+.container-fluid, .container {
+  box-sizing: border-box;
+}
+
+/* Ensure all icons are visible */
+.bi {
+  color: inherit !important;
+}
+
+/* Login button styling */
+.btn-primary {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: white !important;
+}

@@ -1,0 +1,242 @@
+.room-search-form-section {
+  margin-top: -50px;
+  z-index: 10;
+  position: relative;
+}
+
+.room-search-form-card {
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08);
+  background: #ffffff;
+}
+
+.room-search-form-card .form-label {
+  font-weight: 500;
+}
+
+.room-search-form-card .input-group-text {
+  background: #ffffff;
+  border-right: 0;
+  color: #6f42c1; /* purple replacement */
+}
+
+.room-search-form-card .form-control,
+.room-search-form-card .form-select {
+  border-left: 0;
+}
+
+.room-search-form-card .btn-success {
+  background: #6f42c1; /* purple */
+  border: none;
+  border-radius: 8px;
+}
+
+.room-search-form-card .btn-success:hover {
+  background: #5a3a9e; /* darker purple */
+}
+
+@media (max-width: 768px) {
+  .room-search-form-section {
+    margin-top: 20px;
+    padding: 1rem;
+  }
+  .room-search-form-card {
+    padding: 1.2rem;
+  }
+}
+
+.room-stats-section {
+  background: transparent;
+}
+
+/* Zoom animation when section comes into view */
+.zoom-highlight {
+  animation: zoomEffect 0.5s ease-in-out forwards;
+  transition: all 0.5s ease-in-out;
+}
+
+@keyframes zoomEffect {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(111, 66, 193, 0.2); /* purple glow */
+  }
+}
+
+/* Near Me Button Inside Input Styling */
+.near-me-input-btn {
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  padding: 0.575rem 0.75rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-left: none;
+  color: #6f42c1;
+  background: #f8f9fa;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.near-me-input-btn:hover {
+  background: #6f42c1;
+  border-color: #6f42c1;
+  color: #ffffff;
+  transform: none;
+  box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.25);
+}
+
+.near-me-input-btn:active {
+  background: #5a3a9e;
+  color: #ffffff;
+  border-color: #5a3a9e;
+}
+
+.near-me-input-btn i {
+  font-size: 0.9rem;
+  margin-right: 0.25rem;
+}
+
+/* Unified Location Search Field - Travel App Style */
+.location-input-group {
+  position: relative;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(111, 66, 193, 0.08);
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.location-input-group:hover {
+  border-color: #6f42c1;
+  box-shadow: 0 4px 20px rgba(111, 66, 193, 0.12);
+}
+
+.location-input-group:focus-within {
+  border-color: #6f42c1;
+  box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.15);
+  transform: translateY(-1px);
+}
+
+.location-input-group .input-group-text {
+  border: none;
+  background: transparent;
+  padding: 0 0 0 16px;
+  color: #6f42c1;
+  font-size: 1.1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.location-input-group .form-control {
+  border: none;
+  background: transparent;
+  padding: 12px 8px 12px 8px;
+  height: auto;
+  font-size: 0.95rem;
+  color: #333;
+  flex: 1;
+  outline: none;
+  box-shadow: none !important;
+}
+
+.location-input-group .form-control::placeholder {
+  color: #6c757d;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.location-input-group .form-control:focus::placeholder {
+  color: #adb5bd;
+  transform: translateX(2px);
+}
+
+/* Near Me Button - Integrated Style */
+.near-me-input-btn {
+  border: none;
+  background: transparent;
+  color: #6f42c1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin: 4px 4px 4px 0;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.near-me-input-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(111, 66, 193, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.near-me-input-btn:hover {
+  background: #6f42c1;
+  color: #ffffff;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);
+}
+
+.near-me-input-btn:hover::before {
+  left: 100%;
+}
+
+.near-me-input-btn:active {
+  background: #5a3a9e;
+  transform: scale(0.98);
+}
+
+.near-me-input-btn i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.near-me-input-btn:hover i {
+  transform: rotate(15deg);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .location-input-group {
+    min-height: 44px;
+    border-radius: 10px;
+  }
+  
+  .location-input-group .input-group-text {
+    padding: 0 0 0 12px;
+    font-size: 1rem;
+  }
+  
+  .location-input-group .form-control {
+    padding: 10px 6px;
+    font-size: 0.9rem;
+  }
+  
+  .near-me-input-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    margin: 3px 3px 3px 0;
+  }
+}

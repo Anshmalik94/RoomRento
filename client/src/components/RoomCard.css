@@ -1,0 +1,140 @@
+/* Clean Room Card Styles - No hover effects */
+.room-card {
+  border: none !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Remove any hover effects */
+.room-card:hover,
+.room-card:focus {
+  transform: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  border-radius: 12px !important;
+}
+
+/* Clean button styling */
+.btn-room {
+  background: #6f42c1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-room:hover {
+  background: #5a359a;
+  color: white;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Property cards styling */
+.property-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: none;
+}
+
+.property-card:hover {
+  transform: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Hotel card specific styling */
+.hotel-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.hotel-card:hover {
+  transform: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Remove any scale transforms */
+.card img {
+  transition: none !important;
+  transform: none !important;
+}
+
+.card img:hover {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Section styling */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header i {
+  font-size: 1.5rem;
+}
+
+/* Badge styling */
+.badge-property-type {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Loading spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+/* Clean list styling */
+.properties-grid {
+  gap: 1.5rem;
+}
+
+/* Remove any lingering hover effects */
+* {
+  transform: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -o-transform: none !important;
+}
+
+.card:hover,
+.card:focus,
+.room-card:hover,
+.room-card:focus {
+  transform: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -o-transform: none !important;
+}

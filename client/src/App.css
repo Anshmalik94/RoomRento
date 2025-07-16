@@ -1,0 +1,285 @@
+/* RoomRento Global Design - Bootstrap 5 + Purple Theme */
+
+/* CSS Variables for consistent colors */
+:root {
+  --primary-purple: #6f42c1;
+  --primary-black: #000000;
+  --primary-white: #ffffff;
+  --text-secondary: rgba(0, 0, 0, 0.8);
+  --shadow-light: 0 0.125rem 0.25rem rgba(111, 66, 193, 0.075);
+  --shadow-hover: 0 0.5rem 1rem rgba(111, 66, 193, 0.15);
+}
+
+/* Global font and base styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+  padding-top: 80px !important;
+}
+
+/* Headings - Bold Black */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-black) !important;
+  font-weight: 700 !important;
+}
+
+/* Secondary text - 80% black */
+.text-muted,
+.text-secondary,
+small {
+  color: var(--text-secondary) !important;
+}
+
+/* Purple Button Styles */
+.btn-primary {
+  background-color: var(--primary-purple) !important;
+  border-color: var(--primary-purple) !important;
+  color: var(--primary-white) !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 10px 20px !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #5a359a !important;
+  border-color: #5a359a !important;
+  transform: scale(1.05) !important;
+  box-shadow: var(--shadow-hover) !important;
+  outline: none !important;
+}
+
+/* Pill style buttons */
+.btn-pill {
+  border-radius: 999px !important;
+}
+
+/* Purple Badges */
+.badge {
+  background-color: var(--primary-purple) !important;
+  color: var(--primary-white) !important;
+}
+
+/* Black Icons */
+.bi, i[class*="bi-"] {
+  color: var(--primary-black) !important;
+}
+
+/* Navbar Styling */
+.navbar {
+  background-color: var(--primary-white) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
+  z-index: 1050 !important;
+  height: 80px !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.navbar.transparent {
+  background-color: transparent !important;
+  border-bottom: none;
+}
+
+.navbar-brand {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--primary-black) !important;
+}
+
+.navbar-nav .nav-link {
+  color: var(--primary-black) !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1rem !important;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--primary-purple) !important;
+}
+
+/* Card Styling */
+.card {
+  background-color: var(--primary-white) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: var(--shadow-light) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 15px !important;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(111, 66, 193, 0.2) !important;
+  border: 2px solid rgba(111, 66, 193, 0.3) !important;
+}
+
+/* Room Card specific styling */
+.room-card {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.room-card:hover .card-img-top {
+  transform: scale(1.1) rotate(1deg);
+  filter: brightness(1.1) saturate(1.2);
+}
+
+/* Form Controls */
+.form-control,
+.form-select {
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 10px !important;
+  color: var(--primary-black) !important;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-purple) !important;
+  box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25) !important;
+  outline: none !important;
+}
+
+/* Links */
+a {
+  color: var(--primary-black) !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-purple) !important;
+  text-decoration: underline !important;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  background-color: var(--primary-white) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: var(--shadow-hover) !important;
+  border-radius: 10px !important;
+}
+
+.dropdown-item {
+  color: var(--primary-black) !important;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(111, 66, 193, 0.1) !important;
+  color: var(--primary-purple) !important;
+}
+
+/* Modal Styling */
+.modal-content {
+  background-color: var(--primary-white) !important;
+  border: none !important;
+  border-radius: 15px !important;
+  box-shadow: var(--shadow-hover) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 75px;
+  }
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scale-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Override Bootstrap default colors */
+.btn-outline-primary {
+  color: var(--primary-purple) !important;
+  border-color: var(--primary-purple) !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-purple) !important;
+  border-color: var(--primary-purple) !important;
+  color: var(--primary-white) !important;
+}
+
+/* Text color overrides */
+.text-primary {
+  color: var(--primary-purple) !important;
+}
+
+/* Section headers with icons */
+.section-header {
+  color: var(--primary-black) !important;
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-header .bi {
+  color: var(--primary-black) !important;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+/* Offcanvas styling */
+.offcanvas-header {
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+}
+
+.offcanvas-body {
+  padding: 1.5rem;
+}
+
+/* Clean link styles */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}

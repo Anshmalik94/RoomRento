@@ -1,0 +1,18 @@
+/* Features Section Custom Styles */
+
+.features-section {
+  background-color: #d0e7ff; /* light blue background */
+  padding: 40px 20px;
+}
+
+.features-section .card {
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.features-section .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 28px rgba(0, 123, 255, 0.2); /* soft blue glow */
+}

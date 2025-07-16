@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  padding-top: 70px; /* Add padding to avoid navbar overlap globally */
+  padding-bottom: 75px; /* Add padding for bottom navigation on mobile */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove bottom padding on desktop */
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

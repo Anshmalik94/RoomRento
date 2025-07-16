@@ -1,0 +1,101 @@
+/* Help & Support Modern Styling */
+.help-support-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.help-support-card {
+  max-width: 800px;
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(108, 66, 193, 0.05) 0%, rgba(248, 249, 250, 0.9) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.help-support-heading {
+  font-size: 2.5rem;
+  color: var(--purple-primary, #6f42c1);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 4px rgba(111, 66, 193, 0.1);
+}
+
+.help-support-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.help-support-text {
+  font-size: 1.1rem;
+  color: #495057;
+  line-height: 1.7;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.countdown-text {
+  font-size: 1rem;
+  color: var(--purple-primary, #6f42c1);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  background: rgba(111, 66, 193, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(111, 66, 193, 0.2);
+}
+
+/* WhatsApp Button Styling */
+.btn-success.rounded-pill {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  border: none;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.btn-success.rounded-pill:hover {
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+}
+
+.btn-success.rounded-pill:active {
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .help-support-container {
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  
+  .help-support-card .card-body {
+    padding: 2rem 1.5rem !important;
+  }
+  
+  .help-support-heading {
+    font-size: 2rem;
+  }
+  
+  .help-support-text {
+    font-size: 1rem;
+  }
+  
+  .btn-success.rounded-pill {
+    font-size: 1rem;
+    padding: 0.75rem 2rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .help-support-heading {
+    font-size: 1.75rem;
+  }
+  
+  .help-support-card .card-body {
+    padding: 1.5rem 1rem !important;
+  }
+}

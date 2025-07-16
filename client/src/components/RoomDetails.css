@@ -1,0 +1,136 @@
+/* RoomDetails.css */
+
+.room-details-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.room-carousel {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.room-image {
+  height: 400px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.no-image {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+}
+
+.booking-card {
+  background: #fff !important;
+  border-radius: 15px !important;
+  box-shadow: 0 4px 20px rgba(111, 66, 193, 0.1) !important;
+  border: 1px solid rgba(111, 66, 193, 0.2) !important;
+  position: sticky !important;
+  top: 100px !important;
+  z-index: 999 !important;
+  padding: 1.5rem !important;
+  margin-bottom: 2rem !important;
+  max-height: calc(100vh - 120px) !important;
+  overflow-y: auto !important;
+}
+
+.booking-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .room-image {
+    height: 250px;
+  }
+  
+  .no-image {
+    height: 250px;
+  }
+  
+  .booking-card {
+    position: static !important;
+    margin-top: 2rem;
+    top: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 1;
+}
+
+/* Badge Styling */
+.badge {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Button Hover Effects */
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Card Shadows */
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: 15px;
+  border: none;
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 1.5rem;
+}
+.room-image {
+  object-fit: cover;
+  height: 400px;
+  transition: transform 0.3s ease-in-out;
+}
+.room-image:hover {
+  transform: scale(1.03);
+}
+.no-image {
+  padding: 60px 0;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+.booking-card {
+  top: 90px;
+}
