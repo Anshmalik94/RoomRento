@@ -93,11 +93,11 @@ function AuthForm({ setToken }) {
         {/* Logo */}
         <div className="auth-logo-container">
           <img 
-            src={`${process.env.PUBLIC_URL}/images/logos/android-chrome-512x512.png`}
+            src="/images/logos/android-chrome-512x512.png"
             alt="RoomRento Logo" 
             className="auth-logo-img"
             onError={(e) => {
-              e.target.src = `${process.env.PUBLIC_URL}/images/logos/apple-touch-icon.png`;
+              e.target.src = "/images/logos/apple-touch-icon.png";
             }}
           />
         </div>
