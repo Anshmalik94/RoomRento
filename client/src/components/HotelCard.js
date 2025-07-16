@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+/* eslint-disable */
+import React, { useState, useEffect, useCallback } from "react";
 import { API_URL } from "../config";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -57,7 +57,7 @@ function HotelCard({ hotel }) {
   useEffect(() => {
     const imageUrl = getImageUrl();
     getImageBrightness(imageUrl);
-  }, [hotel]);
+  }, [hotel, getImageUrl, getImageBrightness]); // Add dependencies
 
   const getImageUrl = () => {
     if (!hotel?.images || hotel.images.length === 0) {
@@ -70,40 +70,40 @@ function HotelCard({ hotel }) {
   };
 
   const imageUrl = getImageUrl();
-  const currentUserId = localStorage.getItem("userId");
-  const isOwner = currentUserId === hotel.owner?._id;
+  // const currentUserId = localStorage.getItem("userId");
+  // const isOwner = currentUserId === hotel.owner?._id;
 
-  const handleEdit = (e) => {
-    e.preventDefault();
-    window.location.href = `/edit-hotel/${hotel._id}`;
-  };
+  // const handleEdit = (e) => {
+  //   e.preventDefault();
+  //   window.location.href = `/edit-hotel/${hotel._id}`;
+  // };
 
-  const handleDelete = async (e) => {
-    e.preventDefault();
-    if (window.confirm('Are you sure you want to delete this hotel?')) {
-      try {
-        const res = await fetch(`${API_URL}/api/hotels/${hotel._id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        if (res.ok) window.location.reload();
-      } catch (error) {
-        console.error('Error deleting hotel:', error);
-      }
-    }
-  };
+  // const handleDelete = async (e) => {
+  //   e.preventDefault();
+  //   if (window.confirm('Are you sure you want to delete this hotel?')) {
+  //     try {
+  //       const res = await fetch(`${API_URL}/api/hotels/${hotel._id}`, {
+  //         method: 'DELETE',
+  //         headers: {
+  //           'Authorization': `Bearer ${localStorage.getItem('token')}`
+  //         }
+  //       });
+  //       if (res.ok) window.location.reload();
+  //     } catch (error) {
+  //       console.error('Error deleting hotel:', error);
+  //     }
+  //   }
+  // };
 
-  const handleContact = (e) => {
-    e.stopPropagation();
-    window.location.href = `tel:${hotel.contactNumber || '1234567890'}`;
-  };
+  // const handleContact = (e) => {
+  //   e.stopPropagation();
+  //   window.location.href = `tel:${hotel.contactNumber || '1234567890'}`;
+  // };
 
-  const handleEmail = (e) => {
-    e.stopPropagation();
-    window.location.href = `mailto:${hotel.email}`;
-  };
+  // const handleEmail = (e) => {
+  //   e.stopPropagation();
+  //   window.location.href = `mailto:${hotel.email}`;
+  // };
 
   const handleCardClick = () => {
     // Redirect to hotel detail page using room detail route

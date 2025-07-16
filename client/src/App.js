@@ -66,7 +66,7 @@ function App() {
         document.removeEventListener('click', handleClickOutside);
         window.removeEventListener('openRentifyModal', handleRentifyModal);
       };
-    }, [dropdownOpen]);
+    }, []); // Remove dropdownOpen dependency as it's not needed
 
     // Function to toggle dropdown
     const toggleDropdown = () => {

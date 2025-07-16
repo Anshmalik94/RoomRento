@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import BASE_URL from "../config";
 import "./Shop.css";
@@ -66,11 +66,7 @@ function Shop() {
     img.src = imageSrc;
   };
 
-  useEffect(() => {
-    fetchShopItems();
-  }, []);
-
-  const fetchShopItems = async () => {
+  const fetchShopItems = useCallback(async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/shops`);
       // Check if response has shops array (paginated) or is direct array
@@ -92,7 +88,11 @@ function Shop() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchShopItems();
+  }, [fetchShopItems]);
 
   if (loading) {
     return (

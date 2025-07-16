@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { API_URL } from '../config';
 import './RoomsList.css'; // Reuse existing styles
 
@@ -65,11 +65,7 @@ const AllPropertiesSection = ({ filters }) => {
     img.src = imageSrc;
   };
 
-  useEffect(() => {
-    fetchAllProperties();
-  }, [filters]);
-
-  const fetchAllProperties = async () => {
+  const fetchAllProperties = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -105,7 +101,11 @@ const AllPropertiesSection = ({ filters }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAllProperties();
+  }, [filters, fetchAllProperties]);
 
   const getPropertyIcon = (type) => {
     switch (type) {
