@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import NotFound404 from "./components/404";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
@@ -611,9 +612,11 @@ function App() {
   }, [token, fetchUserInfo]);
 
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <Router>
+        <AppContent />
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
 

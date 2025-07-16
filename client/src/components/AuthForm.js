@@ -105,32 +105,28 @@ function AuthForm({ setToken }) {
         {/* Welcome back text */}
         <h2 className="auth-welcome-text">Welcome back</h2>
         
-        {isLogin && (
-          <>
-            {/* Google Login Button */}
-            <div className="google-login">
-              <div className="google-login-container">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => {
-                    console.log('Login Failed');
-                    alert("Google Login Failed");
-                  }}
-                  theme="outline"
-                  size="large"
-                  text="continue_with"
-                  shape="rectangular"
-                  logo_alignment="left"
-                  width="100%"
-                  useOneTap={false}
-                />
-              </div>
-            </div>
-            
-            {/* Or divider */}
-            <div className="auth-divider">or</div>
-          </>
-        )}
+        {/* Google Login Button - Show for both login and register */}
+        <div className="google-login">
+          <div className="google-login-container">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                console.log('Login Failed');
+                alert("Google Login Failed");
+              }}
+              theme="outline"
+              size="large"
+              text="continue_with"
+              shape="rectangular"
+              logo_alignment="left"
+              width="100%"
+              useOneTap={false}
+            />
+          </div>
+        </div>
+        
+        {/* Or divider */}
+        <div className="auth-divider">or</div>
         
         <form onSubmit={handleSubmit}>
           {!isLogin && (
