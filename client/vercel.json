@@ -24,11 +24,17 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://roomrento-api.onrender.com"
+    "REACT_APP_BASE_URL": "https://roomrento.onrender.com",
+    "REACT_APP_API_URL": "https://roomrento.onrender.com",
+    "REACT_APP_GOOGLE_MAPS_API_KEY": "AIzaSyADOYPe7t0IbbRuvzmNDbcYHOb98_cCTQk",
+    "REACT_APP_GOOGLE_CLIENT_ID": "632276644882-rnbq8prpeepluvtvpdqt0b0hie1rtr2b.apps.googleusercontent.com"
   },
   "build": {
     "env": {
-      "REACT_APP_API_URL": "https://roomrento-api.onrender.com"
+      "REACT_APP_BASE_URL": "https://roomrento.onrender.com",
+      "REACT_APP_API_URL": "https://roomrento.onrender.com",
+      "REACT_APP_GOOGLE_MAPS_API_KEY": "AIzaSyADOYPe7t0IbbRuvzmNDbcYHOb98_cCTQk", 
+      "REACT_APP_GOOGLE_CLIENT_ID": "632276644882-rnbq8prpeepluvtvpdqt0b0hie1rtr2b.apps.googleusercontent.com"
     }
   }
 }
