@@ -94,12 +94,13 @@
   width: 100%;
 }
 
-/* Custom Google Button Styling - Rounded like Image 2 */
+/* Custom Google Button Styling - Fixed width for GSI compliance */
 .google-login > div {
-  width: 100% !important;
+  width: 320px !important;
   min-height: 50px !important;
   border-radius: 25px !important;
   overflow: hidden !important;
+  margin: 0 auto !important;
 }
 
 .google-login iframe {
