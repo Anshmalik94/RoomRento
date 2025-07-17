@@ -2,112 +2,122 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import './BottomNav.css';
 
 function BottomNav() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
+  if (!token) return null;
+
   return (
-    <nav className="navbar fixed-bottom bg-light border-top d-md-none">
-      <div className="container-fluid">
-        <div className="navbar-nav nav-justified w-100 flex-row">
-          {/* Home - Always visible */}
-          <NavLink 
-            to="/" 
-            className={({ isActive }) => 
-              `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-            }
-          >
-            <i className="bi bi-house fs-5 d-block"></i>
-            <small>Home</small>
-          </NavLink>
+    <div 
+      className="d-lg-none"
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: '65px',
+        backgroundColor: '#ffffff',
+        borderTop: '1px solid #dee2e6',
+        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        padding: '8px 16px'
+      }}
+    >
+      <NavLink 
+        to="/" 
+        style={({ isActive }) => ({
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textDecoration: 'none',
+          color: isActive ? '#007bff' : '#6c757d',
+          fontSize: '0.75rem',
+          fontWeight: isActive ? '600' : 'normal',
+          transition: 'all 0.2s ease'
+        })}
+      >
+        <i className="bi bi-house" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+        <span>Home</span>
+      </NavLink>
 
-          {/* Search/Rooms - Always visible */}
-          <NavLink 
-            to="/rooms" 
-            className={({ isActive }) => 
-              `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-            }
-          >
-            <i className="bi bi-search fs-5 d-block"></i>
-            <small>Search</small>
-          </NavLink>
+      <NavLink 
+        to="/rooms" 
+        style={({ isActive }) => ({
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textDecoration: 'none',
+          color: isActive ? '#007bff' : '#6c757d',
+          fontSize: '0.75rem',
+          fontWeight: isActive ? '600' : 'normal',
+          transition: 'all 0.2s ease'
+        })}
+      >
+        <i className="bi bi-search" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+        <span>Search</span>
+      </NavLink>
 
-          {/* Rentify - Only for logged in owners */}
-          {token && localStorage.getItem("role") === "owner" ? (
-            <button 
-              className="nav-item nav-link text-center border-0 bg-transparent"
-              onClick={() => {
-                // Trigger the same modal functionality
-                const event = new CustomEvent('openRentifyModal');
-                window.dispatchEvent(event);
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              <i className="bi bi-plus-circle fs-5 d-block"></i>
-              <small>Rentify</small>
-            </button>
-          ) : (
-            <NavLink 
-              to="/hotels" 
-              className={({ isActive }) => 
-                `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-              }
-            >
-              <i className="bi bi-building fs-5 d-block"></i>
-              <small>Hotels</small>
-            </NavLink>
-          )}
+      {role === "owner" && (
+        <NavLink 
+          to="/owner-dashboard" 
+          style={({ isActive }) => ({
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: isActive ? '#007bff' : '#6c757d',
+            fontSize: '0.75rem',
+            fontWeight: isActive ? '600' : 'normal',
+            transition: 'all 0.2s ease'
+          })}
+        >
+          <i className="bi bi-plus-circle" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+          <span>Rentify</span>
+        </NavLink>
+      )}
 
-          {/* Saved/My Items - Dynamic based on role */}
-          {token ? (
-            <NavLink 
-              to={role === 'owner' ? '/my-listings' : '/my-bookings'} 
-              className={({ isActive }) => 
-                `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-              }
-            >
-              <i className="bi bi-heart fs-5 d-block"></i>
-              <small>{role === 'owner' ? 'Listings' : 'Saved'}</small>
-            </NavLink>
-          ) : (
-            <NavLink 
-              to="/shop" 
-              className={({ isActive }) => 
-                `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-              }
-            >
-              <i className="bi bi-shop fs-5 d-block"></i>
-              <small>Shop</small>
-            </NavLink>
-          )}
+      {role !== "owner" && (
+        <NavLink 
+          to="/hotels" 
+          style={({ isActive }) => ({
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: isActive ? '#007bff' : '#6c757d',
+            fontSize: '0.75rem',
+            fontWeight: isActive ? '600' : 'normal',
+            transition: 'all 0.2s ease'
+          })}
+        >
+          <i className="bi bi-building" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+          <span>Hotels</span>
+        </NavLink>
+      )}
 
-          {/* Profile/Login - Dynamic based on auth state */}
-          {token ? (
-            <NavLink 
-              to="/profile" 
-              className={({ isActive }) => 
-                `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-              }
-            >
-              <i className="bi bi-person fs-5 d-block"></i>
-              <small>Profile</small>
-            </NavLink>
-          ) : (
-            <NavLink 
-              to="/login" 
-              className={({ isActive }) => 
-                `nav-item nav-link text-center ${isActive ? 'active' : ''}`
-              }
-            >
-              <i className="bi bi-person-plus fs-5 d-block"></i>
-              <small>Login</small>
-            </NavLink>
-          )}
-        </div>
-      </div>
-    </nav>
+      <NavLink 
+        to="/profile" 
+        style={({ isActive }) => ({
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textDecoration: 'none',
+          color: isActive ? '#007bff' : '#6c757d',
+          fontSize: '0.75rem',
+          fontWeight: isActive ? '600' : 'normal',
+          transition: 'all 0.2s ease'
+        })}
+      >
+        <i className="bi bi-person" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+        <span>Profile</span>
+      </NavLink>
+    </div>
   );
 }
 

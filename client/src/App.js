@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { useEffect, useState } from "react";
+
+// Components
 import NotFound404 from "./components/404";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
@@ -18,7 +21,8 @@ import OwnerDashboard from "./components/OwnerDashboard";
 import Profile from "./components/Profile";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
-import { useEffect, useState, useCallback } from "react";
+
+// Homepage Sections
 import HeroSection from "./components/HeroSection";
 import RoomSearchForm from "./components/RoomSearchForm";
 import FeaturesSection from "./components/FeaturesSection";
@@ -26,6 +30,7 @@ import AboutSection from "./components/AboutSection";
 import TestimonialsSection from "./components/TestimonialsSection";
 import RoomCardSection from "./components/RoomCardSection";
 import AllPropertiesSection from "./components/AllPropertiesSection";
+
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 
@@ -48,403 +53,269 @@ function App() {
     const location = useLocation();
     const isLoginPage = location.pathname === '/login';
 
-    // Close dropdown when clicking outside
+    // Add bottom padding to body when BottomNav is visible
     useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownOpen && !event.target.closest('.dropdown')) {
-          setDropdownOpen(false);
-        }
-      };
-
-      const handleRentifyModal = () => {
-        setShowRentifyModal(true);
-      };
-
-      document.addEventListener('click', handleClickOutside);
-      window.addEventListener('openRentifyModal', handleRentifyModal);
+      if (token && !isLoginPage) {
+        document.body.style.paddingBottom = '0px'; // Reset as we handle it in main content
+      } else {
+        document.body.style.paddingBottom = '0px';
+      }
       
       return () => {
-        document.removeEventListener('click', handleClickOutside);
-        window.removeEventListener('openRentifyModal', handleRentifyModal);
+        document.body.style.paddingBottom = '0px';
       };
-    }, []); // Remove dropdownOpen dependency as it's not needed
+    }, [token, isLoginPage]);
 
-    // Function to toggle dropdown
-    const toggleDropdown = () => {
-      setDropdownOpen(!dropdownOpen);
-    };
-
-    // Function to close dropdown
-    const closeDropdown = () => {
-      setDropdownOpen(false);
-    };
-
-    // Rentify Modal Functions
-    const handleRentifyClick = () => {
-      setShowRentifyModal(true);
-      closeDropdown();
-    };
-
-    const handleRentifyClose = () => {
-      setShowRentifyModal(false);
-    };
-
-    const handleRentifyOption = (option) => {
-      setShowRentifyModal(false);
-      // Navigate to appropriate form based on option
-      switch (option) {
-        case 'room':
-          window.location.href = '/add-room';
-          break;
-        case 'hotel':
-          window.location.href = '/add-hotel';
-          break;
-        case 'shop':
-          window.location.href = '/add-shop';
-          break;
-        default:
-          break;
-      }
-    };
-
-    const PrivateRoute = ({ children }) => {
-      return token ? children : <Navigate to="/login" />;
-    };
-
-    const OwnerRoute = ({ children }) => {
-      const role = localStorage.getItem('role');
-      if (!token) return <Navigate to="/login" />;
-      if (role !== 'owner') return <Navigate to="/" />;
-      return children;
-    };
-
-    const handleRoomSearchChange = (e) => {
-      const { name, value } = e.target;
-      setFilters((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleRoomSearchSubmit = (updatedFilters) => {
-      setFilters(updatedFilters);
-    };
-
-    const Homepage = () => (
-      <>
-        <HeroSection />
-        <div className="container my-5">
-          <div className="row g-4 align-items-stretch">
-            <div className="col-lg-7 col-12">
-              <RoomSearchForm
-                filters={filters}
-                onChange={handleRoomSearchChange}
-                onSubmit={handleRoomSearchSubmit}
-              />
-            </div>
-            <div className="col-lg-5 col-12 d-flex justify-content-center align-items-start">
-              <RoomCardSection />
-            </div>
+  // Homepage Component
+  const Homepage = () => (
+    <>
+      <HeroSection />
+      <div className="container my-5">
+        <div className="row g-4 align-items-stretch">
+          <div className="col-lg-7 col-12">
+            <RoomSearchForm
+              filters={filters}
+              onChange={handleRoomSearchChange}
+              onSubmit={handleRoomSearchSubmit}
+            />
+          </div>
+          <div className="col-lg-5 col-12 d-flex justify-content-center align-items-start">
+            <RoomCardSection />
           </div>
         </div>
-        <AllPropertiesSection filters={filters} />
-        <FeaturesSection />
-        <AboutSection />
-        <TestimonialsSection />
-      </>
-    );
+      </div>
+      <AllPropertiesSection filters={filters} />
+      <FeaturesSection />
+      <AboutSection />
+      <TestimonialsSection />
+    </>
+  );
+
+  // Route Guards
+  const PrivateRoute = ({ children }) => token ? children : <Navigate to="/login" />;
+  const OwnerRoute = ({ children }) => {
+    const role = localStorage.getItem('role');
+    if (!token) return <Navigate to="/login" />;
+    if (role !== 'owner') return <Navigate to="/" />;
+    return children;
+  };
+
+  // Event Handlers
+  const handleRoomSearchChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRoomSearchSubmit = (updatedFilters) => setFilters(updatedFilters);
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const closeDropdown = () => setDropdownOpen(false);
+  const handleRentifyClick = () => {
+    setShowRentifyModal(true);
+    closeDropdown();
+  };
+  const handleRentifyClose = () => setShowRentifyModal(false);
+  const handleRentifyOption = (option) => {
+    setShowRentifyModal(false);
+    const routes = { room: '/add-room', hotel: '/add-hotel', shop: '/add-shop' };
+    if (routes[option]) window.location.href = routes[option];
+  };
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      localStorage.clear();
+      setToken("");
+      setUserInfo({ name: "", email: "" });
+      window.location.href = "/login";
+    }
+  };
 
     return (
       <>
-        {/* Modern Navbar with Scroll Effect - Hidden on login page */}
+        {/* Navbar - Hidden on login page */}
         {!isLoginPage && (
-          <>
-          <nav className="navbar navbar-expand-lg sticky-top shadow-sm" id="mainNavbar">
-          <div className="container">
-            {/* Brand */}
-            <Link className="navbar-brand d-flex align-items-center" to="/">
-              <img 
-                src="/images/logos/android-chrome-512x512.png" 
-                alt="RoomRento" 
-                width="40" 
-                height="40" 
-                className="me-2" 
-              />
-              <span className="fw-bold">RoomRento</span>
-            </Link>
-            
-            {/* Mobile Toggle - User Profile Icon instead of hamburger */}
-            <div className="d-lg-none d-flex align-items-center">
-              {token ? (
-                <button 
-                  className="btn btn-link border-0 p-1" 
-                  type="button" 
-                  data-bs-toggle="offcanvas" 
-                  data-bs-target="#mobileNavbar"
-                  aria-controls="mobileNavbar"
-                >
-                  <div 
-                    className="rounded-circle d-flex align-items-center justify-content-center" 
-                    style={{
-                      width: '40px', 
-                      height: '40px', 
-                      backgroundColor: '#0d6efd', 
-                      color: 'white',
-                      fontSize: '16px'
-                    }}
+          <nav className="navbar navbar-expand-lg sticky-top shadow-sm bg-white">
+            <div className="container">
+              {/* Brand */}
+              <Link className="navbar-brand d-flex align-items-center" to="/">
+                <img 
+                  src="/images/logos/android-chrome-512x512.png" 
+                  alt="RoomRento" 
+                  width="40" 
+                  height="40" 
+                  className="me-2" 
+                />
+                <span className="fw-bold">RoomRento</span>
+              </Link>
+              
+              {/* Mobile Toggle */}
+              <div className="d-lg-none">
+                {token ? (
+                  <button 
+                    className="btn btn-link border-0 p-1" 
+                    type="button" 
+                    data-bs-toggle="offcanvas" 
+                    data-bs-target="#mobileNavbar"
                   >
-                    <i className="bi bi-person-fill"></i>
-                  </div>
-                </button>
-              ) : (
-                <button 
-                  className="navbar-toggler border-0" 
-                  type="button" 
-                  data-bs-toggle="offcanvas" 
-                  data-bs-target="#mobileNavbar"
-                  aria-controls="mobileNavbar"
-                >
-                  <span className="navbar-toggler-icon"></span>
-                </button>
-              )}
-            </div>
-            
-            {/* Desktop Menu */}
-            <div className="collapse navbar-collapse" id="navbarNav">
-              {/* All Navigation Links - Right Side */}
-              <ul className="navbar-nav ms-auto">
-                <li className="nav-item">
-                  <Link className="nav-link fw-medium" to="/">
-                    <i className="bi bi-house me-1"></i>Home
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link fw-medium" to="/rooms">
-                    <i className="bi bi-door-open me-1"></i>Rooms
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link fw-medium" to="/hotels">
-                    <i className="bi bi-building me-1"></i>Hotels
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link fw-medium" to="/shop">
-                    <i className="bi bi-shop me-1"></i>Shop
-                  </Link>
-                </li>
-                
-                {/* Rentify Button - Only for owners */}
-                {token && localStorage.getItem("role") === "owner" && (
-                  <li className="nav-item">
-                    <button 
-                      className="nav-link fw-medium btn btn-link border-0 p-0"
-                      onClick={handleRentifyClick}
-                      style={{ 
-                        background: 'none', 
-                        color: 'inherit', 
-                        textDecoration: 'none',
-                        cursor: 'pointer'
+                    <div 
+                      className="rounded-circle d-flex align-items-center justify-content-center" 
+                      style={{
+                        width: '36px', 
+                        height: '36px', 
+                        backgroundColor: '#0d6efd', 
+                        color: 'white'
                       }}
                     >
-                      <i className="bi bi-plus-circle me-1"></i>Rentify
-                    </button>
-                  </li>
+                      <i className="bi bi-person-fill"></i>
+                    </div>
+                  </button>
+                ) : (
+                  <button 
+                    className="navbar-toggler border-0" 
+                    type="button" 
+                    data-bs-toggle="offcanvas" 
+                    data-bs-target="#mobileNavbar"
+                  >
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
                 )}
-                
-                {token ? (
-                  <li className="nav-item dropdown ms-3">
-                    <button 
-                      className="nav-link dropdown-toggle d-flex align-items-center fw-medium btn btn-link border-0 p-0" 
-                      id="userDropdown" 
-                      type="button" 
-                      onClick={toggleDropdown}
-                      aria-expanded={dropdownOpen}
-                      style={{ cursor: 'pointer', textDecoration: 'none', background: 'none', color: 'inherit' }}
-                    >
-                      <div className="d-flex align-items-center">
+              </div>
+              
+              {/* Desktop Menu */}
+              <div className="collapse navbar-collapse">
+                <ul className="navbar-nav ms-auto">
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/"><i className="bi bi-house me-1"></i>Home</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/rooms"><i className="bi bi-door-open me-1"></i>Rooms</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/hotels"><i className="bi bi-building me-1"></i>Hotels</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/shop"><i className="bi bi-shop me-1"></i>Shop</Link>
+                  </li>
+                  
+                  {token && localStorage.getItem("role") === "owner" && (
+                    <li className="nav-item">
+                      <button 
+                        className="nav-link btn btn-link border-0"
+                        onClick={handleRentifyClick}
+                      >
+                        <i className="bi bi-plus-circle me-1"></i>Rentify
+                      </button>
+                    </li>
+                  )}
+                  
+                  {token ? (
+                    <li className="nav-item dropdown ms-3">
+                      <button 
+                        className="nav-link dropdown-toggle d-flex align-items-center btn btn-link border-0" 
+                        onClick={toggleDropdown}
+                      >
                         <div 
                           className="rounded-circle me-2 d-flex align-items-center justify-content-center" 
                           style={{
                             width: '32px', 
                             height: '32px', 
                             backgroundColor: '#0d6efd', 
-                            color: 'white',
-                            fontSize: '14px'
+                            color: 'white'
                           }}
                         >
                           <i className="bi bi-person-fill"></i>
                         </div>
                         <span>{userInfo.name || 'User'}</span>
-                      </div>
-                    </button>
-                    <ul 
-                      className={`dropdown-menu dropdown-menu-end shadow ${dropdownOpen ? 'show' : ''}`} 
-                      style={{minWidth: '250px', position: 'absolute', top: '100%', right: '0'}}
-                    >
-                      <li className="px-3 py-2 border-bottom">
-                        <div className="d-flex align-items-center">
-                          <div 
-                            className="rounded-circle me-2 d-flex align-items-center justify-content-center" 
-                            style={{
-                              width: '40px', 
-                              height: '40px', 
-                              backgroundColor: '#0d6efd', 
-                              color: 'white'
-                            }}
-                          >
-                            <i className="bi bi-person-fill"></i>
-                          </div>
-                          <div>
-                            <h6 className="mb-0 fw-bold">
-                              {userInfo.name || 'User'}
-                            </h6>
-                            <small className="text-muted">
-                              {userInfo.email || 'Welcome to RoomRento'}
-                            </small>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <Link 
-                          className="dropdown-item py-2" 
-                          to="/profile"
-                          onClick={closeDropdown}
-                        >
-                          <i className="bi bi-person me-2 text-primary"></i>View Profile
-                        </Link>
-                      </li>
+                      </button>
                       
-                      {localStorage.getItem("role") === "owner" ? (
-                        <>
-                          <li>
-                            <Link 
-                              className="dropdown-item py-2" 
-                              to="/owner-dashboard"
-                              onClick={closeDropdown}
-                            >
-                              <i className="bi bi-speedometer2 me-2 text-primary"></i>Dashboard
-                            </Link>
+                      {dropdownOpen && (
+                        <ul className="dropdown-menu dropdown-menu-end show">
+                          <li className="px-3 py-2 border-bottom">
+                            <h6 className="mb-0">{userInfo.name || 'User'}</h6>
+                            <small className="text-muted">{userInfo.email}</small>
                           </li>
+                          <li><Link className="dropdown-item" to="/profile" onClick={closeDropdown}>Profile</Link></li>
+                          
+                          {localStorage.getItem("role") === "owner" ? (
+                            <>
+                              <li><Link className="dropdown-item" to="/owner-dashboard" onClick={closeDropdown}>Dashboard</Link></li>
+                              <li><Link className="dropdown-item" to="/my-listings" onClick={closeDropdown}>My Listings</Link></li>
+                            </>
+                          ) : (
+                            <li><Link className="dropdown-item" to="/my-booking-requests" onClick={closeDropdown}>My Bookings</Link></li>
+                          )}
+                          
+                          <li><hr className="dropdown-divider" /></li>
                           <li>
-                            <Link 
-                              className="dropdown-item py-2" 
-                              to="/my-listings"
-                              onClick={closeDropdown}
-                            >
-                              <i className="bi bi-list-ul me-2 text-primary"></i>My Listings
-                            </Link>
+                            <button className="dropdown-item text-danger" onClick={handleLogout}>
+                              Logout
+                            </button>
                           </li>
-                          <li>
-                            <Link 
-                              className="dropdown-item py-2" 
-                              to="/my-bookings"
-                              onClick={closeDropdown}
-                            >
-                              <i className="bi bi-calendar-check me-2 text-primary"></i>My Bookings
-                            </Link>
-                          </li>
-                        </>
-                      ) : (
-                        <>
-                          <li>
-                            <Link 
-                              className="dropdown-item py-2" 
-                              to="/my-booking-requests"
-                              onClick={closeDropdown}
-                            >
-                              <i className="bi bi-calendar-event me-2 text-primary"></i>My Bookings
-                            </Link>
-                          </li>
-                          <li>
-                            <Link 
-                              className="dropdown-item py-2" 
-                              to="/help"
-                              onClick={closeDropdown}
-                            >
-                              <i className="bi bi-question-circle me-2 text-primary"></i>Help & Support
-                            </Link>
-                          </li>
-                        </>
+                        </ul>
                       )}
-                      
-                      <li><hr className="dropdown-divider" /></li>
-                      <li>
-                        <button 
-                          className="dropdown-item py-2 text-danger fw-medium w-100 text-start border-0 bg-transparent"
-                          style={{ cursor: 'pointer' }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            closeDropdown();
-                            if (window.confirm('Are you sure you want to logout?')) {
-                              localStorage.clear();
-                              setToken("");
-                              setUserInfo({ name: "", email: "" });
-                              window.location.href = "/login";
-                            }
-                          }}
-                        >
-                          <i className="bi bi-box-arrow-right me-2"></i>Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </li>
-                ) : (
-                  <li className="nav-item">
-                    <Link className="btn btn-primary btn-pill px-4 py-2" to="/login">
-                      <i className="bi bi-box-arrow-in-right me-1"></i>Login
-                    </Link>
-                  </li>
+                    </li>
+                  ) : (
+                    <li className="nav-item">
+                      <Link className="btn btn-primary px-4" to="/login">Login</Link>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </nav>
+        )}
+
+        {/* Mobile Offcanvas */}
+        {!isLoginPage && (
+          <div className="offcanvas offcanvas-end" tabIndex="-1" id="mobileNavbar">
+            <div className="offcanvas-header bg-primary text-white">
+              <h5 className="offcanvas-title">Menu</h5>
+              <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div className="offcanvas-body">
+              <ul className="navbar-nav">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/" data-bs-dismiss="offcanvas">
+                    <i className="bi bi-house me-2"></i>Home
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/rooms" data-bs-dismiss="offcanvas">
+                    <i className="bi bi-door-open me-2"></i>Rooms
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/hotels" data-bs-dismiss="offcanvas">
+                    <i className="bi bi-building me-2"></i>Hotels
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/shop" data-bs-dismiss="offcanvas">
+                    <i className="bi bi-shop me-2"></i>Shop
+                  </Link>
+                </li>
+                
+                {!token && (
+                  <>
+                    <li><hr /></li>
+                    <li className="nav-item">
+                      <Link className="nav-link text-primary fw-medium" to="/login" data-bs-dismiss="offcanvas">
+                        <i className="bi bi-person-plus me-2"></i>Login / Register
+                      </Link>
+                    </li>
+                  </>
                 )}
               </ul>
             </div>
           </div>
-        </nav>
-        
-        {/* Mobile Offcanvas - Simple Navigation Only */}
-        <div className="offcanvas offcanvas-end" tabIndex="-1" id="mobileNavbar">
-          <div className="offcanvas-header bg-primary text-white">
-            <h5 className="offcanvas-title">Navigation</h5>
-            <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-          </div>
-          <div className="offcanvas-body">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <Link className="nav-link" to="/" data-bs-dismiss="offcanvas">
-                  <i className="bi bi-house me-2"></i>Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/rooms" data-bs-dismiss="offcanvas">
-                  <i className="bi bi-door-open me-2"></i>Rooms
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/hotels" data-bs-dismiss="offcanvas">
-                  <i className="bi bi-building me-2"></i>Hotels
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/shop" data-bs-dismiss="offcanvas">
-                  <i className="bi bi-shop me-2"></i>Shop
-                </Link>
-              </li>
-              
-              {!token && (
-                <>
-                  <li><hr /></li>
-                  <li className="nav-item">
-                    <Link className="nav-link text-primary fw-medium" to="/login" data-bs-dismiss="offcanvas">
-                      <i className="bi bi-person-plus me-2"></i>Login / Register
-                    </Link>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
-        </div>
-        </>
         )}
 
         {/* Main Content */}
-        <main className="main-content">
+        <main 
+          className="main-content" 
+          style={{
+            paddingBottom: token && !isLoginPage ? '75px' : '0',
+            minHeight: 'calc(100vh - 65px)'
+          }}
+        >
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Homepage />} />
@@ -476,11 +347,13 @@ function App() {
 
         {/* Footer - Hidden on login page */}
         {!isLoginPage && (
-          <>
+          <div style={{ marginBottom: token ? '75px' : '0', paddingBottom: '20px' }}>
             <Footer />
-            <BottomNav />
-          </>
+          </div>
         )}
+
+        {/* BottomNav - Fixed at bottom for mobile only */}
+        {!isLoginPage && token && <BottomNav />}
 
         {/* Rentify Modal */}
         <Modal show={showRentifyModal} onHide={handleRentifyClose} centered>
@@ -544,43 +417,6 @@ function App() {
       </>
     );
   };
-
-  const fetchUserInfo = useCallback(async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const userData = await response.json();
-        const updatedUserInfo = { 
-          name: userData.name || localStorage.getItem("userName") || 'User', 
-          email: userData.email || localStorage.getItem("email") || ''
-        };
-        setUserInfo(updatedUserInfo);
-        if (userData.name) localStorage.setItem("userName", userData.name);
-        if (userData.email) localStorage.setItem("email", userData.email);
-      }
-    } catch (error) {
-      console.log('Error fetching user info:', error);
-      setUserInfo({
-        name: localStorage.getItem("userName") || 'User',
-        email: localStorage.getItem("email") || ''
-      });
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
-      setUserInfo({
-        name: localStorage.getItem("userName") || "",
-        email: localStorage.getItem("email") || ""
-      });
-      fetchUserInfo();
-    }
-  }, [token, fetchUserInfo]);
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>

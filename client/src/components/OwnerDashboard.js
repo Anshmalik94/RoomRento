@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import BASE_URL from '../config';
+import { API_URL } from '../config';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge, Nav, Button, Spinner } from 'react-bootstrap';
 import './OwnerDashboard.css';
@@ -9,11 +9,13 @@ const OwnerDashboard = () => {
   const [listings, setListings] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [bookingRequests, setBookingRequests] = useState([]);
   const [stats, setStats] = useState({
     totalListings: 0,
     activeListings: 0,
     inactiveListings: 0,
-    totalBookings: 0
+    totalBookings: 0,
+    pendingRequests: 0
   });
   
   const navigate = useNavigate();
@@ -26,13 +28,26 @@ const OwnerDashboard = () => {
       return;
     }
     fetchListings();
+    fetchBookingRequests();
   }, [role, navigate]);
+
+  const fetchBookingRequests = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/api/bookings/owner-requests`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setBookingRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching booking requests:', error);
+    }
+  };
 
   const fetchListings = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${BASE_URL}/api/rooms/my-listings`, {
+      const response = await axios.get(`${API_URL}/api/rooms/my-listings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -67,7 +82,7 @@ const OwnerDashboard = () => {
   const handleToggleStatus = async (roomId, currentStatus) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`${BASE_URL}/api/rooms/${roomId}/toggle-visibility`, 
+      await axios.patch(`${API_URL}/api/rooms/${roomId}/toggle-visibility`, 
         {}, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +110,7 @@ const OwnerDashboard = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${BASE_URL}/api/rooms/${roomId}`, {
+      await axios.delete(`${API_URL}/api/rooms/${roomId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -106,6 +121,42 @@ const OwnerDashboard = () => {
     } catch (error) {
       console.error('Error deleting room:', error);
       alert('Error deleting room');
+    }
+  };
+
+  const handleApproveBooking = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.patch(`${API_URL}/api/bookings/${bookingId}/approve`, 
+        { status: 'approved' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      alert('Booking request approved successfully!');
+      fetchBookingRequests(); // Refresh the list
+    } catch (error) {
+      console.error('Error approving booking:', error);
+      alert('Error approving booking request');
+    }
+  };
+
+  const handleRejectBooking = async (bookingId) => {
+    if (!window.confirm('Are you sure you want to reject this booking request?')) {
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.patch(`${API_URL}/api/bookings/${bookingId}/reject`, 
+        { status: 'rejected' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      alert('Booking request rejected!');
+      fetchBookingRequests(); // Refresh the list
+    } catch (error) {
+      console.error('Error rejecting booking:', error);
+      alert('Error rejecting booking request');
     }
   };
 
@@ -282,7 +333,8 @@ const OwnerDashboard = () => {
             {[
               { key: 'all', label: 'All Rooms', count: stats.totalListings },
               { key: 'active', label: 'Active', count: stats.activeListings },
-              { key: 'inactive', label: 'Inactive', count: stats.inactiveListings }
+              { key: 'inactive', label: 'Inactive', count: stats.inactiveListings },
+              { key: 'requests', label: 'Booking Requests', count: bookingRequests.filter(req => req.status === 'pending').length }
             ].map((tab) => (
               <Nav.Item key={tab.key}>
                 <Nav.Link
@@ -300,32 +352,104 @@ const OwnerDashboard = () => {
         </Card.Header>
       </Card>
 
-      {/* Room Cards */}
-      {getFilteredRooms().length === 0 ? (
-        <Card className="text-center py-5">
-          <Card.Body>
-            <i className="bi bi-house-x display-1 text-muted mb-3"></i>
-            <h4>No {activeTab === 'all' ? '' : activeTab} rooms found</h4>
-            <p className="text-muted">
-              {activeTab === 'all' 
-                ? "You haven't listed any properties yet." 
-                : `You don't have any ${activeTab} listings.`
-              }
-            </p>
-            {activeTab === 'all' && (
-              <Button as={Link} to="/add-property" variant="primary">
-                <i className="bi bi-plus-circle me-2"></i>
-                List Your First Property
-              </Button>
-            )}
-          </Card.Body>
-        </Card>
+      {/* Content based on active tab */}
+      {activeTab === 'requests' ? (
+        // Booking Requests Section
+        bookingRequests.length === 0 ? (
+          <Card className="text-center py-5">
+            <Card.Body>
+              <i className="bi bi-calendar-x display-1 text-muted mb-3"></i>
+              <h4>No booking requests found</h4>
+              <p className="text-muted">You haven't received any booking requests yet.</p>
+            </Card.Body>
+          </Card>
+        ) : (
+          <Row>
+            {bookingRequests.map((request) => (
+              <Col md={6} lg={4} key={request._id} className="mb-4">
+                <Card className="shadow-sm h-100">
+                  <Card.Body>
+                    <div className="d-flex justify-content-between align-items-start mb-3">
+                      <h6 className="mb-0">{request.room?.title || 'Room Request'}</h6>
+                      <Badge 
+                        bg={request.status === 'pending' ? 'warning' : 
+                            request.status === 'approved' ? 'success' : 'danger'}
+                      >
+                        {request.status}
+                      </Badge>
+                    </div>
+                    
+                    <div className="mb-3">
+                      <p className="text-muted mb-1">
+                        <strong>Guest:</strong> {request.user?.name || 'Unknown User'}
+                      </p>
+                      <p className="text-muted mb-1">
+                        <strong>Date:</strong> {new Date(request.checkInDate).toLocaleDateString()}
+                      </p>
+                      <p className="text-muted mb-1">
+                        <strong>Guests:</strong> {request.guests || 1}
+                      </p>
+                      {request.message && (
+                        <p className="text-muted mb-1">
+                          <strong>Message:</strong> {request.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {request.status === 'pending' && (
+                      <div className="d-grid gap-2">
+                        <Button 
+                          variant="success" 
+                          size="sm"
+                          onClick={() => handleApproveBooking(request._id)}
+                        >
+                          <i className="bi bi-check-circle me-1"></i>
+                          Approve
+                        </Button>
+                        <Button 
+                          variant="outline-danger" 
+                          size="sm"
+                          onClick={() => handleRejectBooking(request._id)}
+                        >
+                          <i className="bi bi-x-circle me-1"></i>
+                          Reject
+                        </Button>
+                      </div>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )
       ) : (
-        <Row>
-          {getFilteredRooms().map((room) => (
-            <RoomCard key={room._id} room={room} />
-          ))}
-        </Row>
+        // Room Listings Section
+        getFilteredRooms().length === 0 ? (
+          <Card className="text-center py-5">
+            <Card.Body>
+              <i className="bi bi-house-x display-1 text-muted mb-3"></i>
+              <h4>No {activeTab === 'all' ? '' : activeTab} rooms found</h4>
+              <p className="text-muted">
+                {activeTab === 'all' 
+                  ? "You haven't listed any properties yet." 
+                  : `You don't have any ${activeTab} listings.`
+                }
+              </p>
+              {activeTab === 'all' && (
+                <Button as={Link} to="/add-property" variant="primary">
+                  <i className="bi bi-plus-circle me-2"></i>
+                  List Your First Property
+                </Button>
+              )}
+            </Card.Body>
+          </Card>
+        ) : (
+          <Row>
+            {getFilteredRooms().map((room) => (
+              <RoomCard key={room._id} room={room} />
+            ))}
+          </Row>
+        )
       )}
     </Container>
   );

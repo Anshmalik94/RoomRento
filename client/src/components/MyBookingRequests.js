@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Badge, Alert, Button } from 'react-bootstrap';
-import BASE_URL from '../config';
+import { API_URL } from '../config';
 import './MyBookingRequests.css';
 
 const MyBookingRequests = () => {
@@ -16,7 +16,7 @@ const MyBookingRequests = () => {
   const fetchBookingRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${BASE_URL}/api/bookings/my-requests`, {
+      const response = await axios.get(`${API_URL}/api/bookings/my-requests`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setBookingRequests(response.data);
@@ -35,7 +35,7 @@ const MyBookingRequests = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${BASE_URL}/api/bookings/${bookingId}`, {
+      await axios.delete(`${API_URL}/api/bookings/${bookingId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

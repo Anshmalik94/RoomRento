@@ -20,8 +20,6 @@ function RoomDetails() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [bookingData, setBookingData] = useState({
-    checkIn: '',
-    checkOut: '',
     guests: 1,
     message: ''
   });
@@ -111,17 +109,28 @@ function RoomDetails() {
 
     setBookingLoading(true);
     try {
-      await axios.post(`${API_URL}/api/bookings/create`, {
+      const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+      
+      const bookingPayload = {
         roomId: room._id,
-        checkInDate: bookingData.checkIn,
-        checkOutDate: bookingData.checkOut,
-        message: bookingData.message
-      }, {
+        checkInDate: currentDate,
+        checkOutDate: currentDate,
+        guests: bookingData.guests || 1,
+        message: bookingData.message || ''
+      };
+      
+      console.log('Sending booking request:', bookingPayload);
+      console.log('API URL:', API_URL);
+      
+      const response = await axios.post(`${API_URL}/api/bookings/create`, bookingPayload, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      console.log('Booking response:', response.data);
       setShowBookingModal(false);
       alert('Booking request sent successfully!');
     } catch (err) {
+      console.error('Booking error:', err.response?.data || err.message);
       alert(err.response?.data?.message || 'Failed to send booking request');
     } finally {
       setBookingLoading(false);
@@ -421,32 +430,10 @@ function RoomDetails() {
         </Modal.Header>
         <Form onSubmit={handleBookingSubmit}>
           <Modal.Body>
-            <Row>
-              <Col sm={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Check-in Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    value={bookingData.checkIn}
-                    onChange={(e) => setBookingData({ ...bookingData, checkIn: e.target.value })}
-                    min={new Date().toISOString().split('T')[0]}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-              <Col sm={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Check-out Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    value={bookingData.checkOut}
-                    onChange={(e) => setBookingData({ ...bookingData, checkOut: e.target.value })}
-                    min={bookingData.checkIn || new Date().toISOString().split('T')[0]}
-                    required
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+            <div className="mb-3 p-3 bg-light rounded">
+              <h6 className="mb-2">📅 Booking Date</h6>
+              <p className="mb-0 text-muted">Current Date: <strong>{new Date().toLocaleDateString()}</strong></p>
+            </div>
 
             <Form.Group className="mb-3">
               <Form.Label>Number of Guests</Form.Label>

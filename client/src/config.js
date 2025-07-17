@@ -1,8 +1,14 @@
 // Smart API base URL detection for multiple deployment platforms
 const getBaseURL = () => {
-  // Development mode
+  // Always use production URL if available
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // Development mode - check if local server is available
   if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:5000';
+    // Use production URL even in development if specified
+    return process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
   }
   
   // Production mode - try multiple backend URLs

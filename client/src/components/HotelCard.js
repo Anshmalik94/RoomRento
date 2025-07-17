@@ -7,7 +7,7 @@ function HotelCard({ hotel }) {
   const [imageColor, setImageColor] = useState('light'); // Default to light text
 
   // Function to detect if image is light or dark
-  const getImageBrightness = (imageSrc) => {
+  const getImageBrightness = useCallback((imageSrc) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = function() {
@@ -52,14 +52,10 @@ function HotelCard({ hotel }) {
     };
     
     img.src = imageSrc;
-  };
+  }, []);
 
-  useEffect(() => {
-    const imageUrl = getImageUrl();
-    getImageBrightness(imageUrl);
-  }, [hotel, getImageUrl, getImageBrightness]); // Add dependencies
-
-  const getImageUrl = () => {
+  // Define getImageUrl function before useEffect
+  const getImageUrl = useCallback(() => {
     if (!hotel?.images || hotel.images.length === 0) {
       return "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
     }
@@ -67,7 +63,12 @@ function HotelCard({ hotel }) {
     return firstImage.startsWith('http')
       ? firstImage
       : `${API_URL}/${firstImage}`;
-  };
+  }, [hotel]);
+
+  useEffect(() => {
+    const imageUrl = getImageUrl();
+    getImageBrightness(imageUrl);
+  }, [hotel, getImageUrl, getImageBrightness]); // Add dependencies
 
   const imageUrl = getImageUrl();
   // const currentUserId = localStorage.getItem("userId");
