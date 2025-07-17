@@ -98,7 +98,7 @@ function Shop() {
     return (
       <div className="container mt-5 pt-5">
         <div className="text-center">
-          <div className="spinner-border" style={{color: '#6f42c1'}} role="status">
+          <div className="spinner-border text-danger" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
           <p className="mt-3" style={{color: 'rgba(0, 0, 0, 0.8)'}}>Loading shop spaces...</p>

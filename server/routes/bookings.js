@@ -3,6 +3,7 @@ const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { createNotification } = require('../services/notificationService');
 const router = express.Router();
 
 // Get all bookings for owner
@@ -64,6 +65,11 @@ router.post('/create', auth, async (req, res) => {
       return res.status(404).json({ msg: 'Room not found' });
     }
     
+    // Check if property type allows booking (only Room and Hotel)
+    if (room.type && !['Room', 'Hotel'].includes(room.type)) {
+      return res.status(400).json({ msg: 'Booking is only allowed for Rooms and Hotels' });
+    }
+    
     // Prevent self-booking
     if (room.user.toString() === req.user.id) {
       return res.status(400).json({ msg: 'You cannot book your own property' });
@@ -91,6 +97,28 @@ router.post('/create', auth, async (req, res) => {
     });
 
     await booking.save();
+    
+    // Create notification for property owner
+    try {
+      const renterData = await User.findById(req.user.id);
+      await createNotification(
+        room.user, // Owner's user ID
+        `New booking request from ${renterData.name} for "${room.title}"`,
+        'booking_request',
+        booking._id,
+        roomId,
+        {
+          renterName: renterData.name,
+          roomTitle: room.title,
+          checkInDate,
+          checkOutDate,
+          totalAmount
+        }
+      );
+    } catch (notificationError) {
+      console.error('Error creating notification:', notificationError);
+      // Don't fail the booking if notification fails
+    }
     
     const populatedBooking = await Booking.findById(booking._id)
       .populate('room', 'title location price images') // Changed rent to price
@@ -158,7 +186,9 @@ router.delete('/:id', auth, async (req, res) => {
 // Approve booking request
 router.patch('/:id/approve', auth, async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id)
+      .populate('room', 'title')
+      .populate('renter', 'name');
     
     if (!booking) {
       return res.status(404).json({ msg: 'Booking not found' });
@@ -171,6 +201,24 @@ router.patch('/:id/approve', auth, async (req, res) => {
 
     booking.status = 'approved';
     await booking.save();
+
+    // Create notification for renter
+    try {
+      await createNotification(
+        booking.renter._id,
+        `Your booking request for "${booking.room.title}" has been approved!`,
+        'booking_approved',
+        booking._id,
+        booking.room._id,
+        {
+          roomTitle: booking.room.title,
+          checkInDate: booking.checkInDate,
+          checkOutDate: booking.checkOutDate
+        }
+      );
+    } catch (notificationError) {
+      console.error('Error creating approval notification:', notificationError);
+    }
 
     const updatedBooking = await Booking.findById(booking._id)
       .populate('room', 'title location price images')
@@ -187,7 +235,9 @@ router.patch('/:id/approve', auth, async (req, res) => {
 // Reject booking request
 router.patch('/:id/reject', auth, async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id)
+      .populate('room', 'title')
+      .populate('renter', 'name');
     
     if (!booking) {
       return res.status(404).json({ msg: 'Booking not found' });
@@ -200,6 +250,24 @@ router.patch('/:id/reject', auth, async (req, res) => {
 
     booking.status = 'rejected';
     await booking.save();
+
+    // Create notification for renter
+    try {
+      await createNotification(
+        booking.renter._id,
+        `Your booking request for "${booking.room.title}" has been rejected.`,
+        'booking_rejected',
+        booking._id,
+        booking.room._id,
+        {
+          roomTitle: booking.room.title,
+          checkInDate: booking.checkInDate,
+          checkOutDate: booking.checkOutDate
+        }
+      );
+    } catch (notificationError) {
+      console.error('Error creating rejection notification:', notificationError);
+    }
 
     const updatedBooking = await Booking.findById(booking._id)
       .populate('room', 'title location price images')

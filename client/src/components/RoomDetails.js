@@ -9,6 +9,7 @@ import { API_URL } from '../config';
 import './RoomDetails.css';
 import LoadGoogleMaps from './LoadGoogleMaps';
 import MapPicker from './MapPicker';
+import LoadingSpinner from './LoadingSpinner';
 
 function RoomDetails() {
   const { id } = useParams();
@@ -26,6 +27,10 @@ function RoomDetails() {
 
   const currentUserId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
+  
+  // Check if property can be booked (only Room and Hotel types)
+  const canBeBooked = !room?.type || ['Room', 'Hotel'].includes(room.type);
+  const isOwner = room && currentUserId === room.user?._id;
 
   useEffect(() => {
     const fetchPropertyDetails = async () => {
@@ -33,52 +38,52 @@ function RoomDetails() {
         setLoading(true);
         let response;
         
-        console.log('Fetching property with ID:', id);
+        // Fetching property with ID: ${id}
         
         // Try to fetch from different API endpoints
         try {
           // First try rooms API
-          console.log('Trying rooms API...');
+          // Trying rooms API...
           response = await axios.get(`${API_URL}/api/rooms/${id}`);
-          console.log('Found in rooms:', response.data);
+          // Found in rooms: response.data
           
           // Add sample coordinates if missing for testing
           if (!response.data.latitude || !response.data.longitude) {
             response.data.latitude = 28.6139; // Delhi latitude
             response.data.longitude = 77.2090; // Delhi longitude
-            console.log('Added sample coordinates for rooms');
+            // Added sample coordinates for rooms
           }
           
           setRoom(response.data);
           return;
         } catch (roomError) {
-          console.log('Room not found, trying hotels...');
+          // Room not found, trying hotels...
           // If room fails, try hotels API
           try {
             response = await axios.get(`${API_URL}/api/hotels/${id}`);
-            console.log('Found in hotels:', response.data);
+            // Found in hotels
             
             // Add sample coordinates if missing for testing
             if (!response.data.latitude || !response.data.longitude) {
               response.data.latitude = 28.6139; // Delhi latitude
               response.data.longitude = 77.2090; // Delhi longitude
-              console.log('Added sample coordinates for hotels');
+              // Added sample coordinates for hotels
             }
             
             setRoom(response.data);
             return;
           } catch (hotelError) {
-            console.log('Hotel not found, trying shops...');
+            // Hotel not found, trying shops...
             // If hotel fails, try shops API
             try {
               response = await axios.get(`${API_URL}/api/shops/${id}`);
-              console.log('Found in shops:', response.data);
+              // Found in shops
               
               // Add sample coordinates if missing for testing
               if (!response.data.latitude || !response.data.longitude) {
                 response.data.latitude = 28.6139; // Delhi latitude
                 response.data.longitude = 77.2090; // Delhi longitude
-                console.log('Added sample coordinates for shops');
+                // Added sample coordinates for shops
               }
               
               setRoom(response.data);
@@ -123,14 +128,13 @@ function RoomDetails() {
     };
     
     try {
-      console.log('Sending booking request:', bookingPayload);
-      console.log('API URL:', API_URL);
+      // Sending booking request with payload
       
-      const response = await axios.post(`${API_URL}/api/bookings/create`, bookingPayload, {
+      await axios.post(`${API_URL}/api/bookings/create`, bookingPayload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      console.log('Booking response:', response.data);
+      // Booking successful
       setShowBookingModal(false);
       alert('Booking request sent successfully!');
     } catch (err) {
@@ -159,14 +163,7 @@ function RoomDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="container my-5 text-center">
-        <div className="spinner-border" style={{color: '#6f42c1'}} role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3" style={{color: 'rgba(0, 0, 0, 0.8)'}}>Loading property details...</p>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error || !room) {
@@ -182,8 +179,6 @@ function RoomDetails() {
       </div>
     );
   }
-
-  const isOwner = currentUserId === room.owner?._id;
 
   return (
     <div className="room-details-page">
@@ -322,18 +317,25 @@ function RoomDetails() {
 
                 {!isOwner ? (
                   <div className="d-grid gap-2">
-                    <button 
-                      className="btn btn-primary btn-lg"
-                      style={{
-                        backgroundColor: '#6f42c1',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontWeight: '600'
-                      }}
-                      onClick={() => setShowBookingModal(true)}
-                    >
-                      <i className="bi bi-calendar-check me-2"></i> Book Now
-                    </button>
+                    {canBeBooked ? (
+                      <button 
+                        className="btn btn-primary btn-lg"
+                        style={{
+                          backgroundColor: '#6f42c1',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontWeight: '600'
+                        }}
+                        onClick={() => setShowBookingModal(true)}
+                      >
+                        <i className="bi bi-calendar-check me-2"></i> Book Now
+                      </button>
+                    ) : (
+                      <div className="alert alert-info" role="alert">
+                        <i className="bi bi-info-circle me-2"></i>
+                        This property is for viewing only. Booking is not available for {room.type || 'this type of property'}.
+                      </div>
+                    )}
                     
                     <div className="row g-2">
                       <div className="col-6">

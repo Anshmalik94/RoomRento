@@ -1,4 +1,17 @@
-/* Custom Bootstrap Overrides - Clean Light Theme */
+/* Custom Bootstrap Overrides - RoomRento Purple Theme */
+
+:root {
+  --bs-primary: #6f42c1;
+  --bs-primary-rgb: 111, 66, 193;
+  --bs-dark: #212529;
+  --bs-dark-rgb: 33, 37, 41;
+  --bs-light: #f8f9fa;
+  --bs-light-rgb: 248, 249, 250;
+  
+  /* Custom purple gradient */
+  --purple-gradient: linear-gradient(135deg, #6f42c1 0%, #4c2e83 100%);
+  --purple-gradient-hover: linear-gradient(135deg, #4c2e83 0%, #362159 100%);
+}
 
 * {
   box-sizing: border-box;
@@ -19,15 +32,16 @@
 }
 
 .navbar-nav .nav-link:hover {
-  color: #0d6efd !important;
+  color: #6f42c1 !important;
 }
 
 .navbar-brand {
   color: #212529 !important;
+  font-weight: 600 !important;
 }
 
 .navbar-brand:hover {
-  color: #0d6efd !important;
+  color: #6f42c1 !important;
 }
 
 /* Remove any unwanted underlines or borders */
@@ -52,9 +66,105 @@
   color: inherit !important;
 }
 
-/* Login button styling */
+/* Purple gradient buttons */
 .btn-primary {
-  background-color: #0d6efd !important;
-  border-color: #0d6efd !important;
+  background: var(--purple-gradient) !important;
+  border: none !important;
   color: white !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background: var(--purple-gradient-hover) !important;
+  border: none !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3) !important;
+}
+
+/* Secondary buttons with purple outline */
+.btn-outline-primary {
+  border: 2px solid #6f42c1 !important;
+  color: #6f42c1 !important;
+  background: transparent !important;
+  font-weight: 500 !important;
+}
+
+.btn-outline-primary:hover {
+  background: var(--purple-gradient) !important;
+  border-color: #6f42c1 !important;
+  color: white !important;
+}
+
+/* Dark buttons */
+.btn-dark {
+  background: #212529 !important;
+  border-color: #212529 !important;
+  color: white !important;
+}
+
+.btn-dark:hover {
+  background: #000 !important;
+  border-color: #000 !important;
+}
+
+/* Card hover effects */
+.card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(111, 66, 193, 0.15) !important;
+}
+
+/* Spinner colors */
+.spinner-border.text-primary {
+  color: #6f42c1 !important;
+}
+
+.text-primary {
+  color: #6f42c1 !important;
+}
+
+/* Badges */
+.badge.bg-primary {
+  background-color: #6f42c1 !important;
+}
+
+/* Progress bars */
+.progress-bar {
+  background-color: #6f42c1 !important;
+}
+
+/* Links */
+a {
+  color: #6f42c1 !important;
+}
+
+a:hover {
+  color: #4c2e83 !important;
+}
+
+/* Form controls focus */
+.form-control:focus,
+.form-select:focus {
+  border-color: #6f42c1 !important;
+  box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .display-4 {
+    font-size: 2.5rem;
+  }
 }

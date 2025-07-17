@@ -1,0 +1,125 @@
+/* NotificationsPage Component Styles */
+
+.notifications-list {
+  max-width: 100%;
+}
+
+.notification-card {
+  transition: all 0.3s ease;
+  border-radius: 12px !important;
+}
+
+.notification-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.notification-card.unread {
+  border-left: 4px solid #6f42c1 !important;
+  background-color: rgba(111, 66, 193, 0.02);
+}
+
+.notification-message {
+  color: #495057;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.notification-card .btn {
+  transition: all 0.2s ease;
+}
+
+.notification-card .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Stats card styling */
+.notification-card .card-body {
+  border-radius: 12px;
+}
+
+/* Pagination styling */
+.pagination .page-link {
+  color: #6f42c1;
+  border-color: #dee2e6;
+  padding: 0.5rem 0.75rem;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.pagination .page-link:hover {
+  color: #5a31a3;
+  background-color: rgba(111, 66, 193, 0.1);
+  border-color: #6f42c1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .notification-card .card-body {
+    padding: 1rem !important;
+  }
+  
+  .notification-message {
+    font-size: 0.9rem;
+  }
+  
+  .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+  
+  .d-flex.gap-2 .btn {
+    width: 100%;
+  }
+}
+
+/* Badge styling */
+.badge {
+  font-weight: 500;
+}
+
+/* Icon styling */
+.bi {
+  flex-shrink: 0;
+}
+
+/* Loading animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Empty state styling */
+.text-center.py-5 {
+  padding: 4rem 2rem !important;
+}
+
+.text-center.py-5 .display-4 {
+  opacity: 0.6;
+}
+
+/* Button hover effects */
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.2s ease;
+}

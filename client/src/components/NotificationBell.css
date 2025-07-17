@@ -1,0 +1,132 @@
+/* NotificationBell Component Styles */
+
+.notification-bell .notification-toggle {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.notification-bell .notification-toggle:focus,
+.notification-bell .notification-toggle:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px;
+}
+
+.notification-bell .notification-toggle::after {
+  display: none; /* Hide default dropdown arrow */
+}
+
+.notification-badge {
+  font-size: 0.7rem !important;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  line-height: 1.2;
+}
+
+.notification-dropdown {
+  width: 350px;
+  max-width: 90vw;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  margin-top: 0.5rem;
+}
+
+.notification-item {
+  padding: 12px 16px !important;
+  border: none !important;
+  white-space: normal !important;
+  transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+.notification-item.unread {
+  background-color: rgba(111, 66, 193, 0.05) !important;
+  border-left: 3px solid #6f42c1 !important;
+}
+
+.notification-item.unread:hover {
+  background-color: rgba(111, 66, 193, 0.1) !important;
+}
+
+.notification-message {
+  color: #495057;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.unread-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #6f42c1;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.notification-list {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f1f5f9;
+}
+
+.notification-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 576px) {
+  .notification-dropdown {
+    width: 300px;
+    margin-right: -20px;
+  }
+  
+  .notification-item {
+    padding: 10px 12px !important;
+  }
+}
+
+/* Animation for notification badge */
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.notification-badge {
+  animation: pulse 2s infinite;
+}
+
+/* Smooth transitions */
+.notification-bell .dropdown-menu {
+  transition: all 0.2s ease-in-out;
+}
+
+.notification-item {
+  text-decoration: none !important;
+  color: inherit !important;
+}

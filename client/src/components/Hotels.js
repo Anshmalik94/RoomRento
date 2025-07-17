@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../config";
 import HotelCard from "./HotelCard";
+import LoadingSpinner from "./LoadingSpinner";
 import "./RoomsList.css";
 
 function Hotels() {
@@ -28,16 +29,7 @@ function Hotels() {
   };
 
   if (loading) {
-    return (
-      <div className="container mt-5 pt-5">
-        <div className="text-center">
-          <div className="spinner-border" style={{color: '#6f42c1'}} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3" style={{color: 'rgba(0, 0, 0, 0.8)'}}>Loading hotels...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

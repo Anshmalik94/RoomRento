@@ -3,9 +3,9 @@ import axios from "axios";
 import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "./AddRoom_new.css";
 import LoadGoogleMaps from "./LoadGoogleMaps";
 import MapPicker from "./MapPicker";
+import LoadingSpinner from "./LoadingSpinner";
 import { Card, Row, Col, Form, Button } from "react-bootstrap";
 
 function AddRoom({ token }) {
@@ -295,7 +295,7 @@ function AddRoom({ token }) {
         return;
       }
 
-      const response = await axios.post(`${API_URL}/api/rooms`, formData, {
+      await axios.post(`${API_URL}/api/rooms`, formData, {
         headers: { 
           Authorization: `Bearer ${authToken}`,
           'Content-Type': 'multipart/form-data'
@@ -306,7 +306,7 @@ function AddRoom({ token }) {
         }
       });
       
-      console.log("Room added successfully:", response.data);
+      // Room added successfully
       setMessage("Room added successfully!");
       
       setTimeout(() => {
@@ -682,6 +682,7 @@ function AddRoom({ token }) {
 
   return (
     <div className="add-room-container">
+      {loading && <LoadingSpinner />}
       <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
       <div className="container mt-5 pt-5">
         <div className="row">

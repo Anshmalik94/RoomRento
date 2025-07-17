@@ -43,7 +43,7 @@ function RoomsList({ filters }) {
         setLoading(false);
       })
       .catch(err => {
-        console.log(err);
+        // Error loading rooms
         setError('Failed to load rooms. Please try again.');
         setLoading(false);
       });

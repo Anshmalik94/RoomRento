@@ -31,6 +31,9 @@ function RoomCard({ room }) {
   const currentUserId = localStorage.getItem("userId");
   const isOwner = currentUserId === room.user?._id;
   const hasBooked = false; // You can implement this logic
+  
+  // Check if property can be booked (only Room and Hotel types)
+  const canBeBooked = !room.type || ['Room', 'Hotel'].includes(room.type);
 
   const handleEdit = (e) => {
     e.preventDefault();
@@ -159,11 +162,21 @@ function RoomCard({ room }) {
             <Link 
               to={`/room/${room._id}`} 
               className="btn btn-room w-100 fw-semibold border-0 text-decoration-none btn-responsive"
-              style={{ background: '#6f42c1', color: '#fff' }}
+              style={{ background: canBeBooked ? '#6f42c1' : '#28a745', color: '#fff' }}
             >
-              <i className="bi bi-calendar-check me-1"></i>
-              <span className="d-none d-sm-inline">Book Now</span>
-              <span className="d-sm-none">Book</span>
+              {canBeBooked ? (
+                <>
+                  <i className="bi bi-calendar-check me-1"></i>
+                  <span className="d-none d-sm-inline">Book Now</span>
+                  <span className="d-sm-none">Book</span>
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-eye me-1"></i>
+                  <span className="d-none d-sm-inline">View Details</span>
+                  <span className="d-sm-none">View</span>
+                </>
+              )}
             </Link>
           )}
         </div>

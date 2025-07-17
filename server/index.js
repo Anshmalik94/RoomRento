@@ -12,6 +12,8 @@ const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
 const hotelRoutes = require('./routes/hotels');
 const shopRoutes = require('./routes/shops');
+const notificationRoutes = require('./routes/notifications');
+const helpRoutes = require('./routes/help');
 
 const app = express();
 
@@ -87,6 +89,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/shops', shopRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/help', helpRoutes);
 
 // ✅ Health Check
 app.get('/', (req, res) => {

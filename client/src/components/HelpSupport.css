@@ -11,7 +11,7 @@
   width: 100%;
   border: none;
   border-radius: 20px;
-  background: linear-gradient(135deg, rgba(108, 66, 193, 0.05) 0%, rgba(248, 249, 250, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(111, 66, 193, 0.05) 0%, rgba(248, 249, 250, 0.9) 100%);
   backdrop-filter: blur(10px);
 }
 
@@ -63,6 +63,51 @@
 
 .btn-success.rounded-pill:active {
   transform: none;
+}
+
+/* Purple Theme Classes */
+.help-support-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #6f42c1, #8e44ad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-purple {
+  color: #6f42c1 !important;
+}
+
+.btn-purple {
+  background: linear-gradient(135deg, #6f42c1, #8e44ad);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-purple:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+  color: white;
+}
+
+.btn-outline-purple {
+  border: 2px solid #6f42c1;
+  color: #6f42c1;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-purple:hover {
+  background: linear-gradient(135deg, #6f42c1, #8e44ad);
+  border-color: #6f42c1;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
 }
 
 /* Responsive Design */

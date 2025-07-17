@@ -60,7 +60,7 @@ function AuthForm({ setToken }) {
     setLoading(true);
     try {
       const decoded = jwtDecode(credentialResponse.credential);
-      console.log("Google user data:", decoded); // Debug log
+      // Debug: Google user data processed
       
       const res = await axios.post(`${BASE_URL}/api/auth/google-login`, {
         email: decoded.email,
@@ -110,7 +110,7 @@ function AuthForm({ setToken }) {
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => {
-              console.log('Login Failed');
+      // Login failed
               alert("Google Login Failed");
             }}
           />

@@ -5,13 +5,7 @@ function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
   const markerRef = useRef(null);
 
   useEffect(() => {
-    console.log("MapPicker useEffect triggered", {
-      hasGoogle: !!window.google,
-      hasGoogleMaps: !!(window.google && window.google.maps),
-      hasMap: !!(window.google && window.google.maps && window.google.maps.Map),
-      latitude,
-      longitude
-    });
+    // MapPicker useEffect triggered
     
     // Check if Google Maps is available
     if (!window.google || !window.google.maps || !window.google.maps.Map) {
@@ -20,7 +14,7 @@ function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
     }
 
     try {
-      console.log("Creating map with coordinates:", { latitude, longitude });
+      // Creating map with coordinates
       
       const map = new window.google.maps.Map(mapRef.current, {
         center: { lat: latitude || 20.5937, lng: longitude || 78.9629 },
@@ -28,7 +22,7 @@ function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
       });
 
       if (latitude && longitude) {
-        console.log("Adding marker at:", { lat: latitude, lng: longitude });
+        // Adding marker
         markerRef.current = new window.google.maps.Marker({
           position: { lat: latitude, lng: longitude },
           map: map,
@@ -37,7 +31,7 @@ function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
 
       const handleMapClick = (e) => {
         const clickedLatLng = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-        console.log("Map clicked at:", clickedLatLng);
+        // Map clicked
         
         if (markerRef.current) {
           markerRef.current.setMap(null);

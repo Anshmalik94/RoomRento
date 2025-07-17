@@ -21,6 +21,8 @@ import OwnerDashboard from "./components/OwnerDashboard";
 import Profile from "./components/Profile";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
+import NotificationBell from "./components/NotificationBell";
+import NotificationsPage from "./components/NotificationsPage";
 
 // Homepage Sections
 import HeroSection from "./components/HeroSection";
@@ -220,6 +222,12 @@ function App() {
                     </li>
                   )}
                   
+                  {token && (
+                    <li className="nav-item me-2">
+                      <NotificationBell />
+                    </li>
+                  )}
+                  
                   {token ? (
                     <li className="nav-item dropdown ms-3">
                       <button 
@@ -343,6 +351,7 @@ function App() {
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/help" element={<PrivateRoute><HelpSupport /></PrivateRoute>} />
             <Route path="/my-booking-requests" element={<PrivateRoute><MyBookingRequests /></PrivateRoute>} />
+            <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
             
             {/* Owner Routes */}
             <Route path="/owner-dashboard" element={<OwnerRoute><OwnerDashboard /></OwnerRoute>} />
