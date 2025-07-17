@@ -107,22 +107,13 @@ function AuthForm({ setToken }) {
         
         {/* Google Login Button - Show for both login and register */}
         <div className="google-login">
-          <div className="google-login-container">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => {
-                console.log('Login Failed');
-                alert("Google Login Failed");
-              }}
-              theme="outline"
-              size="large"
-              text="continue_with"
-              shape="rectangular"
-              logo_alignment="left"
-              width="100%"
-              useOneTap={false}
-            />
-          </div>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => {
+              console.log('Login Failed');
+              alert("Google Login Failed");
+            }}
+          />
         </div>
         
         {/* Or divider */}
