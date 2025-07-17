@@ -434,32 +434,6 @@ button:hover {
   color: #9ca3af;
 }
 
-.auth-continue-btn {
-  width: 100%;
-  padding: 15px;
-  background: #1a1a2e;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-}
-
-.auth-continue-btn:hover:not(:disabled) {
-  background: #16213e;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(26, 26, 46, 0.3);
-}
-
-.auth-continue-btn:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-}
-
 .auth-policy {
   margin: 25px 0 20px 0;
   color: #6c757d;
