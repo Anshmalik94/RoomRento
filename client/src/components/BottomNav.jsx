@@ -11,22 +11,15 @@ function BottomNav() {
 
   return (
     <div 
-      className="d-lg-none"
+      className="bottom-nav-responsive d-lg-none"
       style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        width: '100%',
-        height: '65px',
-        backgroundColor: '#ffffff',
-        borderTop: '1px solid #dee2e6',
-        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
-        zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
-        padding: '8px 16px'
+        padding: '8px 16px',
+        backgroundColor: '#ffffff',
+        borderTop: '1px solid #dee2e6',
+        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'
       }}
     >
       <NavLink 

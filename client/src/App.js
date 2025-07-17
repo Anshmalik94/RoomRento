@@ -33,6 +33,7 @@ import AllPropertiesSection from "./components/AllPropertiesSection";
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
+import './styles/responsive.css';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -132,18 +133,25 @@ function App() {
       <>
         {/* Navbar - Hidden on login page */}
         {!isLoginPage && (
-          <nav className="navbar navbar-expand-lg sticky-top shadow-sm bg-white">
-            <div className="container">
+          <nav className="navbar navbar-expand-lg sticky-top shadow-sm bg-white navbar-mobile-fix">
+            <div className="container-fluid px-3 px-lg-4">
               {/* Brand */}
               <Link className="navbar-brand d-flex align-items-center" to="/">
                 <img 
                   src="/images/logos/android-chrome-512x512.png" 
                   alt="RoomRento" 
-                  width="40" 
-                  height="40" 
-                  className="me-2" 
+                  width="32" 
+                  height="32" 
+                  className="me-2 d-sm-inline d-none" 
                 />
-                <span className="fw-bold">RoomRento</span>
+                <img 
+                  src="/images/logos/android-chrome-512x512.png" 
+                  alt="RoomRento" 
+                  width="28" 
+                  height="28" 
+                  className="me-2 d-sm-none" 
+                />
+                <span className="fw-bold fs-5 fs-sm-4">RoomRento</span>
               </Link>
               
               {/* Mobile Toggle */}
@@ -169,7 +177,7 @@ function App() {
                   </button>
                 ) : (
                   <button 
-                    className="navbar-toggler border-0" 
+                    className="navbar-toggler border-0 p-2" 
                     type="button" 
                     data-bs-toggle="offcanvas" 
                     data-bs-target="#mobileNavbar"
@@ -181,12 +189,18 @@ function App() {
               
               {/* Desktop Menu */}
               <div className="collapse navbar-collapse">
-                <ul className="navbar-nav ms-auto">
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/"><i className="bi bi-house me-1"></i>Home</Link>
+                <ul className="navbar-nav ms-auto align-items-lg-center">
+                  <li className="nav-item me-lg-2">
+                    <Link className="nav-link px-3 py-2 rounded" to="/">
+                      <i className="bi bi-house me-1"></i>
+                      <span className="d-lg-inline d-none">Home</span>
+                    </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/rooms"><i className="bi bi-door-open me-1"></i>Rooms</Link>
+                  <li className="nav-item me-lg-2">
+                    <Link className="nav-link px-3 py-2 rounded" to="/rooms">
+                      <i className="bi bi-door-open me-1"></i>
+                      <span className="d-lg-inline d-none">Rooms</span>
+                    </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/hotels"><i className="bi bi-building me-1"></i>Hotels</Link>

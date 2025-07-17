@@ -1,5 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Card, Badge } from        {room.owner?.isVerified && (
+          <div className="position-absolute top-0 start-0 m-2">
+            <Badge bg="white" className="text-dark fw-semibold px-2 py-1">
+              <i className="bi bi-patch-check me-1 text-primary"></i>
+              <span className="d-none d-sm-inline">Verified</span>
+              <span className="d-sm-none">✓</span>
+            </Badge>
+          </div>
+        )}
+      </div>
+
+      {/* Card Body */}
+      <Card.Body className="p-3 d-flex flex-column">p";
 import { API_URL } from "../config";
 import './RoomCard.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -66,58 +79,57 @@ function RoomCard({ room }) {
   };
 
   return (
-    <div className="col-lg-4 col-md-6 col-12 mb-4">
-      <Link to={`/room/${room._id}`} className="text-decoration-none">
-        <div className="card h-100 border-0 shadow-sm room-card"
+    <Card className="h-100 border-0 shadow-sm card-responsive room-card text-decoration-none"
+      as={Link}
+      to={`/room/${room._id}`}
+      style={{ 
+        background: '#fff',
+        borderRadius: '12px',
+        overflow: 'hidden'
+      }}
+    >
+      {/* Image */}
+      <div className="position-relative overflow-hidden responsive-image-container" style={{ height: "180px" }}>
+        <Card.Img
+          variant="top"
+          src={imageUrl}
+          alt={displayTitle}
+          className="w-100 h-100 responsive-image"
           style={{ 
-            background: '#fff',
-            borderRadius: '12px',
-            overflow: 'hidden'
+            objectFit: "cover"
           }}
-        >
-          {/* Image */}
-          <div className="position-relative overflow-hidden" style={{ height: "200px" }}>
-            <img
-              src={imageUrl}
-              alt={displayTitle}
-              className="card-img-top w-100 h-100"
-              style={{ 
-                objectFit: "cover"
-              }}
-              onError={(e) => {
-                e.target.src = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
-              }}
-            />
-            <div className="position-absolute top-0 end-0 m-2">
-              <span className="badge bg-primary text-white fw-semibold px-2 py-1">
-                ₹{room.price === 0 ? 'Free' : room.price}
-              </span>
-            </div>
-            {room.owner?.isVerified && (
-              <div className="position-absolute top-0 start-0 m-2">
-                <span className="badge bg-white text-dark fw-semibold px-2 py-1">
-                  <i className="bi bi-patch-check me-1 text-primary"></i>Verified
-                </span>
-              </div>
-            )}
+          onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+          }}
+        />
+        <div className="position-absolute top-0 end-0 m-2">
+          <Badge bg="primary" className="text-white fw-semibold px-2 py-1 fs-6">
+            ₹{room.price === 0 ? 'Free' : room.price}
+          </Badge>
+        </div>
+        {room.owner?.isVerified && (
+          <div className="position-absolute top-0 start-0 m-2">
+            <Badge bg="white" className="text-dark fw-semibold px-2 py-1">
+              <i className="bi bi-patch-check me-1 text-primary"></i>
+              <span className="d-none d-sm-inline">Verified</span>
+              <span className="d-sm-none">✓</span>
+            </Badge>
           </div>
+      {/* Card Body */}
+      <Card.Body className="p-3 d-flex flex-column">
+        <Card.Title className="fw-bold mb-2 text-dark h6 h5-sm" style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}>
+          {displayTitle}
+        </Card.Title>
 
-          {/* Content */}
-          <div className="card-body p-3 d-flex flex-column">
-            <h5 className="card-title fw-bold mb-2 text-dark" style={{
-              fontSize: '1.1rem',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}>
-              {displayTitle}
-            </h5>
-
-            <p className="text-muted small mb-2 d-flex align-items-center">
-              <i className="bi bi-geo-alt me-1 text-primary"></i>
-              {room.city && room.city !== "N/A" ? room.city : "City not specified"}
-            </p>
+        <p className="text-muted small mb-2 d-flex align-items-center">
+          <i className="bi bi-geo-alt me-1 text-primary"></i>
+          <span className="text-truncate">{room.city && room.city !== "N/A" ? room.city : "City not specified"}</span>
+        </p>
 
             {room.roomType && (
               <span className="badge mb-2 align-self-start" style={{
@@ -197,14 +209,14 @@ function RoomCard({ room }) {
                 <Link to={`/room/${room._id}`} 
                   className="btn btn-room w-100 fw-semibold border-0 text-decoration-none"
                 >
-                  <i className="bi bi-calendar-check me-1"></i>Book Now
+                  <i className="bi bi-calendar-check me-1"></i>
+                  <span className="d-none d-sm-inline">Book Now</span>
+                  <span className="d-sm-none">Book</span>
                 </Link>
               )}
             </div>
-          </div>
-        </div>
-      </Link>
-    </div>
+          </Card.Body>
+    </Card>
   );
 }
 

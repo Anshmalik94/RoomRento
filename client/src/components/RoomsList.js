@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import axios from "axios";
 import RoomCard from "./RoomCard";
+import Spinner, { CardSkeleton } from "./Spinner";
 import BASE_URL from "../config";
 import "./RoomsList.css";
 
@@ -85,65 +87,80 @@ function RoomsList({ filters }) {
 
   if (loading) {
     return (
-      <div className="container my-5 text-center">
-        <div className="spinner-border" style={{color: '#6f42c1'}} role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3 text-muted">Loading rooms...</p>
-      </div>
+      <Container className="my-4 my-md-5">
+        <Row className="justify-content-center">
+          <Col xs={12} className="text-center">
+            <Spinner text="Loading rooms..." />
+          </Col>
+        </Row>
+        <Row className="mt-4">
+          <CardSkeleton count={6} />
+        </Row>
+      </Container>
     );
   }
 
   if (error) {
     return (
-      <div className="container my-5">
-        <div className="alert alert-danger text-center" role="alert">
-          <i className="bi bi-exclamation-triangle me-2"></i>
-          {error}
-        </div>
-      </div>
+      <Container className="my-4 my-md-5">
+        <Row className="justify-content-center">
+          <Col xs={12} md={8} lg={6}>
+            <div className="alert alert-danger text-center border-0 card-responsive" role="alert">
+              <i className="bi bi-exclamation-triangle display-6 text-danger mb-3"></i>
+              <h4 className="alert-heading">Oops! Something went wrong</h4>
+              <p className="mb-0">{error}</p>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 
   return (
-    <section className="rooms-list-section">
-      <div className="container my-5">
+    <section className="rooms-list-section py-responsive">
+      <Container className="responsive-container">
         {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <h2 className="mb-1 fw-bold text-dark">Available Rooms</h2>
-            <p className="text-muted mb-0">
-              {filteredRooms.length} room{filteredRooms.length !== 1 ? 's' : ''} found
-            </p>
-          </div>
-          
-          {/* Sort options could go here */}
-          <div className="d-none d-md-block">
-            <small className="text-muted">
-              <i className="bi bi-sort-down me-1"></i>
-              Sorted by popularity
-            </small>
-          </div>
-        </div>
+        <Row className="mb-4">
+          <Col xs={12}>
+            <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+              <div>
+                <h2 className="responsive-title fw-bold text-dark mb-1">Available Rooms</h2>
+                <p className="text-muted mb-0">
+                  {filteredRooms.length} room{filteredRooms.length !== 1 ? 's' : ''} found
+                </p>
+              </div>
+              
+              {/* Sort options */}
+              <div className="d-none d-md-block">
+                <small className="text-muted">
+                  <i className="bi bi-sort-down me-1"></i>
+                  Sorted by popularity
+                </small>
+              </div>
+            </div>
+          </Col>
+        </Row>
 
         {/* Rooms Grid */}
-        <div className="row g-4">
+        <Row className="g-3 g-md-4 row-responsive">
           {displayedRooms.length > 0 ? (
             displayedRooms.map(room => (
-              <RoomCard key={room._id} room={room} />
+              <Col xs={12} sm={6} lg={4} xl={3} key={room._id} className="d-flex">
+                <RoomCard room={room} />
+              </Col>
             ))
           ) : (
-            <div className="col-12">
+            <Col xs={12}>
               <div className="text-center py-5">
                 <div className="mb-4">
-                  <i className="bi bi-house-x" style={{fontSize: '4rem', color: '#6f42c1', opacity: '0.6'}}></i>
+                  <i className="bi bi-house-x" style={{fontSize: '3rem', color: '#6f42c1', opacity: '0.6'}}></i>
                 </div>
-                <h3 className="fw-bold mb-3" style={{color: '#6f42c1'}}>No Rooms Available</h3>
-                <p className="text-muted mb-4 lead">
+                <h3 className="responsive-title fw-bold mb-3" style={{color: '#6f42c1'}}>No Rooms Available</h3>
+                <p className="text-muted mb-4">
                   Currently, there are no rooms matching your criteria.
                 </p>
                 {localStorage.getItem("role") === "owner" && (
-                  <div className="bg-light p-4 rounded-4 d-inline-block">
+                  <div className="bg-light p-3 p-md-4 rounded-4 d-inline-block">
                     <p className="mb-3">
                       <strong>Do you have a room to rent?</strong><br/>
                       List your room and start earning today!
