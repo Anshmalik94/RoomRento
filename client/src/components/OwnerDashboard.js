@@ -378,13 +378,16 @@ const OwnerDashboard = () => {
                     
                     <div className="mb-3">
                       <p className="text-muted mb-1">
-                        <strong>Guest:</strong> {request.user?.name || 'Unknown User'}
+                        <strong>Guest:</strong> {request.renter?.name || 'Unknown User'}
+                      </p>
+                      <p className="text-muted mb-1">
+                        <strong>Email:</strong> {request.renter?.email || 'No email'}
                       </p>
                       <p className="text-muted mb-1">
                         <strong>Date:</strong> {new Date(request.checkInDate).toLocaleDateString()}
                       </p>
                       <p className="text-muted mb-1">
-                        <strong>Guests:</strong> {request.guests || 1}
+                        <strong>Amount:</strong> ₹{request.totalAmount || 'N/A'}
                       </p>
                       {request.message && (
                         <p className="text-muted mb-1">

@@ -155,4 +155,62 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// Approve booking request
+router.patch('/:id/approve', auth, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    
+    if (!booking) {
+      return res.status(404).json({ msg: 'Booking not found' });
+    }
+
+    // Only owner can approve
+    if (booking.owner.toString() !== req.user.id) {
+      return res.status(403).json({ msg: 'Only property owner can approve bookings' });
+    }
+
+    booking.status = 'approved';
+    await booking.save();
+
+    const updatedBooking = await Booking.findById(booking._id)
+      .populate('room', 'title location price images')
+      .populate('renter', 'name email phone')
+      .populate('owner', 'name email phone');
+
+    res.json(updatedBooking);
+  } catch (error) {
+    console.error('Approve booking error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// Reject booking request
+router.patch('/:id/reject', auth, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    
+    if (!booking) {
+      return res.status(404).json({ msg: 'Booking not found' });
+    }
+
+    // Only owner can reject
+    if (booking.owner.toString() !== req.user.id) {
+      return res.status(403).json({ msg: 'Only property owner can reject bookings' });
+    }
+
+    booking.status = 'rejected';
+    await booking.save();
+
+    const updatedBooking = await Booking.findById(booking._id)
+      .populate('room', 'title location price images')
+      .populate('renter', 'name email phone')
+      .populate('owner', 'name email phone');
+
+    res.json(updatedBooking);
+  } catch (error) {
+    console.error('Reject booking error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
 module.exports = router;
