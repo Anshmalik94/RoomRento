@@ -174,52 +174,57 @@ function RoomsList({ filters }) {
                     </button>
                   </div>
                 )}
-                <div className="mt-4">
-                  <button 
-                    className="btn btn-outline-primary px-4 me-3"
+                <div className="mt-4 d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                  <Button 
+                    variant="outline-primary" 
+                    className="btn-responsive"
                     onClick={() => window.location.reload()}
                   >
                     <i className="bi bi-arrow-clockwise me-2"></i>
                     Refresh
-                  </button>
-                  <button 
-                    className="btn btn-outline-secondary px-4"
-                    onClick={() => {
-                      window.history.back();
-                    }}
+                  </Button>
+                  <Button 
+                    variant="outline-secondary" 
+                    className="btn-responsive"
+                    onClick={() => window.history.back()}
                   >
                     <i className="bi bi-arrow-left me-2"></i>
                     Go Back
-                  </button>
+                  </Button>
                 </div>
               </div>
-            </div>
+            </Col>
           )}
-        </div>
+        </Row>
 
         {/* Load More Button */}
         {hasMoreRooms && (
-          <div className="text-center mt-5">
-            <button 
-              className="btn btn-lg px-5 border-0"
-              style={{background: 'rgba(111, 66, 193, 0.1)', color: '#6f42c1', border: '2px solid #6f42c1'}}
-              onClick={handleLoadMore}
-            >
-              <i className="bi bi-plus-circle me-2"></i>
-              Load More Rooms
-            </button>
-          </div>
+          <Row className="mt-4 mt-md-5">
+            <Col xs={12} className="text-center">
+              <Button 
+                size="lg"
+                className="btn-responsive px-4 px-md-5 border-0"
+                style={{background: 'rgba(111, 66, 193, 0.1)', color: '#6f42c1', border: '2px solid #6f42c1'}}
+                onClick={handleLoadMore}
+              >
+                <i className="bi bi-plus-circle me-2"></i>
+                Load More Rooms
+              </Button>
+            </Col>
+          </Row>
         )}
 
         {/* Results Summary */}
         {filteredRooms.length > 0 && (
-          <div className="text-center mt-4">
-            <small className="text-muted">
-              Showing {Math.min(displayCount, filteredRooms.length)} of {filteredRooms.length} rooms
-            </small>
-          </div>
+          <Row className="mt-3 mt-md-4">
+            <Col xs={12} className="text-center">
+              <small className="text-muted">
+                Showing {Math.min(displayCount, filteredRooms.length)} of {filteredRooms.length} rooms
+              </small>
+            </Col>
+          </Row>
         )}
-      </div>
+      </Container>
     </section>
   );
 }
