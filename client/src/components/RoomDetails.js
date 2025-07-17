@@ -110,11 +110,14 @@ function RoomDetails() {
     setBookingLoading(true);
     try {
       const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+      const nextDate = new Date();
+      nextDate.setDate(nextDate.getDate() + 1); // Next day for checkout
+      const checkoutDate = nextDate.toISOString().split('T')[0];
       
       const bookingPayload = {
         roomId: room._id,
         checkInDate: currentDate,
-        checkOutDate: currentDate,
+        checkOutDate: checkoutDate, // Use next day
         guests: bookingData.guests || 1,
         message: bookingData.message || ''
       };
@@ -130,8 +133,14 @@ function RoomDetails() {
       setShowBookingModal(false);
       alert('Booking request sent successfully!');
     } catch (err) {
-      console.error('Booking error:', err.response?.data || err.message);
-      alert(err.response?.data?.message || 'Failed to send booking request');
+      console.error('Booking error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        url: err.config?.url,
+        payload: bookingPayload
+      });
+      alert(err.response?.data?.message || err.response?.data?.msg || 'Failed to send booking request');
     } finally {
       setBookingLoading(false);
     }
