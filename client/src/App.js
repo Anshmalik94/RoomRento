@@ -170,16 +170,41 @@ function App() {
               <span className="fw-bold">RoomRento</span>
             </Link>
             
-            {/* Mobile Toggle */}
-            <button 
-              className="navbar-toggler border-0" 
-              type="button" 
-              data-bs-toggle="offcanvas" 
-              data-bs-target="#mobileNavbar"
-              aria-controls="mobileNavbar"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
+            {/* Mobile Toggle - User Profile Icon instead of hamburger */}
+            <div className="d-lg-none d-flex align-items-center">
+              {token ? (
+                <button 
+                  className="btn btn-link border-0 p-1" 
+                  type="button" 
+                  data-bs-toggle="offcanvas" 
+                  data-bs-target="#mobileNavbar"
+                  aria-controls="mobileNavbar"
+                >
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center" 
+                    style={{
+                      width: '40px', 
+                      height: '40px', 
+                      backgroundColor: '#0d6efd', 
+                      color: 'white',
+                      fontSize: '16px'
+                    }}
+                  >
+                    <i className="bi bi-person-fill"></i>
+                  </div>
+                </button>
+              ) : (
+                <button 
+                  className="navbar-toggler border-0" 
+                  type="button" 
+                  data-bs-toggle="offcanvas" 
+                  data-bs-target="#mobileNavbar"
+                  aria-controls="mobileNavbar"
+                >
+                  <span className="navbar-toggler-icon"></span>
+                </button>
+              )}
+            </div>
             
             {/* Desktop Menu */}
             <div className="collapse navbar-collapse" id="navbarNav">
@@ -373,25 +398,13 @@ function App() {
           </div>
         </nav>
         
-        {/* Mobile Offcanvas */}
+        {/* Mobile Offcanvas - Simple Navigation Only */}
         <div className="offcanvas offcanvas-end" tabIndex="-1" id="mobileNavbar">
           <div className="offcanvas-header bg-primary text-white">
-            <h5 className="offcanvas-title">Menu</h5>
+            <h5 className="offcanvas-title">Navigation</h5>
             <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
           </div>
           <div className="offcanvas-body">
-            {token && (
-              <div className="mb-4 p-3 bg-light rounded">
-                <div className="d-flex align-items-center">
-                  <i className="bi bi-person-circle me-2" style={{fontSize: '2rem'}}></i>
-                  <div>
-                    <h6 className="mb-0">{userInfo.name || 'User'}</h6>
-                    <small className="text-muted">{userInfo.email}</small>
-                  </div>
-                </div>
-              </div>
-            )}
-            
             <ul className="navbar-nav">
               <li className="nav-item">
                 <Link className="nav-link" to="/" data-bs-dismiss="offcanvas">
@@ -414,54 +427,12 @@ function App() {
                 </Link>
               </li>
               
-              {token ? (
+              {!token && (
                 <>
                   <li><hr /></li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/profile" data-bs-dismiss="offcanvas">
-                      <i className="bi bi-person me-2"></i>Profile
-                    </Link>
-                  </li>
-                  {localStorage.getItem("role") === "owner" ? (
-                    <>
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/owner-dashboard" data-bs-dismiss="offcanvas">
-                          <i className="bi bi-speedometer2 me-2"></i>Dashboard
-                        </Link>
-                      </li>
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/my-listings" data-bs-dismiss="offcanvas">
-                          <i className="bi bi-list-ul me-2"></i>My Listings
-                        </Link>
-                      </li>
-                    </>
-                  ) : (
-                    <li className="nav-item">
-                      <Link className="nav-link" to="/my-booking-requests" data-bs-dismiss="offcanvas">
-                        <i className="bi bi-calendar-event me-2"></i>My Bookings
-                      </Link>
-                    </li>
-                  )}
-                  <li><hr /></li>
-                  <li className="nav-item">
-                    <button 
-                      className="nav-link btn btn-link text-danger w-100 text-start" 
-                      onClick={() => {
-                        localStorage.clear();
-                        setToken("");
-                        window.location.href = "/login";
-                      }}
-                    >
-                      <i className="bi bi-box-arrow-right me-2"></i>Logout
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li><hr /></li>
-                  <li className="nav-item">
-                    <Link className="btn btn-primary btn-pill w-100" to="/login" data-bs-dismiss="offcanvas">
-                      <i className="bi bi-box-arrow-in-right me-1"></i>Login
+                    <Link className="nav-link text-primary fw-medium" to="/login" data-bs-dismiss="offcanvas">
+                      <i className="bi bi-person-plus me-2"></i>Login / Register
                     </Link>
                   </li>
                 </>
