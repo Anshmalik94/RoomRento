@@ -1,9 +1,12 @@
 [build]
-  # Build command for React app
-  command = "cd client && npm run build"
+  # Base directory containing the React app
+  base = "client"
   
-  # Directory with the built files
-  publish = "client/build"
+  # Build command for React app (running from client directory)
+  command = "npm run build"
+  
+  # Directory with the built files (relative to base)
+  publish = "build"
   
   # Environment variables for build
   [build.environment]
