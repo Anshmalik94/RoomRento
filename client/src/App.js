@@ -56,18 +56,14 @@ function App() {
     const location = useLocation();
     const isLoginPage = location.pathname === '/login';
 
-    // Add bottom padding to body when BottomNav is visible
+    // Reset body padding
     useEffect(() => {
-      if (token && !isLoginPage) {
-        document.body.style.paddingBottom = '0px'; // Reset as we handle it in main content
-      } else {
-        document.body.style.paddingBottom = '0px';
-      }
+      document.body.style.paddingBottom = '0px';
       
       return () => {
         document.body.style.paddingBottom = '0px';
       };
-    }, [token, isLoginPage]);
+    }, []); // No dependencies needed since we always set the same value
 
   // Homepage Component
   const Homepage = () => (
