@@ -28,33 +28,30 @@ const OwnerDashboard = () => {
       return;
     }
     fetchListings();
-    fetchBookingRequests();
   }, [role, navigate]);
-
-  const fetchBookingRequests = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/bookings/owner-requests`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setBookingRequests(response.data);
-    } catch (error) {
-      console.error('Error fetching booking requests:', error);
-    }
-  };
 
   const fetchListings = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/api/rooms/my-listings`, {
+      
+      // Fetch listings
+      const roomsResponse = await axios.get(`${API_URL}/api/rooms/my-listings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      const roomData = response.data;
-      setListings(roomData);
+      // Fetch booking requests
+      const bookingsResponse = await axios.get(`${API_URL}/api/bookings/my-bookings`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       
-      // Calculate stats
+      const roomData = roomsResponse.data;
+      const bookingData = bookingsResponse.data;
+      
+      setListings(roomData);
+      setBookingRequests(bookingData);
+      
+      // Calculate stats with real data
       const active = roomData.filter(room => room.isVisible !== false).length;
       const inactive = roomData.filter(room => room.isVisible === false).length;
       
@@ -62,7 +59,7 @@ const OwnerDashboard = () => {
         totalListings: roomData.length,
         activeListings: active,
         inactiveListings: inactive,
-        totalBookings: Math.floor(Math.random() * 50) // Mock data for bookings
+        totalBookings: bookingData.length // Real booking count
       });
       
     } catch (error) {
@@ -133,7 +130,7 @@ const OwnerDashboard = () => {
       );
       
       alert('Booking request approved successfully!');
-      fetchBookingRequests(); // Refresh the list
+      fetchListings(); // Refresh the data
     } catch (error) {
       console.error('Error approving booking:', error);
       alert('Error approving booking request');
@@ -153,7 +150,7 @@ const OwnerDashboard = () => {
       );
       
       alert('Booking request rejected!');
-      fetchBookingRequests(); // Refresh the list
+      fetchListings(); // Refresh the data
     } catch (error) {
       console.error('Error rejecting booking:', error);
       alert('Error rejecting booking request');

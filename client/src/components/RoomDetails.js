@@ -108,20 +108,21 @@ function RoomDetails() {
     }
 
     setBookingLoading(true);
+    
+    const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+    const nextDate = new Date();
+    nextDate.setDate(nextDate.getDate() + 1); // Next day for checkout
+    const checkoutDate = nextDate.toISOString().split('T')[0];
+    
+    const bookingPayload = {
+      roomId: room._id,
+      checkInDate: currentDate,
+      checkOutDate: checkoutDate, // Use next day
+      guests: bookingData.guests || 1,
+      message: bookingData.message || ''
+    };
+    
     try {
-      const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
-      const nextDate = new Date();
-      nextDate.setDate(nextDate.getDate() + 1); // Next day for checkout
-      const checkoutDate = nextDate.toISOString().split('T')[0];
-      
-      const bookingPayload = {
-        roomId: room._id,
-        checkInDate: currentDate,
-        checkOutDate: checkoutDate, // Use next day
-        guests: bookingData.guests || 1,
-        message: bookingData.message || ''
-      };
-      
       console.log('Sending booking request:', bookingPayload);
       console.log('API URL:', API_URL);
       
