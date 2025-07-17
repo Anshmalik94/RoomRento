@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Card, Badge, Button, Spinner, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -15,6 +15,28 @@ const NotificationsPage = () => {
 
   const token = localStorage.getItem('token');
 
+  const fetchNotifications = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/notifications?page=${currentPage}&limit=10`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      setNotifications(response.data.notifications || []);
+      setTotalPages(response.data.totalPages || 1);
+      setUnreadCount(response.data.unreadCount || 0);
+      setError('');
+    } catch (error) {
+      setError('Failed to load notifications');
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [token, currentPage]);
+
   useEffect(() => {
     if (token) {
       fetchNotifications();
@@ -22,29 +44,7 @@ const NotificationsPage = () => {
       setError('Please login to view notifications');
       setLoading(false);
     }
-  }, [token, currentPage]);
-
-  const fetchNotifications = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/notifications?page=${currentPage}&limit=20`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      
-      setNotifications(response.data.notifications);
-      setTotalPages(response.data.totalPages);
-      setUnreadCount(response.data.unreadCount);
-      setError('');
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-      setError('Failed to load notifications');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [token, fetchNotifications]);
 
   const markAsSeen = async (notificationId) => {
     try {

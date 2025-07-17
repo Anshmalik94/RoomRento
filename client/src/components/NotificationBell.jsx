@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dropdown, Badge, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -13,6 +13,17 @@ const NotificationBell = () => {
 
   const token = localStorage.getItem('token');
 
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/notifications/unread-count`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUnreadCount(response.data.unreadCount);
+    } catch (error) {
+      // Handle error silently for production
+    }
+  }, [token]);
+
   useEffect(() => {
     if (token) {
       fetchUnreadCount();
@@ -20,18 +31,7 @@ const NotificationBell = () => {
       const interval = setInterval(fetchUnreadCount, 30000);
       return () => clearInterval(interval);
     }
-  }, [token]);
-
-  const fetchUnreadCount = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/notifications/unread-count`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUnreadCount(response.data.unreadCount);
-    } catch (error) {
-      console.error('Error fetching unread count:', error);
-    }
-  };
+  }, [token, fetchUnreadCount]);
 
   const fetchNotifications = async () => {
     if (loading) return;
