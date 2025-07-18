@@ -14,7 +14,17 @@ function Footer() {
           {/* Brand/Logo Section */}
           <div className="col-md-4 mb-4">
             <div className="d-flex align-items-center mb-3">
-              <img src="/images/logos/android-chrome-512x512.png" alt="RoomRento Logo" width="40" height="40" className="me-2" />
+              <img 
+                src="/images/logo.png" 
+                alt="RoomRento Logo" 
+                width="40" 
+                height="40" 
+                className="me-2"
+                onError={(e) => {
+                  e.target.src = "/images/logos/apple-touch-icon.png";
+                  e.target.onerror = null;
+                }}
+              />
               <h5 className="fw-bold mb-0" style={{color: '#fff'}}>RoomRento</h5>
             </div>
             <p className="text-white-50 mb-3">

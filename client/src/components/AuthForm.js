@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,14 @@ function AuthForm({ setToken }) {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Add and remove body class for login page background
+  useEffect(() => {
+    document.body.classList.add('auth-page');
+    return () => {
+      document.body.classList.remove('auth-page');
+    };
+  }, []);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -93,11 +101,12 @@ function AuthForm({ setToken }) {
         {/* Logo */}
         <div className="auth-logo-container">
           <img 
-            src="/images/logos/android-chrome-512x512.png"
+            src="/images/logo.png"
             alt="RoomRento Logo" 
             className="auth-logo-img"
             onError={(e) => {
               e.target.src = "/images/logos/apple-touch-icon.png";
+              e.target.onerror = null;
             }}
           />
         </div>

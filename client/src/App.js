@@ -136,18 +136,26 @@ function App() {
               {/* Brand */}
               <Link className="navbar-brand d-flex align-items-center" to="/">
                 <img 
-                  src="/images/logos/android-chrome-512x512.png" 
+                  src="/images/logo.png" 
                   alt="RoomRento" 
                   width="32" 
                   height="32" 
                   className="me-2 d-sm-inline d-none" 
+                  onError={(e) => {
+                    e.target.src = "/images/logos/apple-touch-icon.png";
+                    e.target.onerror = null;
+                  }}
                 />
                 <img 
-                  src="/images/logos/android-chrome-512x512.png" 
+                  src="/images/logo.png" 
                   alt="RoomRento" 
                   width="28" 
                   height="28" 
                   className="me-2 d-sm-none" 
+                  onError={(e) => {
+                    e.target.src = "/images/logos/apple-touch-icon.png";
+                    e.target.onerror = null;
+                  }}
                 />
                 <span className="fw-bold fs-5 fs-sm-4">RoomRento</span>
               </Link>
