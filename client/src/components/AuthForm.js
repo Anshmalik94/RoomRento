@@ -100,14 +100,24 @@ function AuthForm({ setToken }) {
         
         {/* Logo */}
         <div className="auth-logo-container">
-          <img 
-            src="/images/logos/apple-touch-icon.png"
-            alt="RoomRento Logo" 
-            className="auth-logo-img"
-            onError={(e) => {
-              e.target.style.display = 'none';
+          <div 
+            className="auth-logo-text"
+            style={{
+              width: '80px',
+              height: '80px',
+              backgroundColor: '#6f42c1',
+              borderRadius: '16px',
+              color: '#fff',
+              fontWeight: '900',
+              fontSize: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px auto'
             }}
-          />
+          >
+            R
+          </div>
         </div>
         
         {/* Welcome back text */}

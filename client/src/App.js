@@ -135,26 +135,20 @@ function App() {
             <div className="container-fluid px-3 px-lg-4">
               {/* Brand */}
               <Link className="navbar-brand d-flex align-items-center" to="/">
-                <img 
-                  src="/images/logos/apple-touch-icon.png" 
-                  alt="RoomRento" 
-                  width="32" 
-                  height="32" 
-                  className="me-2 d-sm-inline d-none" 
-                  onError={(e) => {
-                    e.target.style.display = 'none';
+                <div 
+                  className="me-2 d-flex align-items-center justify-content-center"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    backgroundColor: '#6f42c1',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontWeight: '900',
+                    fontSize: '16px'
                   }}
-                />
-                <img 
-                  src="/images/logos/apple-touch-icon.png" 
-                  alt="RoomRento" 
-                  width="28" 
-                  height="28" 
-                  className="me-2 d-sm-none" 
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+                >
+                  R
+                </div>
                 <span className="fw-bold fs-5 fs-sm-4">RoomRento</span>
               </Link>
               
