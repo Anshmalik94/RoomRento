@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } f
 import { Modal, Button } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect, useState } from "react";
+import logoImage from "./assets/logo.png";
 
 // Components
 import NotFound404 from "./components/404";
@@ -136,7 +137,7 @@ function App() {
               {/* Brand */}
               <Link className="navbar-brand d-flex align-items-center" to="/">
                 <img 
-                  src="/images/logo.png" 
+                  src={logoImage} 
                   alt="RoomRento" 
                   width="32" 
                   height="32" 
@@ -147,7 +148,7 @@ function App() {
                   }}
                 />
                 <img 
-                  src="/images/logo.png" 
+                  src={logoImage} 
                   alt="RoomRento" 
                   width="28" 
                   height="28" 

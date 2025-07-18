@@ -4,6 +4,7 @@ import BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import logoImage from "../assets/logo.png";
 import "./AuthForm.css";
 
 function AuthForm({ setToken }) {
@@ -101,7 +102,7 @@ function AuthForm({ setToken }) {
         {/* Logo */}
         <div className="auth-logo-container">
           <img 
-            src="/images/logo.png"
+            src={logoImage}
             alt="RoomRento Logo" 
             className="auth-logo-img"
             onError={(e) => {

@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Link } from 'react-router-dom';
+import logoImage from '../assets/logo.png';
 
 function Footer() {
   const userRole = localStorage.getItem("role");
@@ -15,7 +16,7 @@ function Footer() {
           <div className="col-md-4 mb-4">
             <div className="d-flex align-items-center mb-3">
               <img 
-                src="/images/logo.png" 
+                src={logoImage} 
                 alt="RoomRento Logo" 
                 width="40" 
                 height="40" 
