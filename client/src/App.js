@@ -140,27 +140,25 @@ function App() {
                   alt="RoomRento" 
                   width="32" 
                   height="32" 
-                  className="me-2 d-sm-inline d-none" 
+                  className="me-2" 
                   style={{objectFit: 'contain'}}
                   onError={(e) => {
-                    e.target.src = "/logo56.png";
-                    e.target.onerror = () => {
+                    // Try logo56.png as fallback
+                    if (e.target.src.includes('logo.png')) {
+                      e.target.src = "/logo56.png";
+                    } else {
+                      // If both fail, hide image and show text logo
                       e.target.style.display = 'none';
-                    };
-                  }}
-                />
-                <img 
-                  src="/logo56.png" 
-                  alt="RoomRento" 
-                  width="28" 
-                  height="28" 
-                  className="me-2 d-sm-none" 
-                  style={{objectFit: 'contain'}}
-                  onError={(e) => {
-                    e.target.src = "/images/logo.png";
-                    e.target.onerror = () => {
-                      e.target.style.display = 'none';
-                    };
+                      const textLogo = document.createElement('div');
+                      textLogo.className = 'me-2 d-flex align-items-center justify-content-center';
+                      textLogo.style.cssText = `
+                        width: 32px; height: 32px; background-color: #6f42c1; 
+                        border-radius: 8px; color: #fff; font-weight: 900; 
+                        font-size: 16px; font-family: Arial Black, sans-serif;
+                      `;
+                      textLogo.textContent = 'R';
+                      e.target.parentNode.insertBefore(textLogo, e.target);
+                    }
                   }}
                 />
                 <span className="fw-bold fs-5 fs-sm-4">RoomRento</span>
