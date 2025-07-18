@@ -14,23 +14,20 @@ function Footer() {
           {/* Brand/Logo Section */}
           <div className="col-md-4 mb-4">
             <div className="d-flex align-items-center mb-3">
-              <div 
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  backgroundColor: '#6f42c1',
-                  borderRadius: '8px',
-                  color: '#fff',
-                  fontWeight: '900',
-                  fontSize: '20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '8px'
+              <img 
+                src="/logo56.png" 
+                alt="RoomRento Logo" 
+                width="40" 
+                height="40" 
+                className="me-2"
+                style={{objectFit: 'contain'}}
+                onError={(e) => {
+                  e.target.src = "/images/logo.png";
+                  e.target.onerror = () => {
+                    e.target.style.display = 'none';
+                  };
                 }}
-              >
-                R
-              </div>
+              />
               <h5 className="fw-bold mb-0" style={{color: '#fff'}}>RoomRento</h5>
             </div>
             <p className="text-white-50 mb-3">

@@ -135,20 +135,34 @@ function App() {
             <div className="container-fluid px-3 px-lg-4">
               {/* Brand */}
               <Link className="navbar-brand d-flex align-items-center" to="/">
-                <div 
-                  className="me-2 d-flex align-items-center justify-content-center"
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    backgroundColor: '#6f42c1',
-                    borderRadius: '8px',
-                    color: '#fff',
-                    fontWeight: '900',
-                    fontSize: '16px'
+                <img 
+                  src="/images/logo.png" 
+                  alt="RoomRento" 
+                  width="32" 
+                  height="32" 
+                  className="me-2 d-sm-inline d-none" 
+                  style={{objectFit: 'contain'}}
+                  onError={(e) => {
+                    e.target.src = "/logo56.png";
+                    e.target.onerror = () => {
+                      e.target.style.display = 'none';
+                    };
                   }}
-                >
-                  R
-                </div>
+                />
+                <img 
+                  src="/logo56.png" 
+                  alt="RoomRento" 
+                  width="28" 
+                  height="28" 
+                  className="me-2 d-sm-none" 
+                  style={{objectFit: 'contain'}}
+                  onError={(e) => {
+                    e.target.src = "/images/logo.png";
+                    e.target.onerror = () => {
+                      e.target.style.display = 'none';
+                    };
+                  }}
+                />
                 <span className="fw-bold fs-5 fs-sm-4">RoomRento</span>
               </Link>
               

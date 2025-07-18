@@ -100,24 +100,24 @@ function AuthForm({ setToken }) {
         
         {/* Logo */}
         <div className="auth-logo-container">
-          <div 
-            className="auth-logo-text"
+          <img 
+            src="/images/logo.png"
+            alt="RoomRento Logo" 
+            className="auth-logo-img"
             style={{
               width: '80px',
               height: '80px',
-              backgroundColor: '#6f42c1',
-              borderRadius: '16px',
-              color: '#fff',
-              fontWeight: '900',
-              fontSize: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px auto'
+              objectFit: 'contain',
+              margin: '0 auto 20px auto',
+              display: 'block'
             }}
-          >
-            R
-          </div>
+            onError={(e) => {
+              e.target.src = "/logo56.png";
+              e.target.onerror = () => {
+                e.target.style.display = 'none';
+              };
+            }}
+          />
         </div>
         
         {/* Welcome back text */}
