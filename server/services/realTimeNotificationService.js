@@ -101,21 +101,22 @@ class RealTimeNotificationService {
   }
 
   // 3. New Property Notification (to all Users)
+
   async sendNewPropertyNotification(propertyData) {
     try {
-      const { propertyId, propertyType, title, ownerId } = propertyData;
-      
-      // Get all users (exclude owners and the property owner)
-      const users = await User.find({ 
+      const { propertyId, propertyType, title, ownerId, city } = propertyData;
+      // Get all users in the same city (exclude owners and the property owner)
+      const userQuery = {
         role: 'user',
         _id: { $ne: ownerId }
-      }).select('_id');
+      };
+      if (city) userQuery.city = city;
+      const users = await User.find(userQuery).select('_id');
 
       const userIds = users.map(user => user._id);
-
       if (userIds.length === 0) return;
 
-      // Create notifications for all users
+      // Create notifications for all relevant users
       const notifications = await Promise.all(
         userIds.map(userId => 
           Notification.createNotification({
@@ -132,7 +133,8 @@ class RealTimeNotificationService {
             data: {
               propertyTitle: title,
               propertyType,
-              addedDate: new Date()
+              addedDate: new Date(),
+              city: city || ''
             }
           })
         )

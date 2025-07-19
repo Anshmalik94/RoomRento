@@ -33,13 +33,14 @@ router.post('/', auth, upload.array('images', 10), async (req, res) => {
 
         await room.save();
 
-        // Send notification to all users about new property
+        // Send notification to relevant users about new property (city-based)
         try {
             await notificationService.sendNewPropertyNotification({
                 propertyId: room._id,
                 propertyType: 'room',
                 title: room.title,
-                ownerId: req.user.id
+                ownerId: req.user.id,
+                city: room.city || req.body.city || ''
             });
         } catch (notificationError) {
             console.error('Error sending new property notification:', notificationError);
