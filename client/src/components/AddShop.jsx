@@ -692,6 +692,30 @@ const AddShop = ({ token }) => {
               </div>
               
               <div className="card-body p-4">
+                {/* Horizontal Step Indicators with Gradient */}
+                <div className="horizontal-step-indicators mb-4">
+                  <div className="step-indicators-background">
+                    {[1, 2, 3, 4].map((step, index) => (
+                      <React.Fragment key={step}>
+                        <div
+                          className={`step-indicator ${
+                            currentStep >= step ? 'active' : ''
+                          }`}
+                        >
+                          <span className="step-number">{step}</span>
+                          <span className="step-label">
+                            {step === 1 && 'Shop Details'}
+                            {step === 2 && 'Location & Pricing'}
+                            {step === 3 && 'Features & Contact'}
+                            {step === 4 && 'Photos & Review'}
+                          </span>
+                        </div>
+                        {index < 3 && <div className="step-connector"></div>}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+                
                 {/* Progress Bar */}
                 <div className="progress mb-4" style={{ height: '8px' }}>
                   <div 

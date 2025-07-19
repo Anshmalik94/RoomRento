@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { API_URL } from "../config";
 import { useNavigate } from "react-router-dom";
@@ -695,6 +695,31 @@ function AddRoom({ token }) {
               <div className="card-body p-4">
                 {/* Progress Bar */}
                 <div className="progress-section mb-4">
+                  {/* Horizontal Step Indicators with Gradient */}
+                  <div className="horizontal-step-indicators mb-3">
+                    <div className="step-indicators-background">
+                      {[1, 2, 3, 4].map((step, index) => (
+                        <React.Fragment key={step}>
+                          <div
+                            className={`step-indicator ${
+                              currentStep >= step ? 'active' : ''
+                            }`}
+                          >
+                            <span className="step-number">{step}</span>
+                            <span className="step-label">
+                              {step === 1 && 'Property Details'}
+                              {step === 2 && 'Location & Pricing'}
+                              {step === 3 && 'Features & Amenities'}
+                              {step === 4 && 'Photos & Review'}
+                            </span>
+                          </div>
+                          {index < 3 && <div className="step-connector"></div>}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Progress Bar */}
                   <div className="progress mb-3" style={{height: '8px', backgroundColor: 'rgba(111, 66, 193, 0.1)'}}>
                     <div 
                       className="progress-bar" 
@@ -703,30 +728,6 @@ function AddRoom({ token }) {
                         backgroundColor: '#6f42c1'
                       }}
                     ></div>
-                  </div>
-                  <div className="step-indicators">
-                    {[1, 2, 3, 4].map((step) => (
-                      <div
-                        key={step}
-                        className={`step-indicator ${
-                          currentStep >= step ? 'active' : ''
-                        }`}
-                        style={{
-                          width: '40px',
-                          height: '40px',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: '600',
-                          backgroundColor: currentStep >= step ? '#6f42c1' : '#f8f9fa',
-                          color: currentStep >= step ? '#fff' : '#6c757d',
-                          border: `2px solid ${currentStep >= step ? '#6f42c1' : '#dee2e6'}`
-                        }}
-                      >
-                        {step}
-                      </div>
-                    ))}
                   </div>
                 </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import './MapPicker.css';
 
 function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
   const mapRef = useRef(null);

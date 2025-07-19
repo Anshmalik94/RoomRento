@@ -103,6 +103,11 @@ notificationSchema.statics.createNotification = async function(data) {
 // Static method to mark notifications as read
 notificationSchema.statics.markAsRead = async function(userId, notificationIds = []) {
   try {
+    // Check if it's a demo user (string-based ID)
+    if (typeof userId === 'string' && userId.startsWith('demo_')) {
+      return { modifiedCount: 0 };
+    }
+    
     const query = { userId, isRead: false };
     if (notificationIds.length > 0) {
       query._id = { $in: notificationIds };
@@ -119,6 +124,10 @@ notificationSchema.statics.markAsRead = async function(userId, notificationIds =
 // Static method to get unread count
 notificationSchema.statics.getUnreadCount = async function(userId) {
   try {
+    // Check if it's a demo user (string-based ID)
+    if (typeof userId === 'string' && userId.startsWith('demo_')) {
+      return 0;
+    }
     const count = await this.countDocuments({ userId, isRead: false });
     return count;
   } catch (error) {

@@ -1,12 +1,12 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.css';
 import App from './App';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import "leaflet/dist/leaflet.css";
 import './custom.css'; // Custom CSS overrides
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import './BottomNav.css';
 
 function BottomNav({ handleRentifyClick }) {
   const token = localStorage.getItem("token");

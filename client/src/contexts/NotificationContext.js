@@ -28,6 +28,7 @@ const initialState = {
   pagination: {
     currentPage: 1,
     totalPages: 1,
+    totalCount: 0,
     hasMore: false
   }
 };
@@ -172,7 +173,8 @@ export function NotificationProvider({ children }) {
       dispatch({ type: NOTIFICATION_ACTIONS.SET_LOADING, payload: true });
       
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/notifications?page=${page}&limit=${limit}`, {
+      
+      const response = await fetch(`${API_URL}/api/notifications?page=${page}&limit=${limit}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -194,7 +196,7 @@ export function NotificationProvider({ children }) {
   const markAsRead = async (notificationIds = []) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/notifications/mark-read`, {
+      const response = await fetch(`${API_URL}/api/notifications/mark-read`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -220,7 +222,7 @@ export function NotificationProvider({ children }) {
   const markAllAsRead = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/notifications/mark-all-read`, {
+      const response = await fetch(`${API_URL}/api/notifications/mark-all-read`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -245,7 +247,7 @@ export function NotificationProvider({ children }) {
   const deleteNotification = async (notificationId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/notifications/${notificationId}`, {
+      const response = await fetch(`${API_URL}/api/notifications/${notificationId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -268,7 +270,7 @@ export function NotificationProvider({ children }) {
   const clearAllNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/notifications`, {
+      const response = await fetch(`${API_URL}/api/notifications/clear-all`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

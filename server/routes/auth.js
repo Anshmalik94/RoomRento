@@ -91,6 +91,39 @@ router.post("/login", async (req, res) => {
     try {
       const user = await User.findOne({ email });
       if (!user) {
+        // Check demo credentials when user doesn't exist in database
+        const demoCredentials = {
+          'demo@owner.com': { password: 'demo123', role: 'owner', name: 'Demo Owner' },
+          'demo@renter.com': { password: 'demo123', role: 'renter', name: 'Demo Renter' },
+          'test@test.com': { password: 'test123', role: 'renter', name: 'Test User' }
+        };
+        
+        const demoUser = demoCredentials[email];
+        if (demoUser && password === demoUser.password) {
+          const token = jwt.sign(
+            { 
+              id: 'demo_' + Date.now(), 
+              role: demoUser.role, 
+              email: email, 
+              name: demoUser.name 
+            }, 
+            process.env.JWT_SECRET || 'fallback_secret',
+            { expiresIn: '7d' }
+          );
+          
+          return res.json({ 
+            token, 
+            role: demoUser.role,
+            user: {
+              id: 'demo_' + Date.now(),
+              name: demoUser.name,
+              email: email,
+              role: demoUser.role
+            },
+            demo: true
+          });
+        }
+        
         return res.status(400).json({ msg: "User does not exist" });
       }
 

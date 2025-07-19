@@ -193,6 +193,21 @@ class RealTimeNotificationService {
     try {
       const skip = (page - 1) * limit;
       
+      // Check if it's a demo user (string-based ID)
+      if (typeof userId === 'string' && userId.startsWith('demo_')) {
+        // For demo users, return empty notifications or mock data
+        return {
+          notifications: [],
+          pagination: {
+            currentPage: page,
+            totalPages: 1,
+            totalCount: 0,
+            hasMore: false
+          },
+          unreadCount: 0
+        };
+      }
+      
       const notifications = await Notification.find({ userId })
         .populate('fromUserId', 'name email')
         .sort({ createdAt: -1 })
@@ -222,6 +237,11 @@ class RealTimeNotificationService {
   // 6. Mark notifications as read
   async markNotificationsAsRead(userId, notificationIds = []) {
     try {
+      // Check if it's a demo user (string-based ID)
+      if (typeof userId === 'string' && userId.startsWith('demo_')) {
+        return { modifiedCount: 0 };
+      }
+      
       const result = await Notification.markAsRead(userId, notificationIds);
       
       // Emit updated count
@@ -240,6 +260,10 @@ class RealTimeNotificationService {
   // 7. Get unread notification count
   async getUnreadCount(userId) {
     try {
+      // Check if it's a demo user (string-based ID)
+      if (typeof userId === 'string' && userId.startsWith('demo_')) {
+        return 0;
+      }
       return await Notification.getUnreadCount(userId);
     } catch (error) {
       console.error('Error getting unread count:', error);
@@ -250,6 +274,11 @@ class RealTimeNotificationService {
   // 8. Delete notification
   async deleteNotification(userId, notificationId) {
     try {
+      // Check if it's a demo user (string-based ID)
+      if (typeof userId === 'string' && userId.startsWith('demo_')) {
+        return null;
+      }
+      
       const result = await Notification.findOneAndDelete({
         _id: notificationId,
         userId: userId
@@ -270,6 +299,11 @@ class RealTimeNotificationService {
   // 9. Clear all notifications for a user
   async clearAllNotifications(userId) {
     try {
+      // Check if it's a demo user (string-based ID)
+      if (typeof userId === 'string' && userId.startsWith('demo_')) {
+        return { deletedCount: 0 };
+      }
+      
       const result = await Notification.deleteMany({ userId });
       
       if (this.io) {
