@@ -23,7 +23,6 @@ function auth(req, res, next) {
             // If main secret fails, try fallback secret for demo mode
             try {
                 decoded = jwt.verify(token, 'fallback_secret');
-                console.log('Using fallback JWT verification');
             } catch (fallbackError) {
                 throw mainError; // Throw the original error
             }
@@ -32,7 +31,6 @@ function auth(req, res, next) {
         req.user = decoded;
         next();
     } catch (err) {
-        console.log('Auth Error:', err.message);
         
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({ 

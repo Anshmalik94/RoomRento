@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import axios from "axios";
 import RoomCard from "./RoomCard";
-import Spinner, { CardSkeleton } from "./Spinner";
+import LoadingSpinner from "./LoadingSpinner";
 import BASE_URL from "../config";
 import "./RoomsList.css";
 
@@ -86,18 +86,7 @@ function RoomsList({ filters }) {
   const hasMoreRooms = filteredRooms.length > displayCount;
 
   if (loading) {
-    return (
-      <Container className="my-4 my-md-5">
-        <Row className="justify-content-center">
-          <Col xs={12} className="text-center">
-            <Spinner text="Loading rooms..." />
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <CardSkeleton count={6} />
-        </Row>
-      </Container>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading rooms..." />;
   }
 
   if (error) {

@@ -1,9 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 
+// Contexts
+import { NotificationProvider } from "./contexts/NotificationContext";
+
 // Components
+import ResponsiveNavbar from "./components/ResponsiveNavbar";
 import NotFound404 from "./components/404";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
@@ -21,7 +25,6 @@ import OwnerDashboard from "./components/OwnerDashboard";
 import Profile from "./components/Profile";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
-import NotificationBell from "./components/NotificationBell";
 import NotificationsPage from "./components/NotificationsPage";
 
 // Homepage Sections
@@ -50,10 +53,11 @@ function App() {
     roomCategory: ""
   });
   const [showRentifyModal, setShowRentifyModal] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  // Old navbar state variables removed - now handled by ResponsiveNavbar component
 
   const AppContent = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const isLoginPage = location.pathname === '/login';
 
     // Reset body padding
@@ -106,236 +110,41 @@ function App() {
   };
 
   const handleRoomSearchSubmit = (updatedFilters) => setFilters(updatedFilters);
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const closeDropdown = () => setDropdownOpen(false);
   const handleRentifyClick = () => {
     setShowRentifyModal(true);
-    closeDropdown();
   };
   const handleRentifyClose = () => setShowRentifyModal(false);
   const handleRentifyOption = (option) => {
     setShowRentifyModal(false);
     const routes = { room: '/add-room', hotel: '/add-hotel', shop: '/add-shop' };
-    if (routes[option]) window.location.href = routes[option];
+    if (routes[option]) {
+      navigate(routes[option]);
+    }
   };
+
+  // Get user role
+  const userRole = localStorage.getItem("role"); // "owner" or "user"
+
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
       localStorage.clear();
       setToken("");
       setUserInfo({ name: "", email: "" });
-      window.location.href = "/login";
+      navigate("/login");
     }
   };
 
     return (
       <>
-        {/* Navbar - Hidden on login page */}
+        {/* Responsive Navbar Component */}
         {!isLoginPage && (
-          <nav className="navbar navbar-expand-lg sticky-top shadow-sm bg-white navbar-mobile-fix">
-            <div className="container-fluid px-3 px-lg-4">
-              {/* Brand */}
-              <Link className="navbar-brand d-flex align-items-center" to="/">
-                <img 
-                  src="/images/logo.png" 
-                  alt="RoomRento" 
-                  width="32" 
-                  height="32" 
-                  className="me-2" 
-                  style={{objectFit: 'contain'}}
-                  onError={(e) => {
-                    // Try logo56.png as fallback
-                    if (e.target.src.includes('logo.png')) {
-                      e.target.src = "/logo56.png";
-                    } else {
-                      // If both fail, hide image and show text logo
-                      e.target.style.display = 'none';
-                      const textLogo = document.createElement('div');
-                      textLogo.className = 'me-2 d-flex align-items-center justify-content-center';
-                      textLogo.style.cssText = `
-                        width: 32px; height: 32px; background-color: #6f42c1; 
-                        border-radius: 8px; color: #fff; font-weight: 900; 
-                        font-size: 16px; font-family: Arial Black, sans-serif;
-                      `;
-                      textLogo.textContent = 'R';
-                      e.target.parentNode.insertBefore(textLogo, e.target);
-                    }
-                  }}
-                />
-                <span className="fw-bold fs-5 fs-sm-4">RoomRento</span>
-              </Link>
-              
-              {/* Mobile Toggle */}
-              <div className="d-lg-none">
-                {token ? (
-                  <button 
-                    className="btn btn-link border-0 p-1" 
-                    type="button" 
-                    data-bs-toggle="offcanvas" 
-                    data-bs-target="#mobileNavbar"
-                  >
-                    <div 
-                      className="rounded-circle d-flex align-items-center justify-content-center" 
-                      style={{
-                        width: '36px', 
-                        height: '36px', 
-                        backgroundColor: '#0d6efd', 
-                        color: 'white'
-                      }}
-                    >
-                      <i className="bi bi-person-fill"></i>
-                    </div>
-                  </button>
-                ) : (
-                  <button 
-                    className="navbar-toggler border-0 p-2" 
-                    type="button" 
-                    data-bs-toggle="offcanvas" 
-                    data-bs-target="#mobileNavbar"
-                  >
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
-                )}
-              </div>
-              
-              {/* Desktop Menu */}
-              <div className="collapse navbar-collapse">
-                <ul className="navbar-nav ms-auto align-items-lg-center">
-                  <li className="nav-item me-lg-2">
-                    <Link className="nav-link px-3 py-2 rounded" to="/">
-                      <i className="bi bi-house me-1"></i>
-                      <span className="d-lg-inline d-none">Home</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item me-lg-2">
-                    <Link className="nav-link px-3 py-2 rounded" to="/rooms">
-                      <i className="bi bi-door-open me-1"></i>
-                      <span className="d-lg-inline d-none">Rooms</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/hotels"><i className="bi bi-building me-1"></i>Hotels</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/shop"><i className="bi bi-shop me-1"></i>Shop</Link>
-                  </li>
-                  
-                  {token && localStorage.getItem("role") === "owner" && (
-                    <li className="nav-item">
-                      <button 
-                        className="nav-link btn btn-link border-0"
-                        onClick={handleRentifyClick}
-                      >
-                        <i className="bi bi-plus-circle me-1"></i>Rentify
-                      </button>
-                    </li>
-                  )}
-                  
-                  {token && (
-                    <li className="nav-item me-2">
-                      <NotificationBell />
-                    </li>
-                  )}
-                  
-                  {token ? (
-                    <li className="nav-item dropdown ms-3">
-                      <button 
-                        className="nav-link dropdown-toggle d-flex align-items-center btn btn-link border-0" 
-                        onClick={toggleDropdown}
-                      >
-                        <div 
-                          className="rounded-circle me-2 d-flex align-items-center justify-content-center" 
-                          style={{
-                            width: '32px', 
-                            height: '32px', 
-                            backgroundColor: '#0d6efd', 
-                            color: 'white'
-                          }}
-                        >
-                          <i className="bi bi-person-fill"></i>
-                        </div>
-                        <span>{userInfo.name || 'User'}</span>
-                      </button>
-                      
-                      {dropdownOpen && (
-                        <ul className="dropdown-menu dropdown-menu-end show">
-                          <li className="px-3 py-2 border-bottom">
-                            <h6 className="mb-0">{userInfo.name || 'User'}</h6>
-                            <small className="text-muted">{userInfo.email}</small>
-                          </li>
-                          <li><Link className="dropdown-item" to="/profile" onClick={closeDropdown}>Profile</Link></li>
-                          
-                          {localStorage.getItem("role") === "owner" ? (
-                            <>
-                              <li><Link className="dropdown-item" to="/owner-dashboard" onClick={closeDropdown}>Dashboard</Link></li>
-                              <li><Link className="dropdown-item" to="/my-listings" onClick={closeDropdown}>My Listings</Link></li>
-                            </>
-                          ) : (
-                            <li><Link className="dropdown-item" to="/my-booking-requests" onClick={closeDropdown}>My Bookings</Link></li>
-                          )}
-                          
-                          <li><hr className="dropdown-divider" /></li>
-                          <li>
-                            <button className="dropdown-item text-danger" onClick={handleLogout}>
-                              Logout
-                            </button>
-                          </li>
-                        </ul>
-                      )}
-                    </li>
-                  ) : (
-                    <li className="nav-item">
-                      <Link className="btn btn-primary px-4" to="/login">Login</Link>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            </div>
-          </nav>
-        )}
-
-        {/* Mobile Offcanvas */}
-        {!isLoginPage && (
-          <div className="offcanvas offcanvas-end" tabIndex="-1" id="mobileNavbar">
-            <div className="offcanvas-header bg-primary text-white">
-              <h5 className="offcanvas-title">Menu</h5>
-              <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div className="offcanvas-body">
-              <ul className="navbar-nav">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/" data-bs-dismiss="offcanvas">
-                    <i className="bi bi-house me-2"></i>Home
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/rooms" data-bs-dismiss="offcanvas">
-                    <i className="bi bi-door-open me-2"></i>Rooms
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/hotels" data-bs-dismiss="offcanvas">
-                    <i className="bi bi-building me-2"></i>Hotels
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/shop" data-bs-dismiss="offcanvas">
-                    <i className="bi bi-shop me-2"></i>Shop
-                  </Link>
-                </li>
-                
-                {!token && (
-                  <>
-                    <li><hr /></li>
-                    <li className="nav-item">
-                      <Link className="nav-link text-primary fw-medium" to="/login" data-bs-dismiss="offcanvas">
-                        <i className="bi bi-person-plus me-2"></i>Login / Register
-                      </Link>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
+          <ResponsiveNavbar 
+            token={token}
+            userInfo={userInfo}
+            userRole={userRole}
+            handleLogout={handleLogout}
+            handleRentifyClick={handleRentifyClick}
+          />
         )}
 
         {/* Main Content */}
@@ -384,7 +193,7 @@ function App() {
         )}
 
         {/* BottomNav - Fixed at bottom for mobile only */}
-        {!isLoginPage && token && <BottomNav />}
+        {!isLoginPage && token && <BottomNav handleRentifyClick={handleRentifyClick} />}
 
         {/* Rentify Modal */}
         <Modal show={showRentifyModal} onHide={handleRentifyClose} centered>
@@ -452,7 +261,9 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <Router>
-        <AppContent />
+        <NotificationProvider>
+          <AppContent />
+        </NotificationProvider>
       </Router>
     </GoogleOAuthProvider>
   );

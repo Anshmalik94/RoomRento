@@ -1,0 +1,117 @@
+/* Global Loading Spinner Styles */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+  user-select: none;
+  pointer-events: auto;
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+}
+
+.spinner-container {
+  margin-bottom: 20px;
+}
+
+.custom-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #6f42c1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.loading-text {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Perfect spinning animation */
+@keyframes spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+/* Additional spinner sizes */
+.spinner-small {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #6f42c1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.spinner-large {
+  width: 80px;
+  height: 80px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid #6f42c1;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+/* For inline spinners */
+.spinner-inline {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(108, 117, 125, 0.3);
+  border-top: 2px solid #6f42c1;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  will-change: transform;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-spinner {
+    width: 50px;
+    height: 50px;
+    border-width: 3px;
+  }
+  
+  .loading-text {
+    font-size: 14px;
+  }
+}
+
+/* Pulsing effect alternative */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.spinner-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}

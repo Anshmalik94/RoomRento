@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function BottomNav() {
+function BottomNav({ handleRentifyClick }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
@@ -52,27 +52,29 @@ function BottomNav() {
           transition: 'all 0.2s ease'
         })}
       >
-        <i className="bi bi-search" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-        <span>Search</span>
+        <i className="bi bi-door-open" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+        <span>Rooms</span>
       </NavLink>
 
       {role === "owner" && (
-        <NavLink 
-          to="/owner-dashboard" 
-          style={({ isActive }) => ({
+        <button 
+          onClick={handleRentifyClick}
+          style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            textDecoration: 'none',
-            color: isActive ? '#007bff' : '#6c757d',
+            border: 'none',
+            background: 'transparent',
+            color: '#6c757d',
             fontSize: '0.75rem',
-            fontWeight: isActive ? '600' : 'normal',
-            transition: 'all 0.2s ease'
-          })}
+            fontWeight: 'normal',
+            transition: 'all 0.2s ease',
+            cursor: 'pointer'
+          }}
         >
           <i className="bi bi-plus-circle" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
           <span>Rentify</span>
-        </NavLink>
+        </button>
       )}
 
       {role !== "owner" && (

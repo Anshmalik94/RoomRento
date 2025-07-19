@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
 import BASE_URL from "../config";
 import "./Shop.css";
 
@@ -95,16 +96,7 @@ function Shop() {
   }, [fetchShopItems]);
 
   if (loading) {
-    return (
-      <div className="container mt-5 pt-5">
-        <div className="text-center">
-          <div className="spinner-border text-danger" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3" style={{color: 'rgba(0, 0, 0, 0.8)'}}>Loading shop spaces...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading shop spaces..." />;
   }
 
   return (

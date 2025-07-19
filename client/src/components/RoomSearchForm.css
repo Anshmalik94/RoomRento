@@ -240,3 +240,32 @@
     margin: 3px 3px 3px 0;
   }
 }
+.input-group.custom-group {
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.input-group.custom-group .form-control {
+  border: none;
+  box-shadow: none;
+}
+
+.input-group.custom-group .input-group-text {
+  background-color: #fff;
+  border: none;
+}
+
+.near-me-btn {
+  border: none;
+  background-color: #f8f9fa;
+  color: #000;
+  font-weight: 500;
+  border-left: 1px solid #dee2e6;
+  padding: 0 12px;
+  transition: background 0.2s ease;
+}
+
+.near-me-btn:hover {
+  background-color: #e2e6ea;
+}

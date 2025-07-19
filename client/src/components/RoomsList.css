@@ -1,0 +1,64 @@
+/* RoomsList Consistent Layout */
+.rooms-list-section {
+  padding: 2rem 0;
+}
+
+.responsive-container {
+  max-width: 1200px;
+}
+
+.responsive-title {
+  font-size: 1.75rem;
+}
+
+.row-responsive .col-12,
+.row-responsive .col-sm-6,
+.row-responsive .col-lg-4,
+.row-responsive .col-xl-3 {
+  display: flex !important;
+  margin-bottom: 1.5rem;
+}
+
+.row-responsive .room-card {
+  width: 100%;
+  min-height: 350px;
+  max-height: 350px;
+}
+
+/* Ensure consistent grid spacing */
+.g-3 {
+  --bs-gutter-x: 1rem;
+  --bs-gutter-y: 1rem;
+}
+
+.g-md-4 {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .responsive-title {
+    font-size: 1.5rem;
+  }
+  
+  .rooms-list-section {
+    padding: 1rem 0;
+  }
+  
+  .row-responsive .room-card {
+    min-height: 320px;
+    max-height: 320px;
+  }
+}
+
+@media (max-width: 576px) {
+  .responsive-title {
+    font-size: 1.25rem;
+  }
+  
+  .row-responsive .room-card {
+    min-height: 300px;
+    max-height: 300px;
+  }
+}

@@ -5,6 +5,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const http = require('http');
+const socketIo = require('socket.io');
+const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 
 const roomRoutes = require('./routes/rooms');
@@ -14,8 +17,10 @@ const hotelRoutes = require('./routes/hotels');
 const shopRoutes = require('./routes/shops');
 const notificationRoutes = require('./routes/notifications');
 const helpRoutes = require('./routes/help');
+const notificationService = require('./services/realTimeNotificationService');
 
 const app = express();
+const server = http.createServer(app);
 
 // ✅ Cloudinary Config
 cloudinary.config({
@@ -38,6 +43,82 @@ const allowedOrigins = [
   'https://roomrento-server.onrender.com',
   'https://roomrento-api.onrender.com'
 ];
+
+// Socket.IO Setup with CORS
+const io = socketIo(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Set Socket.IO instance in notification service
+notificationService.setSocketIO(io);
+
+// Socket.IO Authentication Middleware
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth.token;
+    if (!token) {
+      return next(new Error('Authentication error: No token provided'));
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const User = require('./models/User');
+    const user = await User.findById(decoded.id);
+    
+    if (!user) {
+      return next(new Error('Authentication error: User not found'));
+    }
+
+    socket.userId = user._id.toString();
+    socket.userRole = user.role;
+    next();
+  } catch (error) {
+    console.error('Socket authentication error:', error);
+    next(new Error('Authentication error: Invalid token'));
+  }
+});
+
+// Socket.IO Connection Handler
+io.on('connection', (socket) => {
+  console.log(`User connected: ${socket.userId} (${socket.userRole})`);
+  
+  // Join user-specific room for targeted notifications
+  socket.join(`user_${socket.userId}`);
+  
+  // Send current unread count on connection
+  notificationService.getUnreadCount(socket.userId).then(count => {
+    socket.emit('notificationCountUpdated', count);
+  });
+
+  // Handle notification read
+  socket.on('markNotificationAsRead', async (notificationIds) => {
+    try {
+      await notificationService.markNotificationsAsRead(socket.userId, notificationIds);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  });
+
+  // Handle getting notifications
+  socket.on('getNotifications', async (data = {}) => {
+    try {
+      const { page = 1, limit = 20 } = data;
+      const result = await notificationService.getUserNotifications(socket.userId, page, limit);
+      socket.emit('notificationsReceived', result);
+    } catch (error) {
+      console.error('Error getting notifications:', error);
+      socket.emit('notificationsError', { message: 'Failed to fetch notifications' });
+    }
+  });
+
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.userId}`);
+  });
+});
 
 app.use(
   cors({
@@ -99,4 +180,7 @@ app.get('/', (req, res) => {
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📡 Socket.IO enabled for real-time notifications`);
+});

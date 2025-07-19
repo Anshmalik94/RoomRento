@@ -8,7 +8,7 @@ const LoadingSpinner = ({ isLoading, message = "Loading, please wait..." }) => {
     <div className="loading-overlay">
       <div className="loading-content">
         <div className="spinner-container">
-          <div className="custom-spinner"></div>
+          <span className="loader"></span>
         </div>
         <p className="loading-text">{message}</p>
       </div>

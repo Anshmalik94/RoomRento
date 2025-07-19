@@ -161,13 +161,11 @@ function AddRoom({ token }) {
           setMessage("Location detected successfully!");
           setLoading(false);
         } catch (error) {
-          console.log(error);
           setMessage("Location detected but failed to fetch full address.");
           setLoading(false);
         }
       },
       (error) => {
-        console.log(error);
         setMessage("Failed to detect location. Please allow location access and ensure GPS is turned on.");
         setLoading(false);
       },
@@ -682,7 +680,7 @@ function AddRoom({ token }) {
 
   return (
     <div className="add-room-container">
-      {loading && <LoadingSpinner />}
+      {loading && <LoadingSpinner isLoading={loading} message="Adding your property..." />}
       <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
       <div className="container mt-5 pt-5">
         <div className="row">
@@ -799,9 +797,7 @@ function AddRoom({ token }) {
                           >
                             {loading ? (
                               <>
-                                <div className="spinner-border spinner-border-sm me-2" role="status">
-                                  <span className="visually-hidden">Loading...</span>
-                                </div>
+                                <span className="loading-spinner me-2" style={{width: '16px', height: '16px'}}></span>
                                 Adding Property...
                               </>
                             ) : (

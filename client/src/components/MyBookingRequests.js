@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Badge, Alert, Button } from 'react-bootstrap';
+import LoadingSpinner from './LoadingSpinner';
 import { API_URL } from '../config';
 import './MyBookingRequests.css';
 
@@ -81,16 +82,7 @@ const MyBookingRequests = () => {
   };
 
   if (loading) {
-    return (
-      <Container className="py-5">
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-2">Loading your booking requests...</p>
-        </div>
-      </Container>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading your booking requests..." />;
   }
 
   return (

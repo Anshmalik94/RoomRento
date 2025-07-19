@@ -47,7 +47,6 @@ router.post("/register", async (req, res) => {
         }
       });
     } catch (dbError) {
-      console.log('Database registration failed, using demo mode:', dbError.message);
       
       // Demo registration when DB is down
       const token = jwt.sign(
@@ -117,7 +116,6 @@ router.post("/login", async (req, res) => {
         }
       });
     } catch (dbError) {
-      console.log('Database authentication failed, using demo login:', dbError.message);
       
       // Demo credentials for testing when DB is down
       const demoCredentials = {
@@ -200,7 +198,6 @@ router.get("/profile", auth, async (req, res) => {
       }
       return res.json(user);
     } catch (dbError) {
-      console.log('Database profile fetch failed, using token data:', dbError.message);
       
       // Fallback to token data when DB is down
       const fallbackProfile = {

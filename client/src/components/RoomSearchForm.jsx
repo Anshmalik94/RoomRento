@@ -20,7 +20,7 @@ function RoomSearchForm({ filters, onSubmit }) {
       ([entry]) => {
         if (entry.isIntersecting) {
           setAnimate(true);
-          setTimeout(() => setAnimate(false), 2000); // effect hatane ke liye
+          setTimeout(() => setAnimate(false), 2000);
         }
       },
       { threshold: 0.5 }
@@ -52,7 +52,6 @@ function RoomSearchForm({ filters, onSubmit }) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          // Navigate to rooms with location params
           navigate(`/rooms?lat=${latitude}&lng=${longitude}&nearby=true`);
         },
         (error) => {
@@ -86,13 +85,13 @@ function RoomSearchForm({ filters, onSubmit }) {
             {/* Location Field */}
             <div className="col-md-6">
               <label htmlFor="location" className="form-label fw-semibold">Around Me</label>
-              <div className="input-group location-input-group">
-                <span className="input-group-text bg-light border-end-0">
+              <div className="input-group custom-group">
+                <span className="input-group-text border-end-0 bg-white">
                   <i className="bi bi-geo-alt text-muted"></i>
                 </span>
                 <input
                   type="text"
-                  className="form-control border-start-0 border-end-0 ps-0"
+                  className="form-control border-start-0 border-end-0"
                   id="location"
                   name="location"
                   placeholder="Enter city or neighborhood"
@@ -101,11 +100,10 @@ function RoomSearchForm({ filters, onSubmit }) {
                 />
                 <button 
                   type="button" 
-                  className="btn btn-outline-primary near-me-input-btn"
+                  className="btn near-me-btn"
                   onClick={handleNearMe}
                 >
-                  <i className="bi bi-crosshair me-1"></i>
-                  Near me
+                  <i className="bi bi-crosshair me-1"></i>Near me
                 </button>
               </div>
             </div>

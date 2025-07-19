@@ -4,6 +4,7 @@ const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const Shop = require('../models/Shop');
 const auth = require('../middleware/auth');
+const notificationService = require('../services/realTimeNotificationService');
 
 const router = express.Router();
 
@@ -185,6 +186,13 @@ router.post('/', auth, upload.array('images', 5), async (req, res) => {
     });
 
     await shop.save();
+    
+    // Send notification to all users about new shop
+    await notificationService.sendNewPropertyNotification(
+      'Shop',
+      shop.title,
+      shop._id
+    );
     
     const populatedShop = await Shop.findById(shop._id)
       .populate('owner', 'name email');

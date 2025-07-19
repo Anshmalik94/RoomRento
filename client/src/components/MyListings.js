@@ -3,6 +3,7 @@ import axios from "axios";
 import BASE_URL from "../config";
 import { Link } from "react-router-dom";
 import { Badge } from "react-bootstrap";
+import LoadingSpinner from "./LoadingSpinner";
 import "./MyListings.css";
 
 function MyListings() {
@@ -49,15 +50,7 @@ function MyListings() {
   };
 
   if (loading) {
-    return (
-      <div className="container mt-5 pt-5">
-        <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading your listings..." />;
   }
 
   return (

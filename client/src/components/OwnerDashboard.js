@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 import { useNavigate, Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Badge, Nav, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Badge, Nav, Button } from 'react-bootstrap';
+import LoadingSpinner from './LoadingSpinner';
 import './OwnerDashboard.css';
 
 const OwnerDashboard = () => {
@@ -264,14 +265,7 @@ const OwnerDashboard = () => {
   }
 
   if (loading) {
-    return (
-      <Container className="py-5">
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />
-          <p className="mt-3">Loading your dashboard...</p>
-        </div>
-      </Container>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading your dashboard..." />;
   }
 
   return (

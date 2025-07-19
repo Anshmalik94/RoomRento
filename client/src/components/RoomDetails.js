@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
-  Container, Row, Col, Card, Button, Badge, Spinner,
+  Container, Row, Col, Card, Button, Badge,
   Carousel, Modal, Form 
 } from 'react-bootstrap';
 import axios from 'axios';
@@ -163,7 +163,7 @@ function RoomDetails() {
   };
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner isLoading={loading} message="Loading room details..." />;
   }
 
   if (error || !room) {
@@ -477,7 +477,7 @@ function RoomDetails() {
             <Button variant="danger" type="submit" disabled={bookingLoading}>
               {bookingLoading ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" />
+                  <span className="loading-spinner me-2" style={{width: '16px', height: '16px'}}></span>
                   Sending Request...
                 </>
               ) : 'Send Booking Request'}

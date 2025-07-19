@@ -29,7 +29,7 @@ function Hotels() {
   };
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner isLoading={loading} message="Loading hotels..." />;
   }
 
   return (

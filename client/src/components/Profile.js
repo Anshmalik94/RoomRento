@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button, Form, Alert } from 'react-bootstrap';
+import LoadingSpinner from './LoadingSpinner';
 import BASE_URL from '../config';
 
 const Profile = () => {
@@ -64,15 +65,7 @@ const Profile = () => {
   };
 
   if (loading) {
-    return (
-      <Container className="py-5">
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </Container>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading your profile..." />;
   }
 
   const role = localStorage.getItem('role');

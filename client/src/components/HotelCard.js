@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState, useEffect, useCallback } from "react";
 import { API_URL } from "../config";
 import 'bootstrap-icons/font/bootstrap-icons.css';

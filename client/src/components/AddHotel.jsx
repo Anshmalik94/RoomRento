@@ -151,7 +151,6 @@ const AddHotel = ({ token }) => {
             location: ''
           }));
         } catch (error) {
-          console.log(error);
           // Still set basic location even if geocoding fails
           const basicLocation = `Location detected: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
           setHotelData(prev => ({
@@ -170,7 +169,6 @@ const AddHotel = ({ token }) => {
         }
       },
       (error) => {
-        console.log(error);
         setMessage("Failed to detect location. Please allow location access and ensure GPS is turned on.");
         setLoading(false);
       },
@@ -262,10 +260,6 @@ const AddHotel = ({ token }) => {
 
   const handleSubmit = async () => {
     if (!validateStep(4)) return;
-    
-    console.log('Token:', token); // Debug log
-    console.log('Images:', images); // Debug log
-    console.log('API_URL:', API_URL); // Debug log
     
     if (!token) {
       setSubmitMessage('Authentication required. Please login again.');

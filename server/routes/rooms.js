@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const Room = require('../models/Room');
 const auth = require('../middleware/auth');
+const notificationService = require('../services/realTimeNotificationService');
 const router = express.Router();
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
@@ -31,9 +32,22 @@ router.post('/', auth, upload.array('images', 10), async (req, res) => {
         });
 
         await room.save();
+
+        // Send notification to all users about new property
+        try {
+            await notificationService.sendNewPropertyNotification({
+                propertyId: room._id,
+                propertyType: 'room',
+                title: room.title,
+                ownerId: req.user.id
+            });
+        } catch (notificationError) {
+            console.error('Error sending new property notification:', notificationError);
+            // Don't fail the room creation if notification fails
+        }
+
         res.json(room);
     } catch (err) {
-        console.log("Room Add Error:", JSON.stringify(err, null, 2));
         res.status(500).json({ error: err.message || "Server Error" });
     }
 });
@@ -41,7 +55,6 @@ router.post('/', auth, upload.array('images', 10), async (req, res) => {
 // Get All Rooms with smart fallback and type filtering
 router.get('/', async (req, res) => {
     try {
-        console.log('Fetching rooms...');
         const { type, city, lat, lng, nearby } = req.query;
         
         // Build query filter
@@ -61,11 +74,8 @@ router.get('/', async (req, res) => {
         let rooms;
         try {
             rooms = await Room.find(filter).populate('user', 'name email phone').sort({ createdAt: -1 });
-            console.log(`Successfully fetched ${rooms.length} rooms from database with filter:`, filter);
             return res.json(rooms);
         } catch (dbError) {
-            console.log('Database fetch failed, using mock data:', dbError.message);
-            
             // Fallback to mock data if database fails
             const mockRooms = [
                 {
@@ -155,12 +165,10 @@ router.get('/', async (req, res) => {
                 );
             }
             
-            console.log(`Returning ${filteredMockRooms.length} mock rooms as fallback with filter:`, { type, city });
             return res.json(filteredMockRooms);
         }
         
     } catch (err) {
-        console.log("General error in rooms route:", err.message);
         res.status(500).json({ 
             error: "Failed to fetch rooms", 
             message: err.message,
@@ -172,17 +180,14 @@ router.get('/', async (req, res) => {
 // Get My Listings with smart fallback
 router.get('/my-listings', auth, async (req, res) => {
     try {
-        console.log('My-listings route accessed by user:', req.user.id);
         
         // Try database first
         try {
             const rooms = await Room.find({ user: req.user.id })
                 .populate('user', 'name email phone isVerified emailVerified phoneVerified')
                 .sort({ createdAt: -1 });
-            console.log(`Found ${rooms.length} rooms for user ${req.user.id}`);
             return res.json(rooms);
         } catch (dbError) {
-            console.log('Database fetch failed for my-listings, using mock data:', dbError.message);
             
             // Fallback mock data for user's listings
             const mockUserRooms = [
@@ -201,11 +206,9 @@ router.get('/my-listings', auth, async (req, res) => {
                 }
             ];
             
-            console.log(`Found ${mockUserRooms.length} mock rooms for user ${req.user.id}`);
             return res.json(mockUserRooms);
         }
     } catch (err) {
-        console.log("Fetch My Listings Error:", err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -228,7 +231,6 @@ router.get('/:id', async (req, res) => {
                 throw new Error('Room not found in database');
             }
         } catch (dbError) {
-            console.log('Database fetch failed for room details, using mock data:', dbError.message);
             
             // Mock room data for testing
             const mockRoom = {
@@ -268,7 +270,6 @@ router.get('/:id', async (req, res) => {
         }
         
     } catch (err) {
-        console.log("Fetch Room by ID Error:", err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -292,7 +293,6 @@ router.patch('/:id/toggle-visibility', auth, async (req, res) => {
         
         res.json(room);
     } catch (err) {
-        console.log("Toggle Visibility Error:", err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -314,7 +314,6 @@ router.delete('/:id', auth, async (req, res) => {
         await Room.findByIdAndDelete(req.params.id);
         res.json({ message: 'Room deleted successfully' });
     } catch (err) {
-        console.log("Delete Room Error:", err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -377,7 +376,6 @@ router.post('/:id/reviews', auth, async (req, res) => {
             averageRating: room.averageRating
         });
     } catch (err) {
-        console.log("Add Review Error:", err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -399,7 +397,6 @@ router.get('/:id/reviews', async (req, res) => {
             totalReviews: room.reviews.length
         });
     } catch (err) {
-        console.log("Get Reviews Error:", err);
         res.status(500).json({ error: err.message });
     }
 });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button, Badge, Table, Alert } from 'react-bootstrap';
+import LoadingSpinner from './LoadingSpinner';
 import BASE_URL from '../config';
 import './MyBookings.css';
 
@@ -74,16 +75,7 @@ const MyBookings = () => {
   };
 
   if (loading) {
-    return (
-      <Container className="py-5">
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-2">Loading bookings...</p>
-        </div>
-      </Container>
-    );
+    return <LoadingSpinner isLoading={loading} message="Loading your bookings..." />;
   }
 
   const renderCards = () => (

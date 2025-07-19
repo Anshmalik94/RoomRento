@@ -3,7 +3,7 @@ const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const { createNotification } = require('../services/notificationService');
+const notificationService = require('../services/realTimeNotificationService');
 const router = express.Router();
 
 // Get all bookings for owner
@@ -98,25 +98,19 @@ router.post('/create', auth, async (req, res) => {
 
     await booking.save();
     
-    // Create notification for property owner
+    // Send real-time notification to property owner
     try {
       const renterData = await User.findById(req.user.id);
-      await createNotification(
-        room.user, // Owner's user ID
-        `New booking request from ${renterData.name} for "${room.title}"`,
-        'booking_request',
-        booking._id,
-        roomId,
-        {
-          renterName: renterData.name,
-          roomTitle: room.title,
-          checkInDate,
-          checkOutDate,
-          totalAmount
-        }
-      );
+      await notificationService.sendBookingRequestNotification({
+        ownerId: room.user,
+        userId: req.user.id,
+        roomId: roomId,
+        propertyTitle: room.title,
+        userName: renterData.name,
+        bookingId: booking._id
+      });
     } catch (notificationError) {
-      console.error('Error creating notification:', notificationError);
+      console.error('Error sending booking notification:', notificationError);
       // Don't fail the booking if notification fails
     }
     
@@ -136,7 +130,9 @@ router.post('/create', auth, async (req, res) => {
 router.patch('/:id/status', auth, async (req, res) => {
   try {
     const { status } = req.body;
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id)
+      .populate('room', 'title location price images type')
+      .populate('renter', 'name email');
     
     if (!booking) {
       return res.status(404).json({ msg: 'Booking not found' });
@@ -147,8 +143,24 @@ router.patch('/:id/status', auth, async (req, res) => {
       return res.status(403).json({ msg: 'Not authorized' });
     }
 
+    const oldStatus = booking.status;
     booking.status = status;
     await booking.save();
+
+    // Send notification to renter about status change
+    if (oldStatus !== status && ['approved', 'rejected'].includes(status)) {
+      try {
+        await notificationService.sendBookingResponseNotification({
+          userId: booking.renter._id,
+          status: status,
+          propertyTitle: booking.room.title,
+          propertyType: booking.room.type?.toLowerCase() || 'room',
+          propertyId: booking.room._id
+        });
+      } catch (notificationError) {
+        console.error('Error sending booking response notification:', notificationError);
+      }
+    }
 
     const updatedBooking = await Booking.findById(booking._id)
       .populate('room', 'title location price images') // Changed rent to price
@@ -204,18 +216,13 @@ router.patch('/:id/approve', auth, async (req, res) => {
 
     // Create notification for renter
     try {
-      await createNotification(
-        booking.renter._id,
-        `Your booking request for "${booking.room.title}" has been approved!`,
-        'booking_approved',
-        booking._id,
-        booking.room._id,
-        {
-          roomTitle: booking.room.title,
-          checkInDate: booking.checkInDate,
-          checkOutDate: booking.checkOutDate
-        }
-      );
+      await notificationService.sendBookingResponseNotification({
+        userId: booking.renter._id,
+        status: 'approved',
+        propertyTitle: booking.room.title,
+        propertyType: 'room',
+        propertyId: booking.room._id
+      });
     } catch (notificationError) {
       console.error('Error creating approval notification:', notificationError);
     }
@@ -253,18 +260,13 @@ router.patch('/:id/reject', auth, async (req, res) => {
 
     // Create notification for renter
     try {
-      await createNotification(
-        booking.renter._id,
-        `Your booking request for "${booking.room.title}" has been rejected.`,
-        'booking_rejected',
-        booking._id,
-        booking.room._id,
-        {
-          roomTitle: booking.room.title,
-          checkInDate: booking.checkInDate,
-          checkOutDate: booking.checkOutDate
-        }
-      );
+      await notificationService.sendBookingResponseNotification({
+        userId: booking.renter._id,
+        status: 'rejected',
+        propertyTitle: booking.room.title,
+        propertyType: 'room',
+        propertyId: booking.room._id
+      });
     } catch (notificationError) {
       console.error('Error creating rejection notification:', notificationError);
     }

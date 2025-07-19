@@ -57,7 +57,6 @@ function AuthForm({ setToken }) {
       alert(isLogin ? "Login Successful!" : "Registration Successful!");
       navigate("/");
     } catch (err) {
-      console.log(err);
       alert(err.response?.data?.msg || "Failed, please try again.");
     } finally {
       setLoading(false);
