@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 
 // Contexts
@@ -259,13 +258,11 @@ function App() {
   };
 
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <Router>
-        <NotificationProvider>
-          <AppContent />
-        </NotificationProvider>
-      </Router>
-    </GoogleOAuthProvider>
+    <Router>
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
+    </Router>
   );
 }
 
