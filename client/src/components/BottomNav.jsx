@@ -57,6 +57,25 @@ function BottomNav({ handleRentifyClick }) {
         <span>Rooms</span>
       </NavLink>
 
+      {role === "renter" && (
+        <NavLink 
+          to="/hotels" 
+          style={({ isActive }) => ({
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: isActive ? '#007bff' : '#6c757d',
+            fontSize: '0.75rem',
+            fontWeight: isActive ? '600' : 'normal',
+            transition: 'all 0.2s ease'
+          })}
+        >
+          <i className="bi bi-building" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
+          <span>Hotels</span>
+        </NavLink>
+      )}
+
       {role === "owner" && (
         <button 
           onClick={handleRentifyClick}

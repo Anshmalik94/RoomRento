@@ -8,13 +8,13 @@ const router = express.Router();
 router.get('/', auth, async (req, res) => {
   try {
     const { page = 1, limit = 20 } = req.query;
-    
     const result = await notificationService.getUserNotifications(
       req.user.id, 
       parseInt(page), 
       parseInt(limit)
     );
-
+    // Debug log: print notifications for this user
+    console.log('Notifications for user', req.user.id, ':', result.notifications);
     res.json({
       success: true,
       data: result
