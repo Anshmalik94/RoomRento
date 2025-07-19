@@ -78,42 +78,7 @@ function BottomNav({ handleRentifyClick }) {
         </button>
       )}
 
-      {role !== "owner" && (
-        <NavLink 
-          to="/hotels" 
-          style={({ isActive }) => ({
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: isActive ? '#007bff' : '#6c757d',
-            fontSize: '0.75rem',
-            fontWeight: isActive ? '600' : 'normal',
-            transition: 'all 0.2s ease'
-          })}
-        >
-          <i className="bi bi-building" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-          <span>Hotels</span>
-        </NavLink>
-      )}
 
-      <NavLink 
-        to="/notifications" 
-        style={({ isActive }) => ({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textDecoration: 'none',
-          color: isActive ? '#007bff' : '#6c757d',
-          fontSize: '0.75rem',
-          fontWeight: isActive ? '600' : 'normal',
-          transition: 'all 0.2s ease',
-          position: 'relative'
-        })}
-      >
-        <i className="bi bi-bell" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-        <span>Notifications</span>
-      </NavLink>
 
       <NavLink 
         to="/profile" 

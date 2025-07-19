@@ -5,7 +5,7 @@ import axios from 'axios';
 import { API_URL } from '../config';
 import './NotificationBell.css';
 
-const NotificationBell = () => {
+const NotificationBell = ({ bellIcon }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -120,7 +120,7 @@ const NotificationBell = () => {
         className="border-0 position-relative p-2 notification-toggle"
         style={{ textDecoration: 'none' }}
       >
-        <i className="bi bi-bell fs-5 text-white"></i>
+        {bellIcon ? bellIcon : <i className="bi bi-bell fs-5 text-white"></i>}
         {unreadCount > 0 && (
           <Badge 
             bg="danger" 

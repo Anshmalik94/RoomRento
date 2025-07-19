@@ -1,156 +1,106 @@
-/* Notifications Page Styling */
-.notifications-page {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
-  padding: 2rem 0;
+/* Custom Black & Purple Spinner */
+.loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  position: relative;
+  animation: rotate 1s linear infinite;
 }
 
-.notifications-page h2 {
-  color: #333;
-  font-weight: 700;
+.loader::before,
+.loader::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50%;
+  border: 5px solid #000; /* Black */
+  animation: prixClipFix 2s linear infinite;
 }
 
-/* Notification Card Styles */
-.notification-card {
-  border: 1px solid #e9ecef;
-  border-radius: 12px !important;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+.loader::after {
+  inset: 8px;
+  transform: rotate3d(90, 90, 0, 180deg);
+  border-color: #800080; /* Purple */
 }
 
-.notification-card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-2px);
-}
-
-.notification-card.unread {
-  border-left: 4px solid #6f42c1 !important;
-  background: linear-gradient(135deg, rgba(111, 66, 193, 0.05), rgba(255, 255, 255, 0.95));
-}
-
-.notification-card.selected {
-  border-color: #6f42c1;
-  box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.2);
-}
-
-/* Notification Content */
-.notification-card .card-body {
-  padding: 1.25rem;
-  border-radius: 12px;
-}
-
-.notification-card h6 {
-  color: #333;
-  font-size: 1rem;
-}
-
-.notification-card p,
-.notification-message {
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-}
-
-/* Badge Styles */
-.notification-card .badge {
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.25rem 0.5rem;
-}
-
-/* Button Styles */
-.notification-card .btn {
-  transition: all 0.2s ease;
-}
-
-.notification-card .btn:hover {
-  transform: translateY(-1px);
-}
-
-/* Pagination styling */
-.pagination .page-link {
-  color: #6f42c1;
-  border-color: #dee2e6;
-  padding: 0.5rem 0.75rem;
-}
-
-.pagination .page-item.active .page-link {
-  background-color: #6f42c1;
-  border-color: #6f42c1;
-}
-
-.pagination .page-link:hover {
-  color: #5a31a3;
-  background-color: rgba(111, 66, 193, 0.1);
-  border-color: #6f42c1;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .notification-card .card-body {
-    padding: 1rem !important;
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .notification-message {
-    font-size: 0.9rem;
-  }
-  
-  .d-flex.gap-2 {
-    flex-direction: column;
-    gap: 0.5rem !important;
-  }
-  
-  .d-flex.gap-2 .btn {
-    width: 100%;
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-/* Badge styling */
-.badge {
-  font-weight: 500;
-}
-
-/* Icon styling */
-.bi {
-  flex-shrink: 0;
-}
-
-/* Loading animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@keyframes prixClipFix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+  }
+  75%,
+  100% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      100% 0,
+      100% 100%,
+      100% 100%,
+      100% 100%
+    );
   }
 }
-
-.notification-card {
-  animation: fadeIn 0.5s ease-out;
+.notification-spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+.loader {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: relative;
+  animation: rotate 1s linear infinite;
 }
 
-/* Empty state styling */
-.text-center.py-5 {
-  padding: 4rem 2rem !important;
+.loader::before,
+.loader::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50%;
+  border: 3px solid #000;
+  animation: prixClipFix 2s linear infinite;
 }
 
-.text-center.py-5 .display-4 {
-  opacity: 0.6;
+.loader::after {
+  inset: 6px;
+  transform: rotate3d(90, 90, 0, 180deg);
+  border-color: #800080;
 }
 
-/* Button hover effects */
-.btn-outline-primary:hover,
-.btn-outline-success:hover,
-.btn-outline-secondary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Smooth transitions for all interactive elements */
-* {
-  transition: all 0.2s ease;
+@keyframes prixClipFix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
+  }
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+  }
+  75%, 100% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%);
+  }
 }

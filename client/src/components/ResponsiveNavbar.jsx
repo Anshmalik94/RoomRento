@@ -1,3 +1,4 @@
+import NotificationBell from './NotificationBell';
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -15,7 +16,8 @@ import {
   FaSignOutAlt,
   FaPlus
 } from 'react-icons/fa';
-import { useNotifications } from '../contexts/NotificationContext';
+
+
 
 const ResponsiveNavbar = ({ 
   token, 
@@ -31,8 +33,7 @@ const ResponsiveNavbar = ({
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   
-  // Get notification data from context
-  const { unreadCount } = useNotifications();
+  // NotificationBell handles notification state
 
   // Navigation functions
   const toggleMobileSidebar = () => setIsMobileSidebarOpen(!isMobileSidebarOpen);
@@ -81,7 +82,7 @@ const ResponsiveNavbar = ({
         <div className="container-fluid px-3">
           
           {/* Mobile Layout */}
-          <div className="d-flex d-lg-none w-100 align-items-center">
+          <div className="d-flex d-lg-none w-100 align-items-center position-relative">
             {/* Mobile Hamburger Menu (Left) */}
             <button 
               className="navbar-toggler border-0 me-3 hamburger-btn"
@@ -91,7 +92,7 @@ const ResponsiveNavbar = ({
               <FaBars />
             </button>
 
-            {/* Mobile Search (Right) - Full width */}
+            {/* Mobile Search (Middle) */}
             <div className="flex-grow-1">
               <form onSubmit={handleSearch} className="d-flex">
                 <input 
@@ -108,6 +109,13 @@ const ResponsiveNavbar = ({
                 />
               </form>
             </div>
+
+            {/* Notification Bell (Right) */}
+            {token && (
+              <div className="ms-2 d-flex align-items-center">
+                <NotificationBell bellIcon={<FaBell style={{ fontSize: '20px', color: '#6f42c1' }} />} />
+              </div>
+            )}
           </div>
 
           {/* Desktop Brand Logo (Left) */}
@@ -183,17 +191,10 @@ const ResponsiveNavbar = ({
 
             {/* Desktop Right Side Menu */}
             <ul className="navbar-nav">
-              {/* Notifications */}
+              {/* Notifications Dropdown (bell icon stays the same) */}
               {token && (
-                <li className="nav-item">
-                  <Link className="nav-link position-relative" to="/notifications">
-                    <FaBell style={{ fontSize: '18px' }} />
-                    {unreadCount > 0 && (
-                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '10px' }}>
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </Link>
+                <li className="nav-item d-flex align-items-center">
+                  <NotificationBell bellIcon={<FaBell style={{ fontSize: '18px', color: '#6f42c1' }} />} />
                 </li>
               )}
 
@@ -421,20 +422,8 @@ const ResponsiveNavbar = ({
               </li>
               
               {token && (
-                <li className="mb-2">
-                  <Link 
-                    className="text-decoration-none d-flex align-items-center p-2 rounded nav-link-mobile position-relative"
-                    to="/notifications"
-                    onClick={closeMobileSidebar}
-                  >
-                    <FaBell className="me-3" style={{ color: '#6f42c1' }} />
-                    <span>Notifications</span>
-                    {unreadCount > 0 && (
-                      <span className="badge bg-danger ms-auto">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </Link>
+                <li className="mb-2 d-flex align-items-center">
+                  <NotificationBell bellIcon={<FaBell className="me-3" style={{ color: '#6f42c1' }} />} />
                 </li>
               )}
             </ul>

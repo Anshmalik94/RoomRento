@@ -184,12 +184,7 @@ function App() {
           </Routes>
         </main>
 
-        {/* Footer - Hidden on login page */}
-        {!isLoginPage && (
-          <div style={{ marginBottom: token ? '75px' : '0', paddingBottom: '20px' }}>
-            <Footer />
-          </div>
-        )}
+
 
         {/* BottomNav - Fixed at bottom for mobile only */}
         {!isLoginPage && token && <BottomNav handleRentifyClick={handleRentifyClick} />}
@@ -260,7 +255,12 @@ function App() {
   return (
     <Router>
       <NotificationProvider>
-        <AppContent />
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <AppContent />
+            <Footer />
+          </div>
+        </div>
       </NotificationProvider>
     </Router>
   );
