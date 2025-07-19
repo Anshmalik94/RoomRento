@@ -18,9 +18,10 @@ const NotificationBell = () => {
       const response = await axios.get(`${API_URL}/api/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUnreadCount(response.data.unreadCount);
+      setUnreadCount(response.data?.unreadCount || 0);
     } catch (error) {
-      // Handle error silently for production
+      // Handle error silently for production, set count to 0
+      setUnreadCount(0);
     }
   }, [token]);
 
@@ -41,9 +42,14 @@ const NotificationBell = () => {
       const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setNotifications(response.data.notifications);
+      
+      // Ensure we always have an array
+      const notificationsData = response.data?.notifications || [];
+      setNotifications(notificationsData);
     } catch (error) {
       console.error('Error fetching notifications:', error);
+      // Set to empty array on error to prevent undefined errors
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -67,7 +73,7 @@ const NotificationBell = () => {
 
   const handleDropdownToggle = (isOpen) => {
     setShowDropdown(isOpen);
-    if (isOpen && notifications.length === 0) {
+    if (isOpen && (!notifications || notifications.length === 0)) {
       fetchNotifications();
     }
   };
@@ -145,13 +151,13 @@ const NotificationBell = () => {
               <Spinner animation="border" size="sm" />
               <div className="small text-muted mt-2">Loading...</div>
             </div>
-          ) : notifications.length === 0 ? (
+          ) : (!notifications || notifications.length === 0) ? (
             <div className="text-center py-4 text-muted">
               <i className="bi bi-bell-slash fs-4 d-block mb-2"></i>
               <div className="small">No notifications yet</div>
             </div>
           ) : (
-            notifications.map((notification) => (
+            (notifications || []).map((notification) => (
               <Dropdown.Item
                 key={notification._id}
                 className={`notification-item border-bottom ${!notification.seen ? 'unread' : ''}`}
@@ -191,7 +197,7 @@ const NotificationBell = () => {
           )}
         </div>
 
-        {notifications.length > 0 && (
+        {(notifications && notifications.length > 0) && (
           <div className="text-center border-top py-2">
             <Link 
               to="/notifications" 

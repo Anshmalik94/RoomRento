@@ -16,7 +16,6 @@ import {
   FaPlus
 } from 'react-icons/fa';
 import { useNotifications } from '../contexts/NotificationContext';
-import NotificationBell from './NotificationBell';
 
 const ResponsiveNavbar = ({ 
   token, 
@@ -187,7 +186,14 @@ const ResponsiveNavbar = ({
               {/* Notifications */}
               {token && (
                 <li className="nav-item">
-                  <NotificationBell />
+                  <Link className="nav-link position-relative" to="/notifications">
+                    <FaBell style={{ fontSize: '18px' }} />
+                    {unreadCount > 0 && (
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '10px' }}>
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
                 </li>
               )}
 
