@@ -6,6 +6,7 @@ import { Badge } from "react-bootstrap";
 import LoadingSpinner from "./LoadingSpinner";
 import "./MyListings.css";
 
+
 function MyListings() {
   const [myProperties, setMyProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,18 +14,25 @@ function MyListings() {
 
   useEffect(() => {
     const fetchMyProperties = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get(`${BASE_URL}/api/rooms/my-listings`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setMyProperties(res.data);
+        const [roomsRes, shopsRes] = await Promise.all([
+          axios.get(`${BASE_URL}/api/rooms/my-listings`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get(`${BASE_URL}/api/shops/my-listings`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(() => ({ data: [] })) // fallback if shops API fails
+        ]);
+        const rooms = (roomsRes.data || []).map(r => ({ ...r, propertyType: 'Room' }));
+        const shops = (shopsRes.data || []).map(s => ({ ...s, propertyType: 'Shop' }));
+        setMyProperties([...rooms, ...shops]);
       } catch (err) {
         console.error("Error fetching my properties:", err);
       } finally {
         setLoading(false);
       }
     };
-    
     fetchMyProperties();
   }, [token]);
 
@@ -74,11 +82,12 @@ function MyListings() {
                     alt={property.title}
                     style={{ height: "200px", objectFit: "cover" }}
                   />
-                  <div className={`visibility-badge ${property.isVisible ? 'visible' : 'hidden'}`}>
-                    {property.isVisible ? 'Live' : 'Hidden'}
-                  </div>
+                  {property.propertyType === 'Room' && (
+                    <div className={`visibility-badge ${property.isVisible ? 'visible' : 'hidden'}`}>
+                      {property.isVisible ? 'Live' : 'Hidden'}
+                    </div>
+                  )}
                 </div>
-                
                 <div className="card-body">
                   <h5 className="card-title">
                     {property.title}
@@ -88,6 +97,7 @@ function MyListings() {
                         Verified Owner
                       </Badge>
                     )}
+                    <span className="badge bg-secondary ms-2">{property.propertyType}</span>
                   </h5>
                   <p className="card-text text-muted">
                     📍 {property.city || property.location}
@@ -95,20 +105,28 @@ function MyListings() {
                   <p className="card-text">
                     <strong>₹{property.price}</strong> / month
                   </p>
-                  
+                  {property.propertyType === 'Shop' && (
+                    <>
+                      <p className="card-text mb-1"><b>Business Type:</b> {property.businessType}</p>
+                      <p className="card-text mb-1"><b>Area:</b> {property.shopArea} sq.ft.</p>
+                    </>
+                  )}
                   <div className="d-flex justify-content-between align-items-center">
-                    <div className="form-check form-switch">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={property.isVisible || false}
-                        onChange={() => toggleVisibility(property._id, property.isVisible)}
-                      />
-                      <label className="form-check-label">
-                        {property.isVisible ? 'Visible' : 'Hidden'}
-                      </label>
-                    </div>
-                    
+                    {property.propertyType === 'Room' ? (
+                      <div className="form-check form-switch">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={property.isVisible || false}
+                          onChange={() => toggleVisibility(property._id, property.isVisible)}
+                        />
+                        <label className="form-check-label">
+                          {property.isVisible ? 'Visible' : 'Hidden'}
+                        </label>
+                      </div>
+                    ) : (
+                      <div className="text-muted small">Visibility toggle not available for shops</div>
+                    )}
                     <Link 
                       to={`/edit-property/${property._id}`} 
                       className="btn btn-sm btn-outline-primary"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Dropdown, Badge, Spinner } from 'react-bootstrap';
+import { Dropdown, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -42,9 +42,8 @@ const NotificationBell = ({ bellIcon }) => {
       const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
-      // Ensure we always have an array
-      const notificationsData = response.data?.notifications || [];
+      // Ensure we always have an array (fix: use .data.data.notifications)
+      const notificationsData = response.data?.data?.notifications || [];
       setNotifications(notificationsData);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -122,14 +121,9 @@ const NotificationBell = ({ bellIcon }) => {
       >
         {bellIcon ? bellIcon : <i className="bi bi-bell fs-5 text-white"></i>}
         {unreadCount > 0 && (
-          <Badge 
-            bg="danger" 
-            pill 
-            className="position-absolute top-0 start-100 translate-middle notification-badge"
-            style={{ fontSize: '0.7rem' }}
-          >
+          <span className="notification-badge">
             {unreadCount > 99 ? '99+' : unreadCount}
-          </Badge>
+          </span>
         )}
       </Dropdown.Toggle>
 

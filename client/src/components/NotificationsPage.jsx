@@ -1,30 +1,72 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 import './NotificationsPage.css';
-import { Badge } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
 
+
+  // Fetch notifications
+  const fetchAllNotifications = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/api/notifications`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNotifications(response.data?.data?.notifications || []);
+    } catch (error) {
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAllNotifications = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${API_URL}/api/notifications`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setNotifications(response.data?.data?.notifications || []);
-      } catch (error) {
-        setNotifications([]);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (token) fetchAllNotifications();
+    // eslint-disable-next-line
   }, [token]);
+
+  // Mark a single notification as read
+  const markAsRead = async (id) => {
+    try {
+      await axios.patch(
+        `${API_URL}/api/notifications/mark-read`,
+        { notificationIds: [id] },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === id ? { ...n, seen: true } : n))
+      );
+    } catch (e) {}
+  };
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    try {
+      await axios.patch(
+        `${API_URL}/api/notifications/mark-all-read`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, seen: true })));
+    } catch (e) {}
+  };
+
+  // Delete all notifications
+  const clearAllNotifications = async () => {
+    if (!window.confirm('Are you sure you want to clear all notifications?')) return;
+    try {
+      await axios.delete(`${API_URL}/api/notifications`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNotifications([]);
+    } catch (e) {}
+  };
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -58,6 +100,7 @@ const NotificationsPage = () => {
         <div className="loader"></div>
       </div>
     );
+
   } else if (notifications.length === 0) {
     content = (
       <div className="text-center py-5 text-muted">
@@ -67,32 +110,48 @@ const NotificationsPage = () => {
     );
   } else {
     content = (
-      <div className="list-group shadow-sm">
-        {notifications.map((notification) => (
-          <div
-            key={notification._id}
-            className={`list-group-item d-flex align-items-start ${
-              !notification.seen ? 'unread' : ''
-            }`}
-          >
-            <div className="me-3 mt-1">{getNotificationIcon(notification.type)}</div>
-            <div className="flex-grow-1">
-              <div className="fw-bold small mb-1">
-                {notification.title || 'Notification'}
+      <>
+        <div className="d-flex justify-content-end mb-3 gap-2">
+          <Button variant="outline-primary" size="sm" onClick={markAllAsRead} disabled={notifications.every(n => n.seen)}>
+            Mark All as Read
+          </Button>
+          <Button variant="outline-danger" size="sm" onClick={clearAllNotifications} disabled={notifications.length === 0}>
+            Clear All
+          </Button>
+        </div>
+        <div className="list-group shadow-sm">
+          {notifications.map((notification) => (
+            <div
+              key={notification._id}
+              className={`list-group-item d-flex align-items-start ${!notification.seen ? 'unread' : ''}`}
+            >
+              <div className="me-3 mt-1">{getNotificationIcon(notification.type)}</div>
+              <div className="flex-grow-1">
+                <div className="fw-bold small mb-1">
+                  {notification.title || 'Notification'}
+                </div>
+                <div className="small">{notification.message}</div>
+                <div className="text-muted small mt-1">
+                  {getTimeAgo(notification.createdAt)}
+                </div>
               </div>
-              <div className="small">{notification.message}</div>
-              <div className="text-muted small mt-1">
-                {getTimeAgo(notification.createdAt)}
-              </div>
+              {!notification.seen && (
+                <>
+                  <Badge bg="primary" className="ms-2">New</Badge>
+                  <Button
+                    variant="outline-success"
+                    size="sm"
+                    className="ms-2"
+                    onClick={() => markAsRead(notification._id)}
+                  >
+                    Mark as Read
+                  </Button>
+                </>
+              )}
             </div>
-            {!notification.seen && (
-              <Badge bg="primary" className="ms-2">
-                New
-              </Badge>
-            )}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </>
     );
   }
 

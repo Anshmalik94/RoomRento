@@ -36,28 +36,36 @@ const OwnerDashboard = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      // Fetch listings
-      const roomsResponse = await axios.get(`${API_URL}/api/rooms/my-listings`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
+
+      // Fetch listings (rooms and shops)
+      const [roomsResponse, shopsResponse] = await Promise.all([
+        axios.get(`${API_URL}/api/rooms/my-listings`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${API_URL}/api/shops/my-listings`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(() => ({ data: [] }))
+      ]);
+
       // Fetch booking requests
       const bookingsResponse = await axios.get(`${API_URL}/api/bookings/my-bookings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
-      const roomData = roomsResponse.data;
+
+      const roomData = (roomsResponse.data || []).map(r => ({ ...r, propertyType: 'Room' }));
+      const shopData = (shopsResponse.data || []).map(s => ({ ...s, propertyType: 'Shop' }));
+      const allListings = [...roomData, ...shopData];
       const bookingData = bookingsResponse.data;
-      
-      setListings(roomData);
+
+      setListings(allListings);
       setBookingRequests(bookingData);
-      
+
       // Calculate stats with real data
-      const active = roomData.filter(room => room.isVisible !== false).length;
-      const inactive = roomData.filter(room => room.isVisible === false).length;
-      
+      const active = allListings.filter(item => item.isVisible !== false).length;
+      const inactive = allListings.filter(item => item.isVisible === false).length;
+
       setStats({
-        totalListings: roomData.length,
+        totalListings: allListings.length,
         activeListings: active,
         inactiveListings: inactive,
         totalBookings: bookingData.length // Real booking count

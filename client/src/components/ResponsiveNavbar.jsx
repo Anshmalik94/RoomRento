@@ -516,7 +516,7 @@ const ResponsiveNavbar = ({
       </>
 
       {/* Additional CSS */}
-      <style jsx>{`
+      <style>{`
         .nav-link-mobile:hover {
           background-color: #f8f9fa;
           color: #6f42c1 !important;

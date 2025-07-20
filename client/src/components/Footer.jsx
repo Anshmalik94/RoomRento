@@ -87,9 +87,9 @@ function Footer() {
           <div className="col-md-3 mb-4">
             <h6 className="fw-bold mb-3 text-dark">Quick</h6>
             <ul className="list-unstyled text-dark">
-              <li><Link to="/career" className="text-decoration-none text-dark">Career</Link></li>
+              <li><a href="/career.html" className="text-decoration-none text-dark">Career</a></li>
               <li><Link to="/help" className="text-decoration-none text-dark">Help & Support</Link></li>
-              <li><Link to="/partner" className="text-decoration-none text-dark">Become a Partner</Link></li>
+              <li><a href="/partner.html" className="text-decoration-none text-dark">Become a Partner</a></li>
             </ul>
           </div>
 
@@ -97,9 +97,9 @@ function Footer() {
           <div className="col-md-3 mb-4">
             <h6 className="fw-bold mb-3 text-dark">Policy</h6>
             <ul className="list-unstyled text-dark">
-              <li><Link to="/privacy-policy" className="text-decoration-none text-dark">Privacy Policy</Link></li>
-              <li><Link to="/disclaimer" className="text-decoration-none text-dark">Disclaimer</Link></li>
-              <li><Link to="/terms" className="text-decoration-none text-dark">Terms & Conditions</Link></li>
+              <li><a href="/privacy-policy.html" className="text-decoration-none text-dark">Privacy Policy</a></li>
+              <li><a href="/disclaimer.html" className="text-decoration-none text-dark">Disclaimer</a></li>
+              <li><a href="/terms.html" className="text-decoration-none text-dark">Terms & Conditions</a></li>
             </ul>
           </div>
 
