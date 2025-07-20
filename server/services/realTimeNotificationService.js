@@ -105,24 +105,25 @@ class RealTimeNotificationService {
   async sendNewPropertyNotification(propertyData) {
     try {
       const { propertyId, propertyType, title, ownerId, city } = propertyData;
-      // Get all users in the same city (exclude owners and the property owner)
+      // Get all renters in the same city (exclude the property owner)
+
+      // Send to all users (renters and owners) except the property owner
       const userQuery = {
-        role: 'user',
         _id: { $ne: ownerId }
       };
-      if (city) userQuery.city = city;
+      // if (city) userQuery.city = city; // Uncomment for city-based targeting
       const users = await User.find(userQuery).select('_id');
 
       const userIds = users.map(user => user._id);
       if (userIds.length === 0) return;
 
-      // Create notifications for all relevant users
+      // Create notifications for all relevant renters
       const notifications = await Promise.all(
         userIds.map(userId => 
           Notification.createNotification({
             userId: userId,
-            title: 'New Property Added',
-            message: `New ${propertyType} added: "${title}"`,
+            title: 'New Rentify Space Available',
+            message: 'Good news! A new rental space is now available. Visit RoomRento to view details.',
             type: 'new_property',
             fromUserId: ownerId,
             relatedRoomId: propertyType === 'room' ? propertyId : null,
@@ -140,7 +141,7 @@ class RealTimeNotificationService {
         )
       );
 
-      // Emit real-time notifications to all users
+      // Emit real-time notifications to all renters
       this.emitToMultipleUsers(userIds, notifications[0]);
 
       return notifications;

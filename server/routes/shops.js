@@ -1,3 +1,17 @@
+// GET my shop listings (for owner)
+router.get('/my-listings', auth, async (req, res) => {
+  try {
+    console.log('Fetching shops for owner:', req.user.id);
+    const shops = await Shop.find({ owner: req.user.id })
+      .populate('owner', 'name email contactNumber')
+      .sort({ createdAt: -1 });
+    console.log('Found shops:', shops);
+    res.json(shops);
+  } catch (error) {
+    console.error('Error fetching my shop listings:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -182,17 +196,21 @@ router.post('/', auth, upload.array('images', 5), async (req, res) => {
       closingHours,
       parkingSpaces: parkingSpaces ? Number(parkingSpaces) : 0,
       images: imageUrls,
+      // Always set owner from auth, never from frontend
       owner: req.user.id
     });
 
     await shop.save();
     
-    // Send notification to all users about new shop
-    await notificationService.sendNewPropertyNotification(
-      'Shop',
-      shop.title,
-      shop._id
-    );
+
+    // Send notification to all renters about new shop
+    await notificationService.sendNewPropertyNotification({
+      propertyId: shop._id,
+      propertyType: 'shop',
+      title: shop.title,
+      ownerId: req.user.id,
+      city: shop.location || ''
+    });
     
     const populatedShop = await Shop.findById(shop._id)
       .populate('owner', 'name email');
