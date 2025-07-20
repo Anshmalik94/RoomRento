@@ -1,30 +1,32 @@
+
 .map-container {
-  height: 300px;
+  min-height: 300px;
   width: 100%;
   margin-top: 10px;
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   cursor: crosshair;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .map-container:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
   transform: scale(1.01);
 }
 
 @media (max-width: 768px) {
   .map-container {
-    height: 250px;
+    min-height: 220px;
   }
 }
 
 @media (max-width: 480px) {
   .map-container {
-    height: 200px;
+    min-height: 150px;
   }
-}
-.map-container:hover {
-  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
-  transform: scale(1.01);
 }
