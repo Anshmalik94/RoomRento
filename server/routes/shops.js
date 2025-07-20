@@ -1,3 +1,14 @@
+
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const Shop = require('../models/Shop');
+const auth = require('../middleware/auth');
+const notificationService = require('../services/realTimeNotificationService');
+
+const router = express.Router();
+
 // GET my shop listings (for owner)
 router.get('/my-listings', auth, async (req, res) => {
   try {
@@ -12,15 +23,6 @@ router.get('/my-listings', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const cloudinary = require('cloudinary').v2;
-const Shop = require('../models/Shop');
-const auth = require('../middleware/auth');
-const notificationService = require('../services/realTimeNotificationService');
-
-const router = express.Router();
 
 // ✅ Multer configuration for file uploads
 const storage = multer.diskStorage({
