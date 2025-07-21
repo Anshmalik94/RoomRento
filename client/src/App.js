@@ -7,6 +7,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 
 // Components
 import ResponsiveNavbar from "./components/ResponsiveNavbar";
+import GreetingMessage from "./components/GreetingMessage";
 import NotFound404 from "./components/404";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
@@ -154,6 +155,13 @@ function App() {
             minHeight: 'calc(100vh - 65px)'
           }}
         >
+          {/* Greeting Message for logged-in users */}
+          {!isLoginPage && token && (
+            <div className="container mt-3">
+              <GreetingMessage userInfo={userInfo} isLoggedIn={!!token} />
+            </div>
+          )}
+          
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Homepage />} />
