@@ -28,6 +28,9 @@ function auth(req, res, next) {
             }
         }
         
+        console.log('Authorization Header:', authHeader); // Debug log
+        console.log('Decoded Token:', decoded); // Debug log
+
         req.user = decoded;
         next();
     } catch (err) {

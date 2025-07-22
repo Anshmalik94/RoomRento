@@ -23,8 +23,9 @@ import MyBookingRequests from "./components/MyBookingRequests";
 import OwnerDashboard from "./components/OwnerDashboard";
 import Profile from "./components/Profile";
 import BottomNav from "./components/BottomNav";
-import Footer from "./components/Footer";
+import Footer from "./components/Footer.jsx";
 import NotificationsPage from "./components/NotificationsPage";
+import TopRatedList from "./components/TopRatedList";
 
 // Homepage Sections
 import HeroSection from "./components/HeroSection";
@@ -178,6 +179,9 @@ function App() {
             <Route path="/my-listings" element={<OwnerRoute><MyListings /></OwnerRoute>} />
             <Route path="/my-bookings" element={<OwnerRoute><MyBookings /></OwnerRoute>} />
             <Route path="/edit-property/:id" element={<OwnerRoute><AddRoom token={token} isEdit={true} /></OwnerRoute>} />
+            
+            {/* New Route for Top Rated List */}
+            <Route path="/top-rated" element={<TopRatedList />} />
             
             {/* 404 Route */}
             <Route path="*" element={<NotFound404 />} />

@@ -5,6 +5,7 @@ const cloudinary = require('cloudinary').v2;
 const Hotel = require('../models/Hotel');
 const auth = require('../middleware/auth');
 const notificationService = require('../services/realTimeNotificationService');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
@@ -340,6 +341,19 @@ router.get('/owner/my-hotels', auth, async (req, res) => {
   } catch (error) {
     console.error('Error fetching owner hotels:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// ✅ GET hotels for the logged-in user
+router.get('/my-listings', auth, async (req, res) => {
+  try {
+    console.log('Full req.user object:', req.user); // Debug log
+    const userId = mongoose.Types.ObjectId(req.user._id); // Explicitly cast to ObjectId
+    const hotels = await Hotel.find({ owner: userId });
+    res.status(200).json(hotels);
+  } catch (err) {
+    console.error('Error fetching user hotels:', err);
+    res.status(500).json({ error: 'Failed to fetch hotels' });
   }
 });
 

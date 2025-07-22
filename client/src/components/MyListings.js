@@ -16,17 +16,21 @@ function MyListings() {
     const fetchMyProperties = async () => {
       setLoading(true);
       try {
-        const [roomsRes, shopsRes] = await Promise.all([
+        const [roomsRes, shopsRes, hotelsRes] = await Promise.all([
           axios.get(`${BASE_URL}/api/rooms/my-listings`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
           axios.get(`${BASE_URL}/api/shops/my-listings`, {
             headers: { Authorization: `Bearer ${token}` }
-          }).catch(() => ({ data: [] })) // fallback if shops API fails
+          }).catch(() => ({ data: [] })), // fallback if shops API fails
+          axios.get(`${BASE_URL}/api/hotels/my-listings`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(() => ({ data: [] })) // fallback if hotels API fails
         ]);
         const rooms = (roomsRes.data || []).map(r => ({ ...r, propertyType: 'Room' }));
         const shops = (shopsRes.data || []).map(s => ({ ...s, propertyType: 'Shop' }));
-        setMyProperties([...rooms, ...shops]);
+        const hotels = (hotelsRes.data || []).map(h => ({ ...h, propertyType: 'Hotel' }));
+        setMyProperties([...rooms, ...shops, ...hotels]);
       } catch (err) {
         console.error("Error fetching my properties:", err);
       } finally {
@@ -109,6 +113,12 @@ function MyListings() {
                     <>
                       <p className="card-text mb-1"><b>Business Type:</b> {property.businessType}</p>
                       <p className="card-text mb-1"><b>Area:</b> {property.shopArea} sq.ft.</p>
+                    </>
+                  )}
+                  {property.propertyType === 'Hotel' && (
+                    <>
+                      <p className="card-text mb-1"><b>Star Rating:</b> {property.starRating} stars</p>
+                      <p className="card-text mb-1"><b>Amenities:</b> {property.amenities.join(', ')}</p>
                     </>
                   )}
                   <div className="d-flex justify-content-between align-items-center">

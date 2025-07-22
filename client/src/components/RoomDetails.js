@@ -10,6 +10,7 @@ import './RoomDetails.css';
 import LoadGoogleMaps from './LoadGoogleMaps';
 import MapPicker from './MapPicker';
 import LoadingSpinner from './LoadingSpinner';
+import TopRatedList from './TopRatedList';
 
 function RoomDetails() {
   const { id } = useParams();
@@ -485,6 +486,11 @@ function RoomDetails() {
           </Modal.Footer>
         </Form>
       </Modal>
+
+      {/* Top Rated Listings Section */}
+      <div className="container-fluid py-5" style={{backgroundColor: '#f8f9fa'}}>
+        <TopRatedList />
+      </div>
     </div>
   );
 }

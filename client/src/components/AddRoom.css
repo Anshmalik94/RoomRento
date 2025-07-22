@@ -18,6 +18,31 @@
   margin-bottom: 2rem;
 }
 
+/* Header styling for AddRoom */
+.add-room-page .card-header {
+  background: linear-gradient(135deg, #6f42c1, #8b5cf6);
+  color: white;
+  padding: 2rem;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-room-page .card-header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.add-room-page .card-header .badge {
+  background: rgba(255, 255, 255, 0.8);
+  color: #6f42c1;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+}
+
 /* Progress Steps with glass morphism */
 /* Horizontal Step Indicators */
 .add-room-page .horizontal-step-indicators {
@@ -29,6 +54,13 @@
   overflow: hidden;
   margin-bottom: 30px;
   backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #6f42c1, #8b5cf6);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
 }
 
 .add-room-page .horizontal-step-indicators::before {
@@ -62,6 +94,7 @@
   flex: 1;
   position: relative;
   transition: all 0.3s ease;
+  color: white;
 }
 
 .add-room-page .step-indicator:hover {
@@ -301,13 +334,17 @@
 
 .add-room-page .btn-primary {
   background: linear-gradient(135deg, #6f42c1, #8b5cf6);
+  color: white;
   border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(111, 66, 193, 0.4);
 }
 
 .add-room-page .btn-primary:hover {
   background: linear-gradient(135deg, #8b5cf6, #a855f7);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(111, 66, 193, 0.5);
 }
 
@@ -430,6 +467,31 @@
   background: rgba(111, 66, 193, 0.1);
 }
 
+/* Available Facilities Styling */
+.add-room-page .facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.add-room-page .facility-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(111, 66, 193, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.add-room-page .facility-item:hover {
+  background: rgba(111, 66, 193, 0.1);
+  border-color: #6f42c1;
+  transform: translateY(-2px);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .add-room-page {
@@ -450,6 +512,21 @@
   .add-room-page .btn {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
+  }
+
+  .add-room-page .card-header {
+    padding: 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .add-room-page .horizontal-step-indicators {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .add-room-page .btn-primary {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
   }
 }
 

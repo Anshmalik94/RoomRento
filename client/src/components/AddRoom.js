@@ -158,6 +158,28 @@ function AddRoom({ token }) {
           
           // Show map after successful location detection
           setShowMap(true);
+          if (!window.google || !window.google.maps || !window.google.maps.Map) {
+            console.error("Google Maps API is not loaded properly.");
+            setMessage("Map failed to load. Please try again later.");
+            return;
+          }
+
+          // Initialize map with detected location
+          const mapElement = document.getElementById("map-container");
+          if (mapElement) {
+            const map = new window.google.maps.Map(mapElement, {
+              center: { lat: latitude, lng: longitude },
+              zoom: 15,
+            });
+
+            new window.google.maps.Marker({
+              position: { lat: latitude, lng: longitude },
+              map: map,
+              title: "Detected Location",
+            });
+          } else {
+            console.warn("Map container element not found.");
+          }
           setMessage("Location detected successfully!");
           setLoading(false);
         } catch (error) {
@@ -685,13 +707,23 @@ function AddRoom({ token }) {
       <div className="container mt-5 pt-5">
         <div className="row">
           <div className="col-lg-8 mx-auto">
-            <div className="section-header mb-4 text-center">
-              <i className="bi bi-plus-circle"></i>
-              <h2 className="mb-0">Add New Property</h2>
-            </div>
-            <p className="text-center text-muted mb-4">List your property in 4 simple steps</p>
-
             <div className="card shadow-lg border-0">
+              <div className="card-header text-white p-4 rounded-top-4" style={{background: '#6f42c1'}}>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div>
+                    <h2 className="mb-1 fw-bold">
+                      <i className="bi bi-house-door me-2"></i>
+                      Add New Property
+                    </h2>
+                    <p className="mb-0 opacity-75">List your property in 4 simple steps</p>
+                  </div>
+                  <div className="text-end">
+                    <span className="badge bg-light text-dark fs-6 px-3 py-2">
+                      Step {currentStep} of 4
+                    </span>
+                  </div>
+                </div>
+              </div>
               <div className="card-body p-4">
                 {/* Progress Bar */}
                 <div className="progress-section mb-4">

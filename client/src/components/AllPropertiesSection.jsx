@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { API_URL } from '../config';
 import './RoomsList.css'; // Reuse existing styles
+import TopRatedList from './TopRatedList';
 
 const AllPropertiesSection = ({ filters }) => {
   const [properties, setProperties] = useState([]);
@@ -150,7 +151,7 @@ const AllPropertiesSection = ({ filters }) => {
   }
 
   return (
-    <div className="container my-5">
+    <div id="explore-newly-listed" className="container my-5 all-properties-section">
       <div className="row mb-5">
         <div className="col-12 text-center">
           <h2 className="fw-bold mb-3 animate__animated animate__fadeInUp" style={{ 
@@ -369,6 +370,9 @@ const AllPropertiesSection = ({ filters }) => {
           </div>
         </div>
       )}
+
+      {/* Add TopRatedList component */}
+      <TopRatedList />
     </div>
   );
 };
