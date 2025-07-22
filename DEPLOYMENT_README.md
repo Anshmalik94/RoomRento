@@ -1,4 +1,4 @@
-# RoomRento - Room & Property Rental Platform 🏠
+# RoomRento - Room & Property Rental Platform 🏠 
 
 A modern, responsive web application built with React and Bootstrap for room, hotel, and shop rentals.
 
