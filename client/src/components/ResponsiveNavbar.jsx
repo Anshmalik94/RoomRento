@@ -225,6 +225,12 @@ const ResponsiveNavbar = ({
                       <>
                         <li><h6 className="dropdown-header">Owner Panel</h6></li>
                         <li>
+                          <Link className="dropdown-item" to="/profile" onClick={closeUserDropdown}>
+                            <FaUser className="me-2" />
+                            My Profile
+                          </Link>
+                        </li>
+                        <li>
                           <Link className="dropdown-item" to="/my-listings" onClick={closeUserDropdown}>
                             <FaList className="me-2" />
                             My Listings
