@@ -1,8 +1,14 @@
+
 .hero-section {
   min-height: 80vh;
   display: flex;
   align-items: center;
   padding-top: 80px; /* Add padding to avoid navbar overlap */
+  background: linear-gradient(to right, #f8f6ff, #e0c3fc 70%, #fff 100%);
+  color: #6f42c1;
+  border-bottom-left-radius: 50% 10%;
+  border-bottom-right-radius: 50% 10%;
+  box-shadow: 0 4px 24px 0 rgba(111, 66, 193, 0.08);
 }
 
 .hero-section h1 span {

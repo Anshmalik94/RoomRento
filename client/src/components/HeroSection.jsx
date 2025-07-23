@@ -13,10 +13,7 @@ function HeroSection() {
   return (
     <section
       className="hero-section py-5"
-      style={{
-        background: "linear-gradient(to right, #6A0DAD, #ffffff)",
-        color: "#ffffff",
-      }}
+      // Gradient and border-radius now handled in CSS
     >
       <div className="container">
         <div className="row align-items-center min-vh-75">
