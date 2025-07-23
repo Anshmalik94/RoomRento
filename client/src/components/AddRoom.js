@@ -850,6 +850,7 @@ function AddRoom({ token }) {
           </div>
         </div>
       </div>
+      <img src="/images/talking.png" alt="Talking Illustration" />
     </div>
   );
 }
