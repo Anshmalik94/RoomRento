@@ -41,7 +41,8 @@ const allowedOrigins = [
   'https://roomrento.netlify.app',
   'https://roomrento.onrender.com',
   'https://roomrento-server.onrender.com',
-  'https://roomrento-api.onrender.com'
+  'https://roomrento-api.onrender.com',
+  'https://roomrento.com' // Add deployed frontend domain
 ];
 
 // Socket.IO Setup with CORS
