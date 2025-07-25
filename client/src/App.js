@@ -1,6 +1,7 @@
+import React, { Suspense, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 
 // Contexts
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -25,7 +26,6 @@ import Profile from "./components/Profile";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer.jsx";
 import NotificationsPage from "./components/NotificationsPage";
-import TopRatedList from "./components/TopRatedList";
 
 // Homepage Sections
 import HeroSection from "./components/HeroSection";
@@ -39,6 +39,8 @@ import AllPropertiesSection from "./components/AllPropertiesSection";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 import './styles/responsive.css';
+
+const TopRatedListings = React.lazy(() => import("./TopRatedListings"));
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -181,7 +183,11 @@ function App() {
             <Route path="/edit-property/:id" element={<OwnerRoute><AddRoom token={token} isEdit={true} /></OwnerRoute>} />
             
             {/* New Route for Top Rated List */}
-            <Route path="/top-rated" element={<TopRatedList />} />
+            <Route path="/top-rated" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <TopRatedListings />
+              </Suspense>
+            } />
             
             {/* 404 Route */}
             <Route path="*" element={<NotFound404 />} />
@@ -252,6 +258,19 @@ function App() {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Helmet>
+          <meta property="og:title" content="RoomRento - Affordable Rentals" />
+          <meta property="og:description" content="Find rooms, PGs, hotels, and shops for rent." />
+          <meta property="og:image" content="https://roomrento.com/images/og-banner.png" />
+          <meta property="og:url" content="https://roomrento.com/" />
+          <meta property="og:type" content="website" />
+
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="RoomRento - Easy Rentals" />
+          <meta name="twitter:description" content="List or rent properties easily with RoomRento." />
+          <meta name="twitter:image" content="https://roomrento.com/images/twitter-banner.png" />
+        </Helmet>
       </>
     );
   };
