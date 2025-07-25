@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { Helmet } from "react-helmet";
@@ -39,8 +39,6 @@ import AllPropertiesSection from "./components/AllPropertiesSection";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 import './styles/responsive.css';
-
-const TopRatedListings = React.lazy(() => import("./TopRatedListings"));
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -181,13 +179,6 @@ function App() {
             <Route path="/my-listings" element={<OwnerRoute><MyListings /></OwnerRoute>} />
             <Route path="/my-bookings" element={<OwnerRoute><MyBookings /></OwnerRoute>} />
             <Route path="/edit-property/:id" element={<OwnerRoute><AddRoom token={token} isEdit={true} /></OwnerRoute>} />
-            
-            {/* New Route for Top Rated List */}
-            <Route path="/top-rated" element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <TopRatedListings />
-              </Suspense>
-            } />
             
             {/* 404 Route */}
             <Route path="*" element={<NotFound404 />} />
