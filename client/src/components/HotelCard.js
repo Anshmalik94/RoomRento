@@ -134,6 +134,7 @@ function HotelCard({ hotel }) {
           alt={hotel.title}
           className="card-img-top w-100 h-100"
           style={{ objectFit: 'cover' }}
+          loading="lazy"
           onError={(e) => {
             e.target.src = "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
           }}

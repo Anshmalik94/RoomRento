@@ -101,7 +101,7 @@ function AuthForm({ setToken }) {
         <div className="auth-logo-container">
           <img 
             src="/images/logo.png"
-            alt="RoomRento Logo" 
+            alt="RoomRento official logo" 
             className="auth-logo-img"
             style={{
               width: '80px',
@@ -116,6 +116,7 @@ function AuthForm({ setToken }) {
                 e.target.style.display = 'none';
               };
             }}
+            loading="lazy"
           />
         </div>
         

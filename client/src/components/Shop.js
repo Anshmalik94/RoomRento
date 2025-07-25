@@ -155,6 +155,7 @@ function Shop() {
                     src={shop.images && shop.images[0] ? shop.images[0] : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8'}
                     alt={shop.title}
                     style={{ height: "240px", objectFit: "cover", transition: 'none' }}
+                    loading="lazy"
                     onLoad={() => {
                       // Re-analyze image when it loads
                       if (!imageColors[shop._id]) {

@@ -112,6 +112,14 @@ function Footer() {
           </div>
         </div>
 
+        {/* Internal Navigation Links */}
+        <div className="footer-links mt-4 text-center">
+          <Link to="/" className="text-decoration-none text-dark me-3">Home</Link>
+          <Link to="/list-your-property" className="text-decoration-none text-dark me-3">List Your Property</Link>
+          <Link to="/about" className="text-decoration-none text-dark me-3">About</Link>
+          <Link to="/contact" className="text-decoration-none text-dark">Contact</Link>
+        </div>
+
         {/* Bottom Line */}
         <div className="border-top pt-3 mt-3">
           <p className="text-center text-dark mb-0 small">

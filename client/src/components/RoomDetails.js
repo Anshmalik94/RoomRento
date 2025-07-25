@@ -202,6 +202,7 @@ function RoomDetails() {
                           className="d-block w-100 room-image"
                           src={img.startsWith('http') ? img : `${API_URL}/${img}`}
                           alt={`Room ${i + 1}`}
+                          loading="lazy"
                           onError={(e) => {
                             e.target.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80";
                           }}

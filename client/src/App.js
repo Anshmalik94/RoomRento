@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, Link } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { Helmet } from "react-helmet";
 
@@ -73,6 +73,11 @@ function App() {
   const Homepage = () => (
     <>
       <HeroSection />
+      <div className="internal-links mt-4 text-center">
+        <Link to="/list-your-property">List Your Property</Link>
+        <span className="mx-2">|</span>
+        <Link to="/about">About RoomRento</Link>
+      </div>
       <div className="container my-5">
         <div className="row g-4 align-items-stretch">
           <div className="col-lg-7 col-12">

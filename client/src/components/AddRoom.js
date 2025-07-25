@@ -676,6 +676,7 @@ function AddRoom({ token }) {
                             src={preview}
                             alt={`Preview ${index + 1}`}
                             className="img-fluid rounded"
+                            loading="lazy"
                           />
                           <Button
                             variant="danger"

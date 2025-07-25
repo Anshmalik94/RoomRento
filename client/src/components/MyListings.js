@@ -85,6 +85,7 @@ function MyListings() {
                     className="card-img-top"
                     alt={property.title}
                     style={{ height: "200px", objectFit: "cover" }}
+                    loading="lazy"
                   />
                   {property.propertyType === 'Room' && (
                     <div className={`visibility-badge ${property.isVisible ? 'visible' : 'hidden'}`}>
