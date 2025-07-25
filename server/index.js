@@ -32,13 +32,6 @@ cloudinary.config({
 // ✅ Enhanced CORS Setup for Local, Vercel, Netlify, and Render
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:3001', 
-  'https://room-rento.vercel.app',
-  'https://room-rento-1zih.vercel.app',
-  'https://roomrento.vercel.app',
-  'https://roomrento-frontend.vercel.app',
-  'https://roomrento-client.vercel.app',
-  'https://roomrento.netlify.app',
   'https://roomrento.onrender.com',
   'https://roomrento-server.onrender.com',
   'https://roomrento-api.onrender.com',
