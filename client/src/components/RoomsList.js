@@ -18,16 +18,15 @@ function RoomsList({ filters }) {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    
+
     const queryParams = new URLSearchParams(location.search);
-    const city = queryParams.get('city');
-    const lat = queryParams.get('lat');
-    const lng = queryParams.get('lng');
-    const nearby = queryParams.get('nearby');
+    const city = queryParams.get("city");
+    const lat = queryParams.get("lat");
+    const lng = queryParams.get("lng");
+    const nearby = queryParams.get("nearby");
 
     let apiUrl = `${BASE_URL}/api/rooms`;
-    
-    // Now filter by type since all rooms have type field after migration
+
     if (city) {
       apiUrl += `?city=${city}&type=Room`;
     } else if (lat && lng && nearby) {
@@ -36,50 +35,68 @@ function RoomsList({ filters }) {
       apiUrl += `?type=Room`;
     }
 
-    axios.get(apiUrl)
-      .then(res => {
+    axios
+      .get(apiUrl)
+      .then((res) => {
         setRooms(res.data);
         setFilteredRooms(res.data);
         setLoading(false);
       })
-      .catch(err => {
-        // Error loading rooms
-        setError('Failed to load rooms. Please try again.');
+      .catch((err) => {
+        setError("Failed to load rooms. Please try again.");
         setLoading(false);
       });
   }, [location.search]);
 
   useEffect(() => {
+    console.log("Filters applied:", filters);
+    console.log("Rooms data from API:", rooms);
+
     let result = rooms;
 
-    if (filters.location)
-      result = result.filter(r => r.location && r.location.toLowerCase().includes(filters.location.toLowerCase()));
+    // Apply filters strictly
+    if (filters.location) {
+      result = result.filter((r) =>
+        r.location && r.location.toLowerCase() === filters.location.toLowerCase()
+      );
+    }
 
-    if (filters.roomType)
-      result = result.filter(r => r.roomType === filters.roomType);
+    if (filters.roomType) {
+      result = result.filter((r) => r.roomType === filters.roomType);
+    }
 
     if (filters.budget) {
       const maxBudget = parseInt(filters.budget, 10);
-      result = result.filter(r => !isNaN(maxBudget) ? Number(r.price) <= maxBudget : true);
+      result = result.filter((r) => (!isNaN(maxBudget) ? Number(r.price) <= maxBudget : true));
     }
 
     if (filters.roomCategory) {
       if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(filters.roomCategory)) {
-        result = result.filter(r => r.furnished === filters.roomCategory);
+        result = result.filter((r) => r.furnished === filters.roomCategory);
       } else if (filters.roomCategory === "PgType") {
-        result = result.filter(r => r.roomType && r.roomType.toLowerCase().includes("pg"));
+        result = result.filter((r) => r.roomType && r.roomType.toLowerCase().includes("pg"));
       } else if (filters.roomCategory === "GirlsPg") {
-        result = result.filter(r => r.roomType && r.roomType.toLowerCase().includes("girls"));
+        result = result.filter((r) => r.roomType && r.roomType.toLowerCase().includes("girls"));
       } else if (filters.roomCategory === "BoysPg") {
-        result = result.filter(r => r.roomType && r.roomType.toLowerCase().includes("boys"));
+        result = result.filter((r) => r.roomType && r.roomType.toLowerCase().includes("boys"));
       }
     }
 
+    // Log filtered results
+    console.log("Filtered results:", result);
+
+    // Update filtered rooms
     setFilteredRooms(result);
+
+    // Auto-scroll to results section
+    const resultsSection = document.getElementById("results-section");
+    if (resultsSection) {
+      resultsSection.scrollIntoView({ behavior: "smooth" });
+    }
   }, [filters, rooms]);
 
   const handleLoadMore = () => {
-    setDisplayCount(prev => prev + 12);
+    setDisplayCount((prev) => prev + 12);
   };
 
   const displayedRooms = filteredRooms.slice(0, displayCount);
@@ -94,7 +111,10 @@ function RoomsList({ filters }) {
       <Container className="my-4 my-md-5">
         <Row className="justify-content-center">
           <Col xs={12} md={8} lg={6}>
-            <div className="alert alert-danger text-center border-0 card-responsive" role="alert">
+            <div
+              className="alert alert-danger text-center border-0 card-responsive"
+              role="alert"
+            >
               <i className="bi bi-exclamation-triangle display-6 text-danger mb-3"></i>
               <h4 className="alert-heading">Oops! Something went wrong</h4>
               <p className="mb-0">{error}</p>
@@ -106,7 +126,7 @@ function RoomsList({ filters }) {
   }
 
   return (
-    <section className="rooms-list-section py-responsive">
+    <section id="results-section" className="rooms-list-section py-responsive">
       <Container className="responsive-container">
         {/* Header */}
         <Row className="mb-4">
@@ -115,10 +135,10 @@ function RoomsList({ filters }) {
               <div>
                 <h2 className="responsive-title fw-bold text-dark mb-1">Available Rooms</h2>
                 <p className="text-muted mb-0">
-                  {filteredRooms.length} room{filteredRooms.length !== 1 ? 's' : ''} found
+                  {filteredRooms.length} room{filteredRooms.length !== 1 ? "s" : ""} found
                 </p>
               </div>
-              
+
               {/* Sort options */}
               <div className="d-none d-md-block">
                 <small className="text-muted">
@@ -133,7 +153,7 @@ function RoomsList({ filters }) {
         {/* Rooms Grid */}
         <Row className="g-3 g-md-4 row-responsive">
           {displayedRooms.length > 0 ? (
-            displayedRooms.map(room => (
+            displayedRooms.map((room) => (
               <Col xs={12} sm={6} lg={4} xl={3} key={room._id} className="d-flex">
                 <RoomCard room={room} />
               </Col>
@@ -142,45 +162,20 @@ function RoomsList({ filters }) {
             <Col xs={12}>
               <div className="text-center py-5">
                 <div className="mb-4">
-                  <i className="bi bi-house-x" style={{fontSize: '3rem', color: '#6f42c1', opacity: '0.6'}}></i>
+                  <i
+                    className="bi bi-house-x"
+                    style={{ fontSize: "3rem", color: "#6f42c1", opacity: "0.6" }}
+                  ></i>
                 </div>
-                <h3 className="responsive-title fw-bold mb-3" style={{color: '#6f42c1'}}>No Rooms Available</h3>
+                <h3
+                  className="responsive-title fw-bold mb-3"
+                  style={{ color: "#6f42c1" }}
+                >
+                  No results found for selected filters
+                </h3>
                 <p className="text-muted mb-4">
-                  Currently, there are no rooms matching your criteria.
+                  Try adjusting your filters to find matching rooms.
                 </p>
-                {localStorage.getItem("role") === "owner" && (
-                  <div className="bg-light p-3 p-md-4 rounded-4 d-inline-block">
-                    <p className="mb-3">
-                      <strong>Do you have a room to rent?</strong><br/>
-                      List your room and start earning today!
-                    </p>
-                    <button 
-                      className="btn btn-primary btn-lg px-4"
-                      onClick={() => window.location.href = '/add-room'}
-                    >
-                      <i className="bi bi-plus-circle me-2"></i>
-                      List Your Room
-                    </button>
-                  </div>
-                )}
-                <div className="mt-4 d-flex flex-column flex-sm-row gap-2 justify-content-center">
-                  <Button 
-                    variant="outline-primary" 
-                    className="btn-responsive"
-                    onClick={() => window.location.reload()}
-                  >
-                    <i className="bi bi-arrow-clockwise me-2"></i>
-                    Refresh
-                  </Button>
-                  <Button 
-                    variant="outline-secondary" 
-                    className="btn-responsive"
-                    onClick={() => window.history.back()}
-                  >
-                    <i className="bi bi-arrow-left me-2"></i>
-                    Go Back
-                  </Button>
-                </div>
               </div>
             </Col>
           )}
@@ -190,10 +185,14 @@ function RoomsList({ filters }) {
         {hasMoreRooms && (
           <Row className="mt-4 mt-md-5">
             <Col xs={12} className="text-center">
-              <Button 
+              <Button
                 size="lg"
                 className="btn-responsive px-4 px-md-5 border-0"
-                style={{background: 'rgba(111, 66, 193, 0.1)', color: '#6f42c1', border: '2px solid #6f42c1'}}
+                style={{
+                  background: "rgba(111, 66, 193, 0.1)",
+                  color: "#6f42c1",
+                  border: "2px solid #6f42c1",
+                }}
                 onClick={handleLoadMore}
               >
                 <i className="bi bi-plus-circle me-2"></i>

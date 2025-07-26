@@ -15,7 +15,8 @@ const NOTIFICATION_ACTIONS = {
   CLEAR_ALL: 'CLEAR_ALL',
   SET_LOADING: 'SET_LOADING',
   SET_ERROR: 'SET_ERROR',
-  SET_CONNECTED: 'SET_CONNECTED'
+  SET_CONNECTED: 'SET_CONNECTED',
+  SET_UNREAD_COUNT: 'SET_UNREAD_COUNT'
 };
 
 // Initial state
@@ -101,6 +102,12 @@ function notificationReducer(state, action) {
       return {
         ...state,
         connected: action.payload
+      };
+
+    case NOTIFICATION_ACTIONS.SET_UNREAD_COUNT:
+      return {
+        ...state,
+        unreadCount: action.payload
       };
 
     default:
@@ -193,6 +200,23 @@ export function NotificationProvider({ children }) {
     }
   };
 
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/notifications/unread-count`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        dispatch({ type: NOTIFICATION_ACTIONS.SET_UNREAD_COUNT, payload: data.unreadCount });
+      }
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+    }
+  };
+
   const markAsRead = async (notificationIds = []) => {
     try {
       const token = localStorage.getItem('token');
@@ -211,6 +235,8 @@ export function NotificationProvider({ children }) {
         dispatch({ type: NOTIFICATION_ACTIONS.MARK_AS_READ, payload: notificationIds });
         // Also emit to socket for real-time update
         socketService.markNotificationAsRead(notificationIds);
+        // Fetch updated unread count
+        fetchUnreadCount();
       } else {
         throw new Error(data.message || 'Failed to mark as read');
       }

@@ -30,6 +30,12 @@
   margin: auto;
 }
 
+.zigzag-border {
+  border: 6px solid;
+  border-image: linear-gradient(45deg, #6f42c1, #ffffff) 1;
+  border-radius: 12px;
+}
+
 @media (max-width: 768px) {
   .about-section h2 {
     font-size: 1.8rem;

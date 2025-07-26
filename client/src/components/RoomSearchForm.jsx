@@ -5,14 +5,17 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './RoomSearchForm.css';
 
 function RoomSearchForm({ filters, onSubmit }) {
-  const [formFilters, setFormFilters] = useState(filters);
+  const [formFilters, setFormFilters] = useState(() => {
+    const savedFilters = sessionStorage.getItem('roomFilters');
+    return savedFilters ? JSON.parse(savedFilters) : filters;
+  });
   const [animate, setAnimate] = useState(false);
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFormFilters(filters);
-  }, [filters]);
+    sessionStorage.setItem('roomFilters', JSON.stringify(formFilters));
+  }, [formFilters]);
 
   useEffect(() => {
     const currentRef = sectionRef.current;
@@ -45,6 +48,10 @@ function RoomSearchForm({ filters, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formFilters);
+    const resultsSection = document.getElementById('results-section');
+    if (resultsSection) {
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const handleNearMe = () => {
@@ -55,12 +62,12 @@ function RoomSearchForm({ filters, onSubmit }) {
           navigate(`/rooms?lat=${latitude}&lng=${longitude}&nearby=true`);
         },
         (error) => {
-          alert("Location access denied or not available");
-          console.error("Geolocation error:", error);
+          alert('Location access denied or not available');
+          console.error('Geolocation error:', error);
         }
       );
     } else {
-      alert("Geolocation is not supported by this browser");
+      alert('Geolocation is not supported by this browser');
     }
   };
 
@@ -82,25 +89,27 @@ function RoomSearchForm({ filters, onSubmit }) {
             Discover thousands of verified room listings
           </p>
           <form className="row g-3 align-items-end" onSubmit={handleSubmit}>
-            {/* Location Field */}
+            {/* Location Dropdown and Near Me Button */}
             <div className="col-md-6">
               <label htmlFor="location" className="form-label fw-semibold">Around Me</label>
               <div className="input-group custom-group">
-                <span className="input-group-text border-end-0 bg-white">
-                  <i className="bi bi-geo-alt text-muted"></i>
-                </span>
-                <input
-                  type="text"
-                  className="form-control border-start-0 border-end-0"
+                <select
+                  className="form-select border-end-0"
                   id="location"
                   name="location"
-                  placeholder="Enter city or neighborhood"
                   value={formFilters.location}
                   onChange={handleChange}
-                />
+                >
+                  <option value="">Select City</option>
+                  <option value="Noida">Noida</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Gurgaon">Gurgaon</option>
+                  <option value="Ghaziabad">Ghaziabad</option>
+                  <option value="Greater Noida">Greater Noida</option>
+                </select>
                 <button 
                   type="button" 
-                  className="btn near-me-btn"
+                  className="btn near-me-btn border-start-0"
                   onClick={handleNearMe}
                 >
                   <i className="bi bi-crosshair me-1"></i>Near me
@@ -177,7 +186,7 @@ function RoomSearchForm({ filters, onSubmit }) {
             {/* Search Button */}
             <div className="col-12 d-grid mt-2">
               <button type="submit" className="btn btn-success btn-lg fw-semibold">
-                <i className="bi bi-search me-2"></i>Find Rooms
+                <i className="bi bi-search me-2"></i>Find Now
               </button>
             </div>
           </form>

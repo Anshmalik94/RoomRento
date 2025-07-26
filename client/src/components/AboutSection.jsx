@@ -10,9 +10,9 @@ function AboutSection() {
           {/* Image */}
           <div className="col-md-6 mb-4 mb-md-0">
             <img
-              src="https://img.freepik.com/free-vector/real-estate-agent-showing-house-property-client_74855-14069.jpg"
+              src="/images/about1.jpg"
               alt="About RoomRento"
-              className="img-fluid rounded shadow"
+              className="img-fluid zigzag-border"
             />
           </div>
 
@@ -20,14 +20,8 @@ function AboutSection() {
           <div className="col-md-6 text-center text-md-start">
             <h2 className="fw-bold mb-3">About <span className="text-primary">RoomRento</span></h2>
             <p className="text-muted mb-3">
-              RoomRento is a platform built to simplify your house hunting experience. Whether you're a student, working professional, or family — we help you find verified rental rooms fast and hassle-free.
+              RoomRento simplifies your search for affordable and comfortable living spaces. Whether you're looking for a room, shop, or hotel — we've got you covered. Our platform connects seekers with verified listings across top cities, making your journey hassle-free, transparent, and trustworthy.
             </p>
-            <p className="text-muted mb-3">
-              With features like direct booking, owner contact, and map-based search, finding your next room is now easier than ever.
-            </p>
-            <a href="/contact" className="btn mt-2" style={{backgroundColor: '#6f42c1', color: 'white', border: 'none'}}>
-              Contact Us
-            </a>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import { Helmet } from "react-helmet";
 
@@ -73,10 +73,12 @@ function App() {
   const Homepage = () => (
     <>
       <HeroSection />
-      <div className="internal-links mt-4 text-center">
-        <Link to="/list-your-property">List Your Property</Link>
-        <span className="mx-2">|</span>
-        <Link to="/about">About RoomRento</Link>
+      <div className="homepage-advert mt-4 text-center" style={{background: '#fff', borderRadius: '18px', padding: '8px 0', boxShadow: '0 2px 8px rgba(111,66,193,0.08)', border: '1px solid #e0e0e0', marginBottom: '8px', maxWidth: '900px', width: '96%', marginLeft: 'auto', marginRight: 'auto'}}>
+        <div style={{overflow: 'hidden', whiteSpace: 'nowrap', fontWeight: 'bold', fontSize: '1.35rem', color: '#6f42c1', letterSpacing: '0.5px'}}>
+          <span role="img" aria-label="sparkles" style={{fontSize: '1.7rem', verticalAlign: 'middle', marginRight: '10px'}}>✨</span>
+          Searching for a room, hotel, or shop? RoomRento makes renting and listing easy, fast, and secure for everyone!
+          <span role="img" aria-label="home" style={{fontSize: '1.7rem', verticalAlign: 'middle', marginLeft: '10px'}}>🏠</span>
+        </div>
       </div>
       <div className="container my-5">
         <div className="row g-4 align-items-stretch">

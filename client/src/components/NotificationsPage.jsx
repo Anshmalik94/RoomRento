@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -31,7 +30,7 @@ const NotificationsPage = () => {
     // eslint-disable-next-line
   }, [token]);
 
-  // Mark a single notification as read
+  // Mark a single notification as read and refetch notifications
   const markAsRead = async (id) => {
     try {
       await axios.patch(
@@ -39,13 +38,11 @@ const NotificationsPage = () => {
         { notificationIds: [id] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setNotifications((prev) =>
-        prev.map((n) => (n._id === id ? { ...n, seen: true } : n))
-      );
+      await fetchAllNotifications();
     } catch (e) {}
   };
 
-  // Mark all notifications as read
+  // Mark all notifications as read and refetch notifications
   const markAllAsRead = async () => {
     try {
       await axios.patch(
@@ -53,18 +50,18 @@ const NotificationsPage = () => {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setNotifications((prev) => prev.map((n) => ({ ...n, seen: true })));
+      await fetchAllNotifications();
     } catch (e) {}
   };
 
-  // Delete all notifications
+  // Delete all notifications and refetch notifications
   const clearAllNotifications = async () => {
     if (!window.confirm('Are you sure you want to clear all notifications?')) return;
     try {
       await axios.delete(`${API_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setNotifications([]);
+      await fetchAllNotifications();
     } catch (e) {}
   };
 
@@ -93,6 +90,17 @@ const NotificationsPage = () => {
     return `${diffInDays}d ago`;
   };
 
+  // Handle notification click: mark as read, then redirect
+  const handleNotificationClick = async (id, link) => {
+    await markAsRead(id);
+    // Wait for notifications to refetch before redirecting
+    if (link) {
+      setTimeout(() => {
+        window.location.href = link;
+      }, 200); // Small delay to ensure state updates
+    }
+  };
+
   let content;
   if (loading) {
     content = (
@@ -112,7 +120,7 @@ const NotificationsPage = () => {
     content = (
       <>
         <div className="d-flex justify-content-end mb-3 gap-2">
-          <Button variant="outline-primary" size="sm" onClick={markAllAsRead} disabled={notifications.every(n => n.seen)}>
+          <Button variant="outline-primary" size="sm" onClick={markAllAsRead} disabled={notifications.every(n => n.isRead)}>
             Mark All as Read
           </Button>
           <Button variant="outline-danger" size="sm" onClick={clearAllNotifications} disabled={notifications.length === 0}>
@@ -123,7 +131,8 @@ const NotificationsPage = () => {
           {notifications.map((notification) => (
             <div
               key={notification._id}
-              className={`list-group-item d-flex align-items-start ${!notification.seen ? 'unread' : ''}`}
+              className={`list-group-item d-flex align-items-start ${!notification.isRead ? 'unread' : ''}`}
+              onClick={() => handleNotificationClick(notification._id, notification.link)}
             >
               <div className="me-3 mt-1">{getNotificationIcon(notification.type)}</div>
               <div className="flex-grow-1">
@@ -135,7 +144,7 @@ const NotificationsPage = () => {
                   {getTimeAgo(notification.createdAt)}
                 </div>
               </div>
-              {!notification.seen && (
+              {!notification.isRead && (
                 <>
                   <Badge bg="primary" className="ms-2">New</Badge>
                   <Button

@@ -24,6 +24,9 @@ function HeroSection() {
             <p className="lead mb-4 animate__animated animate__fadeInLeft animate__delay-1s">
               With RoomRento — No broker, No commission, No hidden charges. Talk directly to the owner.
             </p>
+            <p className="text-muted small">
+              Discover a wide range of properties tailored to your needs. Whether you're looking for a cozy room, a spacious shop, or a luxurious hotel, RoomRento has got you covered. Start your journey today and connect directly with property owners.
+            </p>
             <button
               onClick={scrollToExplore}
               className="btn btn-primary btn-lg btn-pill animate__animated animate__fadeInUp animate__delay-2s"
@@ -34,7 +37,7 @@ function HeroSection() {
           <div className="col-md-6 text-center animate__animated animate__fadeInRight">
             <img
               src="/images/banner.png"
-              alt="Find Room"
+              alt="Find Room, Shop, or Hotel with RoomRento"
               className="img-fluid hero-img"
               style={{ maxHeight: '400px', objectFit: 'contain' }}
             />
