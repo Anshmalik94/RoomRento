@@ -69,17 +69,28 @@ const AllPropertiesSection = ({ filters }) => {
   const fetchAllProperties = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      // Fetch rooms, hotels, and shops in parallel
-      const [roomsRes, hotelsRes, shopsRes] = await Promise.all([
-        fetch(`${API_URL}/api/rooms`),
-        fetch(`${API_URL}/api/hotels`),
-        fetch(`${API_URL}/api/shops`)
-      ]);
+      // Fetch rooms, hotels, and shops with individual error handling
+      const fetchWithFallback = async (url, fallback = []) => {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            console.warn(`API ${url} failed with status ${response.status}`);
+            return fallback;
+          }
+          return await response.json();
+        } catch (error) {
+          console.warn(`API ${url} failed:`, error);
+          return fallback;
+        }
+      };
 
-      const roomsData = await roomsRes.json();
-      const hotelsData = await hotelsRes.json();
-      const shopsData = await shopsRes.json();
+      const [roomsData, hotelsData, shopsData] = await Promise.all([
+        fetchWithFallback(`${API_URL}/api/rooms`, []),
+        fetchWithFallback(`${API_URL}/api/hotels`, { hotels: [] }),
+        fetchWithFallback(`${API_URL}/api/shops`, { shops: [] })
+      ]);
 
       // Combine all properties with type indicator
       const allProperties = [
@@ -97,8 +108,8 @@ const AllPropertiesSection = ({ filters }) => {
         }
       });
     } catch (err) {
-      setError('Failed to load properties');
       console.error('Error fetching properties:', err);
+      setError('Failed to load properties');
     } finally {
       setLoading(false);
     }

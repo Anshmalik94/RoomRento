@@ -152,14 +152,37 @@ function RoomDetails() {
     }
   };
 
+  const getOwnerPhone = () => {
+    // For Rooms: check room.phone, room.user.phone, or fallback
+    if (room.type === 'Room' || !room.type) {
+      return room.phone || room.user?.phone || room.owner?.phone || '1234567890';
+    }
+    // For Hotels: check contactNumber, owner.phone, or fallback  
+    if (room.type === 'Hotel') {
+      return room.contactNumber || room.owner?.phone || room.user?.phone || '1234567890';
+    }
+    // For Shops: check contactNumber, owner.phone, or fallback
+    if (room.type === 'Shop') {
+      return room.contactNumber || room.owner?.phone || room.user?.phone || '1234567890';
+    }
+    // Default fallback
+    return room.phone || room.contactNumber || room.user?.phone || room.owner?.phone || '1234567890';
+  };
+
+  const getOwnerName = () => {
+    // For all property types, check user name first, then owner, then fallback
+    return room.user?.name || room.owner?.name || 'Property Owner';
+  };
+
   const handleWhatsApp = () => {
-    const phone = room.owner?.phone || '1234567890';
-    const message = `Hi! I'm interested in your property: ${room.title}`;
+    const phone = getOwnerPhone();
+    const propertyType = room.type === 'Hotel' ? 'hotel' : room.type === 'Shop' ? 'shop' : 'room';
+    const message = `Hi! I'm interested in your ${propertyType}: ${room.title}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const handleCall = () => {
-    const phone = room.owner?.phone || '1234567890';
+    const phone = getOwnerPhone();
     window.location.href = `tel:${phone}`;
   };
 
@@ -304,7 +327,7 @@ function RoomDetails() {
                       <i className="bi bi-person text-white"></i>
                     </div>
                     <div>
-                      <h6 className="mb-0" style={{color: '#2c3e50'}}>{room.owner?.name || 'Property Owner'}</h6>
+                      <h6 className="mb-0" style={{color: '#2c3e50'}}>{getOwnerName()}</h6>
                       {room.owner?.isVerified && (
                         <small className="text-success">
                           <i className="bi bi-patch-check me-1"></i> Verified Owner
@@ -313,7 +336,7 @@ function RoomDetails() {
                     </div>
                   </div>
                   <small className="text-muted">
-                    <i className="bi bi-telephone me-1"></i> {room.owner?.phone || 'Contact for phone number'}
+                    <i className="bi bi-telephone me-1"></i> {getOwnerPhone() !== '1234567890' ? getOwnerPhone() : 'Contact for phone number'}
                   </small>
                 </div>
 

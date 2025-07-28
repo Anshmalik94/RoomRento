@@ -23,6 +23,7 @@ const roomSchema = new mongoose.Schema({
     available: { type: Boolean, default: true },
     isVisible: { type: Boolean, default: true },
     type: { type: String, default: 'Room' }, // Property type: Room, Hotel, Shop
+    phone: String, // Owner contact phone number
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     reviews: [reviewSchema],
     averageRating: { type: Number, default: 0 }

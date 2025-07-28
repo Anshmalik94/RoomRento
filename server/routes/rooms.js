@@ -75,6 +75,9 @@ router.get('/', async (req, res) => {
         // Build query filter
         let filter = {};
         
+        // Only show visible rooms (exclude explicitly hidden ones)
+        filter.isVisible = { $ne: false };
+        
         // Filter by type (Room, Hotel, Shop)
         if (type) {
             filter.type = type;
