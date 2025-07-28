@@ -39,7 +39,13 @@ class SocketService {
       });
 
       this.socket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
+        console.warn('Socket connection failed:', error.message);
+        // Don't treat authentication errors as critical
+        if (error.message.includes('Authentication error')) {
+          console.log('Invalid token - skipping socket connection');
+          this.disconnect();
+          return;
+        }
         this.emit('connected', false);
       });
 

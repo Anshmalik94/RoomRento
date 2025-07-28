@@ -52,38 +52,85 @@ function RoomsList({ filters }) {
     console.log("Filters applied:", filters);
     console.log("Rooms data from API:", rooms);
 
-    let result = rooms;
+    let result = [...rooms]; // Create a copy to avoid mutation
 
-    // Apply filters strictly
-    if (filters.location) {
-      result = result.filter((r) =>
-        r.location && r.location.toLowerCase() === filters.location.toLowerCase()
-      );
+    // Apply filters with proper logic
+    const hasFilters = Object.values(filters).some(value => 
+      value !== '' && value !== null && value !== undefined && value !== false
+    );
+
+    if (!hasFilters) {
+      // No filters applied, show all rooms
+      setFilteredRooms(result);
+      return;
     }
 
-    if (filters.roomType) {
-      result = result.filter((r) => r.roomType === filters.roomType);
+    // Apply location filter
+    if (filters.location && filters.location.trim() !== '') {
+      result = result.filter((room) => {
+        if (!room.location && !room.city) return false;
+        
+        const roomLocation = (room.location || '').toLowerCase();
+        const roomCity = (room.city || '').toLowerCase();
+        const filterLocation = filters.location.toLowerCase();
+        
+        return roomLocation.includes(filterLocation) || 
+               roomCity.includes(filterLocation) ||
+               roomLocation === filterLocation ||
+               roomCity === filterLocation;
+      });
     }
 
-    if (filters.budget) {
+    // Apply room type filter
+    if (filters.roomType && filters.roomType.trim() !== '') {
+      result = result.filter((room) => {
+        if (!room.roomType) return false;
+        return room.roomType.toLowerCase() === filters.roomType.toLowerCase();
+      });
+    }
+
+    // Apply budget filter
+    if (filters.budget && filters.budget.trim() !== '') {
       const maxBudget = parseInt(filters.budget, 10);
-      result = result.filter((r) => (!isNaN(maxBudget) ? Number(r.price) <= maxBudget : true));
+      if (!isNaN(maxBudget)) {
+        result = result.filter((room) => {
+          const roomPrice = parseInt(room.price, 10);
+          return !isNaN(roomPrice) && roomPrice <= maxBudget;
+        });
+      }
     }
 
-    if (filters.roomCategory) {
-      if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(filters.roomCategory)) {
-        result = result.filter((r) => r.furnished === filters.roomCategory);
-      } else if (filters.roomCategory === "PgType") {
-        result = result.filter((r) => r.roomType && r.roomType.toLowerCase().includes("pg"));
-      } else if (filters.roomCategory === "GirlsPg") {
-        result = result.filter((r) => r.roomType && r.roomType.toLowerCase().includes("girls"));
-      } else if (filters.roomCategory === "BoysPg") {
-        result = result.filter((r) => r.roomType && r.roomType.toLowerCase().includes("boys"));
-      }
+    // Apply room category filter
+    if (filters.roomCategory && filters.roomCategory.trim() !== '') {
+      result = result.filter((room) => {
+        const category = filters.roomCategory;
+        
+        if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(category)) {
+          return room.furnished && room.furnished.toLowerCase().includes(category.toLowerCase());
+        } else if (category === "PgType") {
+          return room.roomType && room.roomType.toLowerCase().includes("pg");
+        } else if (category === "GirlsPg") {
+          return room.roomType && (
+            room.roomType.toLowerCase().includes("girls") ||
+            room.roomType.toLowerCase().includes("girls pg") ||
+            room.roomType.toLowerCase().includes("pg for girls")
+          );
+        } else if (category === "BoysPg") {
+          return room.roomType && (
+            room.roomType.toLowerCase().includes("boys") ||
+            room.roomType.toLowerCase().includes("boys pg") ||
+            room.roomType.toLowerCase().includes("pg for boys")
+          );
+        }
+        
+        return false;
+      });
     }
 
     // Log filtered results
     console.log("Filtered results:", result);
+    console.log("Applied filters:", filters);
+    console.log("Number of results:", result.length);
 
     // Update filtered rooms
     setFilteredRooms(result);

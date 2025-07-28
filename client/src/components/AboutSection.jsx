@@ -10,7 +10,7 @@ function AboutSection() {
           {/* Image */}
           <div className="col-md-6 mb-4 mb-md-0">
             <img
-              src="/images/about1.jpg"
+              src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
               alt="About RoomRento"
               className="img-fluid zigzag-border"
             />

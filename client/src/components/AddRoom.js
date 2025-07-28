@@ -276,6 +276,9 @@ function AddRoom({ token }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log("Submit started - Form data:", data);
+    console.log("Images to upload:", images.length);
+    
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
       setMessage("Please fill all required fields correctly.");
       return;
@@ -306,8 +309,17 @@ function AddRoom({ token }) {
     // Add images
     Array.from(images).forEach((img) => formData.append("images", img));
 
+    // Debug FormData
+    console.log("FormData entries:");
+    for (let [key, value] of formData.entries()) {
+      console.log(key, ":", value);
+    }
+
     try {
       const authToken = token || localStorage.getItem("token");
+      
+      console.log("Auth token:", authToken ? "Present" : "Missing");
+      console.log("API URL:", `${API_URL}/api/rooms`);
       
       if (!authToken) {
         setMessage("Authentication required. Please login again.");
@@ -315,7 +327,7 @@ function AddRoom({ token }) {
         return;
       }
 
-      await axios.post(`${API_URL}/api/rooms`, formData, {
+      const response = await axios.post(`${API_URL}/api/rooms`, formData, {
         headers: { 
           Authorization: `Bearer ${authToken}`,
           'Content-Type': 'multipart/form-data'
@@ -326,6 +338,8 @@ function AddRoom({ token }) {
         }
       });
       
+      console.log("Room creation response:", response.data);
+      
       // Room added successfully
       setMessage("Room added successfully!");
       
@@ -334,9 +348,27 @@ function AddRoom({ token }) {
       }, 2000);
     } catch (error) {
       console.error("Error adding room:", error);
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error || 
-                          "Failed to add room. Please try again.";
+      console.error("Error response:", error.response);
+      console.error("Error message:", error.message);
+      
+      let errorMessage = "Failed to add room. Please try again.";
+      
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = error.response.data?.message || 
+                      error.response.data?.error || 
+                      `Server error: ${error.response.status}`;
+        console.error("Server error data:", error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "No response from server. Please check your connection.";
+        console.error("No response received:", error.request);
+      } else {
+        // Something else happened
+        errorMessage = error.message;
+        console.error("Request setup error:", error.message);
+      }
+      
       setMessage(errorMessage);
     } finally {
       setLoading(false);
@@ -851,7 +883,6 @@ function AddRoom({ token }) {
           </div>
         </div>
       </div>
-      <img src="/images/talking.png" alt="Talking Illustration" />
     </div>
   );
 }

@@ -7,6 +7,20 @@ const router = express.Router();
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 
+// Utility function to calculate distance between two points
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c; // Distance in km
+    return distance;
+};
+
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
@@ -53,10 +67,10 @@ router.post('/', auth, upload.array('images', 10), async (req, res) => {
     }
 });
 
-// Get All Rooms with smart fallback and type filtering
+// Get All Rooms with smart fallback and enhanced filtering
 router.get('/', async (req, res) => {
     try {
-        const { type, city, lat, lng, nearby } = req.query;
+        const { type, city, lat, lng, nearby, location, roomType, budget, roomCategory } = req.query;
         
         // Build query filter
         let filter = {};
@@ -71,204 +85,87 @@ router.get('/', async (req, res) => {
             filter.city = new RegExp(city, 'i'); // Case insensitive search
         }
         
-        // Try to fetch from database first
-        let rooms;
-        try {
-            rooms = await Room.find(filter).populate('user', 'name email phone').sort({ createdAt: -1 });
-            return res.json(rooms);
-        } catch (dbError) {
-            // Fallback to mock data if database fails
-            const mockRooms = [
-                {
-                    _id: "67891234567890abcdef1234",
-                    title: "Beautiful Room in Delhi",
-                    description: "Spacious room with all amenities including AC, Wi-Fi, and parking",
-                    price: 15000,
-                    location: "Delhi, Delhi", 
-                    city: "Delhi",
-                    state: "Delhi",
-                    type: "Room",
-                    roomType: "Single Room",
-                    furnished: "Fully Furnished",
-                    images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop"],
-                    user: {
-                        _id: "67891234567890abcdef0001",
-                        name: "John Doe",
-                        phone: "9876543210",
-                        email: "john@example.com"
-                    },
-                    facilities: ["Wi-Fi", "AC", "Parking", "Security"],
-                    createdAt: new Date(),
-                    available: true,
-                    maxOccupancy: 2,
-                    area: "500"
-                },
-                {
-                    _id: "67891234567890abcdef1235",
-                    title: "Cozy PG in Noida",
-                    description: "Perfect for students and professionals with all basic amenities",
-                    price: 8000,
-                    location: "Noida, Uttar Pradesh",
-                    city: "Noida", 
-                    state: "Uttar Pradesh",
-                    type: "Room",
-                    roomType: "PG for Boys",
-                    furnished: "Semi Furnished",
-                    images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop"],
-                    user: {
-                        _id: "67891234567890abcdef0002",
-                        name: "Jane Smith",
-                        phone: "9876543211",
-                        email: "jane@example.com"
-                    },
-                    facilities: ["Wi-Fi", "Laundry", "Kitchen"],
-                    createdAt: new Date(),
-                    available: true,
-                    maxOccupancy: 1,
-                    area: "300"
-                },
-                {
-                    _id: "67891234567890abcdef1236",
-                    title: "Luxury Apartment in Mumbai",
-                    description: "Fully furnished luxury apartment with sea view",
-                    price: 25000,
-                    location: "Mumbai, Maharashtra",
-                    city: "Mumbai",
-                    state: "Maharashtra",
-                    type: "Room", 
-                    roomType: "Studio Apartment",
-                    furnished: "Fully Furnished",
-                    images: ["https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=600&h=400&fit=crop"],
-                    user: {
-                        _id: "67891234567890abcdef0003",
-                        name: "Mike Johnson",
-                        phone: "9876543212",
-                        email: "mike@example.com"
-                    },
-                    facilities: ["Wi-Fi", "AC", "Gym", "Swimming Pool", "Security"],
-                    createdAt: new Date(),
-                    available: true,
-                    maxOccupancy: 3,
-                    area: "800"
-                }
+        // Filter by location if provided (broader search)
+        if (location && !city) {
+            filter.$or = [
+                { city: new RegExp(location, 'i') },
+                { location: new RegExp(location, 'i') },
+                { address: new RegExp(location, 'i') }
             ];
-            
-            // Filter mock data based on query parameters
-            let filteredMockRooms = mockRooms;
-            
-            if (type) {
-                filteredMockRooms = filteredMockRooms.filter(room => room.type === type);
-            }
-            
-            if (city) {
-                filteredMockRooms = filteredMockRooms.filter(room => 
-                    room.city.toLowerCase().includes(city.toLowerCase())
-                );
-            }
-            
-            return res.json(filteredMockRooms);
         }
         
+        // Try to fetch from database first
+        let rooms = await Room.find(filter).populate('user', 'name email phone').sort({ createdAt: -1 });
+        
+        // Handle nearby search with coordinates
+        if (nearby === 'true' && lat && lng) {
+            const userLat = parseFloat(lat);
+            const userLng = parseFloat(lng);
+            
+            if (!isNaN(userLat) && !isNaN(userLng)) {
+                // Calculate distance for each room and sort by proximity
+                rooms = rooms.filter(room => {
+                    if (!room.latitude || !room.longitude) return false;
+                    
+                    const distance = calculateDistance(
+                        userLat, userLng, 
+                        parseFloat(room.latitude), parseFloat(room.longitude)
+                    );
+                    
+                    // Include rooms within 10km radius
+                    return distance <= 10;
+                }).sort((a, b) => {
+                    const distanceA = calculateDistance(
+                        userLat, userLng, 
+                        parseFloat(a.latitude), parseFloat(a.longitude)
+                    );
+                    const distanceB = calculateDistance(
+                        userLat, userLng, 
+                        parseFloat(b.latitude), parseFloat(b.longitude)
+                    );
+                    return distanceA - distanceB;
+                });
+            }
+        }
+        
+        return res.json(rooms);
+        
     } catch (err) {
+        console.error('Main error:', err);
         res.status(500).json({ 
             error: "Failed to fetch rooms", 
-            message: err.message,
-            fallback: "Database temporarily unavailable" 
+            message: err.message
         });
     }
 });
 
-// Get My Listings with smart fallback
+// Get My Listings - Clean database version
 router.get('/my-listings', auth, async (req, res) => {
     try {
-        
-        // Try database first
-        try {
-            const rooms = await Room.find({ user: req.user.id })
-                .populate('user', 'name email phone isVerified emailVerified phoneVerified')
-                .sort({ createdAt: -1 });
-            return res.json(rooms);
-        } catch (dbError) {
-            
-            // Fallback mock data for user's listings
-            const mockUserRooms = [
-                {
-                    _id: "67891234567890abcdef1234",
-                    title: "My Beautiful Room",
-                    description: "My personal room listing with great amenities",
-                    price: 15000,
-                    location: "Delhi, Delhi",
-                    user: req.user.id,
-                    available: true,
-                    createdAt: new Date(),
-                    images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop"],
-                    facilities: ["Wi-Fi", "AC", "Parking"],
-                    roomType: "Single Room"
-                }
-            ];
-            
-            return res.json(mockUserRooms);
-        }
+        const rooms = await Room.find({ user: req.user.id })
+            .populate('user', 'name email phone isVerified emailVerified phoneVerified')
+            .sort({ createdAt: -1 });
+        res.json(rooms);
     } catch (err) {
+        console.error('Error fetching user listings:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// Get Room By ID with smart fallback
+// Get Room By ID - Clean database version
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
-        // Try database first
-        try {
-            const room = await Room.findById(id)
-                .populate('user', 'name email phone isVerified emailVerified phoneVerified')
-                .populate('reviews.user', 'name');
-            
-            if (room) {
-                return res.json(room);
-            } else {
-                // If not found in DB, return mock data
-                throw new Error('Room not found in database');
-            }
-        } catch (dbError) {
-            
-            // Mock room data for testing
-            const mockRoom = {
-                _id: id,
-                title: "Beautiful Room Details",
-                description: "Spacious room with all amenities including AC, Wi-Fi, and parking. Perfect for students and professionals with modern facilities and great connectivity.",
-                price: 15000,
-                location: "Delhi, Delhi", 
-                city: "Delhi",
-                state: "Delhi",
-                roomType: "Single Room",
-                furnished: "Fully Furnished",
-                images: [
-                    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop",
-                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=400&fit=crop",
-                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop"
-                ],
-                user: {
-                    _id: "67891234567890abcdef0001",
-                    name: "John Doe",
-                    phone: "9876543210",
-                    email: "john@example.com",
-                    isVerified: true
-                },
-                facilities: ["Wi-Fi", "AC", "Parking", "Security", "Kitchen", "Laundry"],
-                createdAt: new Date(),
-                available: true,
-                maxOccupancy: 2,
-                area: "500",
-                reviews: [],
-                averageRating: 4.5,
-                address: "Near Metro Station, Central Delhi",
-                amenities: ["24/7 Water Supply", "Power Backup", "CCTV Security", "Housekeeping"]
-            };
-            
-            return res.json(mockRoom);
+        const room = await Room.findById(id)
+            .populate('user', 'name email phone isVerified emailVerified phoneVerified')
+            .populate('reviews.user', 'name');
+        
+        if (!room) {
+            return res.status(404).json({ error: 'Room not found' });
         }
+        
+        res.json(room);
         
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -7,9 +7,16 @@ import './RoomSearchForm.css';
 function RoomSearchForm({ filters, onSubmit }) {
   const [formFilters, setFormFilters] = useState(() => {
     const savedFilters = sessionStorage.getItem('roomFilters');
-    return savedFilters ? JSON.parse(savedFilters) : filters;
+    return savedFilters ? JSON.parse(savedFilters) : (filters || {
+      location: '',
+      roomType: '',
+      budget: '',
+      roomCategory: '',
+      nearby: false
+    });
   });
   const [animate, setAnimate] = useState(false);
+  const [isNearbyActive, setIsNearbyActive] = useState(false);
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
@@ -55,18 +62,63 @@ function RoomSearchForm({ filters, onSubmit }) {
   };
 
   const handleNearMe = () => {
+    setIsNearbyActive(true);
+    
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          
+          // Update form filters with location data
+          const nearbyFilters = {
+            ...formFilters,
+            location: '', // Clear city selection for nearby search
+            latitude,
+            longitude,
+            nearby: true
+          };
+          
+          setFormFilters(nearbyFilters);
+          
+          // Trigger search with nearby parameters
+          onSubmit(nearbyFilters);
+          
+          // Navigate to rooms page with coordinates
           navigate(`/rooms?lat=${latitude}&lng=${longitude}&nearby=true`);
+          
+          setIsNearbyActive(false);
         },
         (error) => {
-          alert('Location access denied or not available');
+          setIsNearbyActive(false);
+          
+          let errorMessage = 'Location access denied or not available';
+          
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Location access denied. Please enable location permission and try again.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Location information is unavailable. Please try again later.';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'Location request timed out. Please try again.';
+              break;
+            default:
+              errorMessage = 'An unknown error occurred while getting your location.';
+              break;
+          }
+          
+          alert(errorMessage);
           console.error('Geolocation error:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
         }
       );
     } else {
+      setIsNearbyActive(false);
       alert('Geolocation is not supported by this browser');
     }
   };
@@ -76,18 +128,68 @@ function RoomSearchForm({ filters, onSubmit }) {
       <section
         id="room-search-section"
         ref={sectionRef}
-        className={`room-search-form-section d-flex justify-content-center align-items-center py-5 bg-transparent ${
+        className={`room-search-form-section d-flex justify-content-center align-items-center py-5 ${
           animate ? 'zoom-highlight' : ''
         }`}
+        style={{ 
+          background: 'transparent', 
+          backgroundColor: 'transparent',
+          backgroundImage: 'none'
+        }}
       >
         <div
-          className="room-search-form-card bg-white shadow rounded-4 p-4 w-100"
-          style={{ maxWidth: 700 }}
+          className="room-search-form-card shadow rounded-4 p-4 w-100"
+          style={{ 
+            maxWidth: 700,
+            background: '#ffffff',
+            backgroundColor: '#ffffff'
+          }}
         >
           <h3 className="fw-bold text-center mb-1">Start Your Room Search</h3>
           <p className="text-center text-muted mb-4">
             Discover thousands of verified room listings
           </p>
+          
+          {/* Active Filters Display */}
+          {(formFilters.location || formFilters.roomType || formFilters.budget || formFilters.roomCategory || formFilters.nearby) && (
+            <div className="mb-3 p-2 bg-light rounded">
+              <small className="text-muted d-block mb-1">Active Filters:</small>
+              <div className="d-flex flex-wrap gap-1">
+                {formFilters.location && (
+                  <span className="badge bg-primary">{formFilters.location}</span>
+                )}
+                {formFilters.roomType && (
+                  <span className="badge bg-success">{formFilters.roomType}</span>
+                )}
+                {formFilters.budget && (
+                  <span className="badge bg-warning text-dark">Up to ₹{formFilters.budget}</span>
+                )}
+                {formFilters.roomCategory && (
+                  <span className="badge bg-info">{formFilters.roomCategory}</span>
+                )}
+                {formFilters.nearby && (
+                  <span className="badge bg-secondary">Near Me</span>
+                )}
+                <button 
+                  type="button" 
+                  className="badge bg-danger border-0" 
+                  onClick={() => {
+                    setFormFilters({
+                      location: '',
+                      roomType: '',
+                      budget: '',
+                      roomCategory: '',
+                      nearby: false
+                    });
+                    sessionStorage.removeItem('roomFilters');
+                  }}
+                  style={{cursor: 'pointer'}}
+                >
+                  Clear All ×
+                </button>
+              </div>
+            </div>
+          )}
           <form className="row g-3 align-items-end" onSubmit={handleSubmit}>
             {/* Location Dropdown and Near Me Button */}
             <div className="col-md-6">
@@ -109,10 +211,20 @@ function RoomSearchForm({ filters, onSubmit }) {
                 </select>
                 <button 
                   type="button" 
-                  className="btn near-me-btn border-start-0"
+                  className={`btn near-me-btn border-start-0 ${isNearbyActive ? 'disabled' : ''}`}
                   onClick={handleNearMe}
+                  disabled={isNearbyActive}
                 >
-                  <i className="bi bi-crosshair me-1"></i>Near me
+                  {isNearbyActive ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Getting location...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-crosshair me-1"></i>Near me
+                    </>
+                  )}
                 </button>
               </div>
             </div>

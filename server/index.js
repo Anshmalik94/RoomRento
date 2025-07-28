@@ -10,6 +10,9 @@ const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 
+// Disable mongoose buffering (newer syntax)
+mongoose.set('bufferCommands', false);
+
 const roomRoutes = require('./routes/rooms');
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
@@ -146,17 +149,62 @@ app.use(express.json());
 // ✅ Static folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ✅ MongoDB Connection with proper error handling
-mongoose
-  .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-    socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-  })
-  .then(() => console.log('MongoDB Connected Successfully'))
-  .catch((err) => {
-    console.error('MongoDB Connection Error:', err.message);
-    console.log('Running with limited functionality - some features may not work');
-  });
+// ✅ MongoDB Connection with enhanced error handling
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      // Connection timeout settings
+      serverSelectionTimeoutMS: 30000, // Increased to 30s
+      connectTimeoutMS: 30000,         // 30s to establish connection
+      socketTimeoutMS: 0,              // Disable socket timeout (keep alive)
+      
+      // Additional stability options
+      maxPoolSize: 10,                 // Maintain up to 10 socket connections
+      minPoolSize: 5,                  // Maintain minimum 5 socket connections
+      maxIdleTimeMS: 30000,           // Close connections after 30 seconds of inactivity
+      
+      // Retry settings
+      retryWrites: true,              // Enable retryable writes
+    });
+
+    console.log('✅ MongoDB Connected Successfully');
+    console.log(`📍 Connected to: ${conn.connection.host}`);
+    console.log(`📊 Database: ${conn.connection.name}`);
+    
+    // Handle connection events
+    mongoose.connection.on('error', (err) => {
+      console.error('❌ MongoDB connection error:', err.message);
+    });
+    
+    mongoose.connection.on('disconnected', () => {
+      console.log('⚠️ MongoDB disconnected. Attempting to reconnect...');
+    });
+    
+    mongoose.connection.on('reconnected', () => {
+      console.log('✅ MongoDB reconnected successfully');
+    });
+    
+    return conn;
+  } catch (error) {
+    console.error('❌ MongoDB Connection Failed:', error.message);
+    
+    // Specific error handling
+    if (error.name === 'MongoServerSelectionError') {
+      console.log('🔍 Connection timeout - This could be due to:');
+      console.log('   • Network connectivity issues');
+      console.log('   • MongoDB Atlas IP whitelist restrictions');
+      console.log('   • Incorrect connection string');
+      console.log('   • MongoDB cluster is paused/down');
+    }
+    
+    // Don't exit process immediately, let it retry
+    console.log('⏳ Retrying connection in 10 seconds...');
+    setTimeout(connectDB, 10000);
+  }
+};
+
+// Initialize database connection
+connectDB();
 
 // ✅ Routes
 app.use('/api/rooms', roomRoutes);
@@ -169,7 +217,33 @@ app.use('/api/help', helpRoutes);
 
 // ✅ Health Check
 app.get('/', (req, res) => {
-  res.send('RoomRento Backend is running');
+  const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
+  res.json({
+    message: 'RoomRento Backend is running',
+    database: dbStatus,
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
+// Database health check endpoint
+app.get('/health', (req, res) => {
+  const dbStatus = mongoose.connection.readyState;
+  const statusMap = {
+    0: 'Disconnected',
+    1: 'Connected',
+    2: 'Connecting',
+    3: 'Disconnecting'
+  };
+  
+  res.json({
+    status: 'OK',
+    database: {
+      status: statusMap[dbStatus] || 'Unknown',
+      readyState: dbStatus
+    },
+    timestamp: new Date().toISOString()
+  });
 });
 
 // ✅ Start Server
