@@ -15,6 +15,7 @@ import AddRoom from "./components/AddRoom";
 import AddHotel from "./components/AddHotel";
 import AddShop from "./components/AddShop";
 import AuthForm from "./components/AuthForm";
+import AuthModal from "./components/AuthModal";
 import HelpSupport from "./components/HelpSupport";
 import Hotels from "./components/Hotels";
 import Shop from "./components/Shop";
@@ -53,6 +54,7 @@ function App() {
     roomCategory: ""
   });
   const [showRentifyModal, setShowRentifyModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   // Old navbar state variables removed - now handled by ResponsiveNavbar component
 
   const AppContent = () => {
@@ -95,10 +97,10 @@ function App() {
   );
 
   // Route Guards
-  const PrivateRoute = ({ children }) => token ? children : <Navigate to="/login" />;
+  const PrivateRoute = ({ children }) => token ? children : <Navigate to="/" />;
   const OwnerRoute = ({ children }) => {
     const role = localStorage.getItem('role');
-    if (!token) return <Navigate to="/login" />;
+    if (!token) return <Navigate to="/" />;
     if (role !== 'owner') return <Navigate to="/" />;
     return children;
   };
@@ -114,6 +116,17 @@ function App() {
     setShowRentifyModal(true);
   };
   const handleRentifyClose = () => setShowRentifyModal(false);
+  const handleLoginModalShow = () => setShowLoginModal(true);
+  const handleLoginModalHide = () => setShowLoginModal(false);
+  const handleLoginSuccess = () => {
+    // Update userInfo with latest data from localStorage
+    setUserInfo({
+      name: localStorage.getItem("userName") || "",
+      email: localStorage.getItem("email") || ""
+    });
+    // Redirect to homepage after successful login
+    navigate('/');
+  };
   const handleRentifyOption = (option) => {
     setShowRentifyModal(false);
     const routes = { room: '/add-room', hotel: '/add-hotel', shop: '/add-shop' };
@@ -130,7 +143,7 @@ function App() {
       localStorage.clear();
       setToken("");
       setUserInfo({ name: "", email: "" });
-      navigate("/login");
+      navigate("/");
     }
   };
 
@@ -144,6 +157,7 @@ function App() {
             userRole={userRole}
             handleLogout={handleLogout}
             handleRentifyClick={handleRentifyClick}
+            handleLoginModalShow={handleLoginModalShow}
           />
         )}
 
@@ -158,7 +172,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Homepage />} />
-            <Route path="/login" element={token ? <Navigate to="/" /> : <AuthForm setToken={setToken} />} />
+            <Route path="/login" element={token ? <Navigate to="/" /> : <Navigate to="/" />} />
             <Route path="/shop" element={<Shop />} />
             
             {/* Protected Routes */}
@@ -249,6 +263,14 @@ function App() {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        {/* Auth Modal */}
+        <AuthModal 
+          show={showLoginModal} 
+          onHide={handleLoginModalHide}
+          setToken={setToken}
+          onSuccessRedirect={handleLoginSuccess}
+        />
 
         <Helmet>
           <meta property="og:title" content="RoomRento - Affordable Rentals" />

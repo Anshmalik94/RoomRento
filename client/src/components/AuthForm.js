@@ -4,6 +4,7 @@ import BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import ToastMessage from "./ToastMessage";
 import "./AuthForm.css";
 
 function AuthForm({ setToken }) {
@@ -17,7 +18,16 @@ function AuthForm({ setToken }) {
     role: "renter",
   });
   const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
   const navigate = useNavigate();
+
+  const showToastMessage = (message, type = "info") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+  };
 
   // Add and remove body class for login page background
   useEffect(() => {
@@ -34,7 +44,7 @@ function AuthForm({ setToken }) {
     e.preventDefault();
 
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      showToastMessage("Passwords do not match!", "error");
       return;
     }
 
@@ -54,10 +64,10 @@ function AuthForm({ setToken }) {
       if (res.data.name) {
         localStorage.setItem("userName", res.data.name);
       }
-      alert(isLogin ? "Login Successful!" : "Registration Successful!");
-      navigate("/");
+      showToastMessage(isLogin ? "Login Successful!" : "Registration Successful!", "success");
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
-      alert(err.response?.data?.msg || "Failed, please try again.");
+      showToastMessage(err.response?.data?.msg || "Failed, please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -81,11 +91,11 @@ function AuthForm({ setToken }) {
       localStorage.setItem("email", decoded.email);
       localStorage.setItem("userName", decoded.name || `${decoded.given_name} ${decoded.family_name}`);
       
-      alert("Google Login Successful!");
-      navigate("/");
+      showToastMessage("Google Login Successful!", "success");
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
       console.error("Google login error:", err);
-      alert(err.response?.data?.msg || "Google Login Failed");
+      showToastMessage(err.response?.data?.msg || "Google Login Failed", "error");
     } finally {
       setLoading(false);
     }
@@ -93,6 +103,14 @@ function AuthForm({ setToken }) {
 
   return (
     <div className="auth-main-container">
+      {/* Toast Messages */}
+      <ToastMessage 
+        show={showToast}
+        message={toastMessage}
+        type={toastType}
+        onClose={() => setShowToast(false)}
+      />
+      
       <div className="auth-container">
         {/* ROOMRENTO Title */}
         <h1 className="auth-brand-title">ROOMRENTO</h1>
@@ -129,7 +147,7 @@ function AuthForm({ setToken }) {
             onSuccess={handleGoogleSuccess}
             onError={() => {
       // Login failed
-              alert("Google Login Failed");
+              showToastMessage("Google Login Failed", "error");
             }}
           />
         </div>

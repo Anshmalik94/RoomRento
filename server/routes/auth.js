@@ -7,11 +7,14 @@ const router = express.Router();
 
 // Register Route with smart fallback
 router.post("/register", async (req, res) => {
-  const { email, password, role, name } = req.body;
+  const { email, password, role, name, firstname, lastname } = req.body;
 
   if (!email || !password || !role) {
     return res.status(400).json({ msg: "All fields are required" });
   }
+
+  // Construct name from firstname/lastname or use provided name
+  const fullName = name || (firstname && lastname ? `${firstname} ${lastname}`.trim() : email.split('@')[0]);
 
   try {
     // Try database registration first
@@ -26,7 +29,7 @@ router.post("/register", async (req, res) => {
         email, 
         password: hashedPassword, 
         role,
-        name: name || email.split('@')[0]
+        name: fullName
       });
       await user.save();
 
@@ -54,7 +57,7 @@ router.post("/register", async (req, res) => {
           id: 'demo_' + Date.now(), 
           role: role, 
           email: email, 
-          name: name || email.split('@')[0]
+          name: fullName
         }, 
         process.env.JWT_SECRET || 'fallback_secret',
         { expiresIn: '7d' }
@@ -65,7 +68,7 @@ router.post("/register", async (req, res) => {
         role: role,
         user: {
           id: 'demo_' + Date.now(),
-          name: name || email.split('@')[0],
+          name: fullName,
           email: email,
           role: role
         },

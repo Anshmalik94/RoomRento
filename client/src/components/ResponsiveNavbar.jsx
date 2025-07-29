@@ -24,7 +24,8 @@ const ResponsiveNavbar = ({
   userInfo, 
   userRole, 
   handleLogout, 
-  handleRentifyClick 
+  handleRentifyClick,
+  handleLoginModalShow 
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -278,10 +279,14 @@ const ResponsiveNavbar = ({
                 </li>
               ) : (
                 <li className="nav-item">
-                  <Link className="btn btn-primary" to="/login">
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleLoginModalShow}
+                    style={{ border: 'none' }}
+                  >
                     <FaUser className="me-2" />
                     Login
-                  </Link>
+                  </button>
                 </li>
               )}
             </ul>
@@ -507,14 +512,14 @@ const ResponsiveNavbar = ({
             {!token && (
               <>
                 <hr className="my-3" />
-                <Link 
+                <button 
                   className="btn btn-primary w-100 d-flex align-items-center justify-content-center"
-                  to="/login"
-                  onClick={closeMobileSidebar}
+                  onClick={() => { handleLoginModalShow(); closeMobileSidebar(); }}
+                  style={{ border: 'none' }}
                 >
                   <FaUser className="me-2" />
                   Login / Register
-                </Link>
+                </button>
               </>
             )}
           </div>

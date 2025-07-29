@@ -21,16 +21,16 @@ const getBaseURL = () => {
       return process.env.REACT_APP_API_URL;
     }
     // Use BASE_URL from env or fallback
-    return process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
+    return process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
   }
   
   // If frontend is on Render
   if (currentHost.includes('onrender.com')) {
-    return process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
+    return process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
   }
   
   // Fallback to environment variable or default
-  return process.env.REACT_APP_API_URL || process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
+  return process.env.REACT_APP_API_URL || process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
 };
 
 const BASE_URL = getBaseURL();
