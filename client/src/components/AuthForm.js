@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { apiClient } from "../config";
 import BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
@@ -59,7 +59,7 @@ function AuthForm({ setToken }) {
       console.log('Sending request to:', `${BASE_URL}${endpoint}`);
       console.log('Payload:', payload);
       
-      const res = await axios.post(`${BASE_URL}${endpoint}`, payload);
+      const res = await apiClient.post(endpoint, payload);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
@@ -83,7 +83,7 @@ function AuthForm({ setToken }) {
       const decoded = jwtDecode(credentialResponse.credential);
       // Debug: Google user data processed
       
-      const res = await axios.post(`${BASE_URL}/api/auth/google-login`, {
+      const res = await apiClient.post('/api/auth/google-login', {
         email: decoded.email,
         name: decoded.name || `${decoded.given_name} ${decoded.family_name}`,
         picture: decoded.picture

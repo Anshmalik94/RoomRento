@@ -1,4 +1,6 @@
 // Smart API base URL detection for multiple deployment platforms
+import axios from 'axios';
+
 const getBaseURL = () => {
   // Development mode check first
   if (process.env.NODE_ENV === 'development') {
@@ -7,11 +9,13 @@ const getBaseURL = () => {
   
   // Always use production URL if available
   if (process.env.REACT_APP_API_URL) {
+    console.log('Using REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
     return process.env.REACT_APP_API_URL;
   }
   
   // Production mode - try multiple backend URLs
   const currentHost = window.location.hostname;
+  console.log('Current hostname:', currentHost);
   
   // If frontend is on Vercel
   if (currentHost.includes('vercel.app')) {
@@ -20,29 +24,128 @@ const getBaseURL = () => {
       return process.env.REACT_APP_API_URL;
     }
     // Use BASE_URL from env or fallback
-    return process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    console.log('Using Vercel URL:', url);
+    return url;
   }
   
   // If frontend is on Render
   if (currentHost.includes('onrender.com')) {
-    return process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    console.log('Using Render URL:', url);
+    return url;
   }
   
-  // Fallback to environment variable or default
-  return process.env.REACT_APP_API_URL || process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+  // Custom domain check - try multiple backends
+  if (currentHost.includes('roomrento.com')) {
+    // Try primary backend first, then fallbacks
+    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    console.log('Using custom domain URL:', url);
+    return url;
+  }
+  
+  // Fallback to environment variable or try multiple backends
+  const possibleBackends = [
+    process.env.REACT_APP_API_URL,
+    process.env.REACT_APP_BASE_URL,
+    'https://roomrento-backend.onrender.com',
+    'https://roomrento-api.onrender.com',
+    'https://roomrento.onrender.com'
+  ].filter(Boolean);
+  
+  const fallbackUrl = possibleBackends[0];
+  console.log('Using fallback URL:', fallbackUrl);
+  console.log('Available backends:', possibleBackends);
+  return fallbackUrl;
 };
 
 const BASE_URL = getBaseURL();
 
-// API configuration
+// Debug information
+console.log('🚀 RoomRento API Configuration:');
+console.log('- NODE_ENV:', process.env.NODE_ENV);
+console.log('- REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+console.log('- REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
+console.log('- Final BASE_URL:', BASE_URL);
+console.log('- Current hostname:', window.location.hostname);
+
+// API configuration with error handling
 export const API_CONFIG = {
   baseURL: BASE_URL,
-  timeout: 10000, // 10 seconds timeout
+  timeout: 15000, // Increased to 15 seconds
   retries: 3,
   headers: {
     'Content-Type': 'application/json',
   }
 };
+
+// Create axios instance with better error handling
+
+export const apiClient = axios.create({
+  baseURL: BASE_URL,
+  timeout: 15000,
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
+
+// Add request interceptor for debugging
+apiClient.interceptors.request.use(
+  (config) => {
+    console.log('🚀 API Request:', config.method?.toUpperCase(), config.url);
+    console.log('🔗 Full URL:', config.baseURL + config.url);
+    return config;
+  },
+  (error) => {
+    console.error('❌ Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor with retry logic
+apiClient.interceptors.response.use(
+  (response) => {
+    console.log('✅ API Response:', response.status, response.config.url);
+    return response;
+  },
+  async (error) => {
+    console.error('❌ API Error:', error.message);
+    
+    const originalRequest = error.config;
+    
+    // If it's a network error and we haven't tried alternatives
+    if (!error.response && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      // Try alternative backends
+      const alternativeBackends = [
+        'https://roomrento-api.onrender.com',
+        'https://roomrento.onrender.com'
+      ];
+      
+      for (const backend of alternativeBackends) {
+        try {
+          console.log('🔄 Trying alternative backend:', backend);
+          const retryResponse = await apiClient({
+            ...originalRequest,
+            baseURL: backend
+          });
+          return retryResponse;
+        } catch (retryError) {
+          console.log('❌ Alternative backend failed:', backend);
+        }
+      }
+    }
+    
+    if (error.response) {
+      console.error('📄 Error Response:', error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error('🌐 Network Error:', error.request);
+      console.error('💡 Possible causes: CORS, Server down, Network issues');
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Endpoints
 export const ENDPOINTS = {
