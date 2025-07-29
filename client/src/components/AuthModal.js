@@ -66,13 +66,13 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
       
       showToastMessage(isLogin ? "Login Successful!" : "Registration Successful!", "success");
       
-      // Close modal and redirect after short delay
+      // Close modal and redirect after longer delay to show toast
       setTimeout(() => {
         onHide();
         if (onSuccessRedirect) {
           onSuccessRedirect();
         }
-      }, 1500);
+      }, 2500);
     } catch (err) {
       showToastMessage(err.response?.data?.msg || "Failed, please try again.", "error");
     } finally {
@@ -99,13 +99,13 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
       
       showToastMessage("Google Login Successful!", "success");
       
-      // Close modal and redirect after short delay
+      // Close modal and redirect after longer delay to show toast
       setTimeout(() => {
         onHide();
         if (onSuccessRedirect) {
           onSuccessRedirect();
         }
-      }, 1500);
+      }, 2500);
     } catch (err) {
       console.error("Google login error:", err);
       showToastMessage(err.response?.data?.msg || "Google Login Failed", "error");

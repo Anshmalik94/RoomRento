@@ -68,7 +68,7 @@ function AuthForm({ setToken }) {
         localStorage.setItem("userName", res.data.name);
       }
       showToastMessage(isLogin ? "Login Successful!" : "Registration Successful!", "success");
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate("/"), 2500);
     } catch (err) {
       console.error('Auth error:', err);
       showToastMessage(err.response?.data?.msg || "Failed, please try again.", "error");
@@ -96,7 +96,7 @@ function AuthForm({ setToken }) {
       localStorage.setItem("userName", decoded.name || `${decoded.given_name} ${decoded.family_name}`);
       
       showToastMessage("Google Login Successful!", "success");
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate("/"), 2500);
     } catch (err) {
       console.error("Google login error:", err);
       showToastMessage(err.response?.data?.msg || "Google Login Failed", "error");
