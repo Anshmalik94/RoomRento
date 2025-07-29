@@ -219,6 +219,9 @@ export function NotificationProvider({ children }) {
 
   const markAsRead = async (notificationIds = []) => {
     try {
+      // Immediately update UI for responsiveness
+      dispatch({ type: NOTIFICATION_ACTIONS.MARK_AS_READ, payload: notificationIds });
+      
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_URL}/api/notifications/mark-read`, {
         method: 'PATCH',
@@ -232,16 +235,55 @@ export function NotificationProvider({ children }) {
       const data = await response.json();
       
       if (data.success) {
-        dispatch({ type: NOTIFICATION_ACTIONS.MARK_AS_READ, payload: notificationIds });
-        // Also emit to socket for real-time update
+        // Emit to socket for real-time update
         socketService.markNotificationAsRead(notificationIds);
-        // Fetch updated unread count
-        fetchUnreadCount();
+        // Refetch notifications to get updated state from backend
+        await fetchNotifications();
       } else {
-        throw new Error(data.message || 'Failed to mark as read');
+        // Revert UI changes if API call failed
+        dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: data.message || 'Failed to mark as read' });
+        // Refetch to get correct state
+        await fetchNotifications();
       }
     } catch (error) {
       dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: error.message });
+      // Refetch to get correct state
+      await fetchNotifications();
+    }
+  };
+
+  // New function for marking single notification as read
+  const markSingleAsRead = async (notificationId) => {
+    try {
+      // Immediately update UI for responsiveness
+      dispatch({ type: NOTIFICATION_ACTIONS.MARK_AS_READ, payload: [notificationId] });
+      
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/notifications/${notificationId}/read`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Emit to socket for real-time update
+        socketService.markNotificationAsRead([notificationId]);
+        // Refetch notifications to get updated state from backend
+        await fetchNotifications();
+      } else {
+        // Revert UI changes if API call failed
+        dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: data.message || 'Failed to mark as read' });
+        // Refetch to get correct state
+        await fetchNotifications();
+      }
+    } catch (error) {
+      dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: error.message });
+      // Refetch to get correct state
+      await fetchNotifications();
     }
   };
 
@@ -320,6 +362,7 @@ export function NotificationProvider({ children }) {
     ...state,
     fetchNotifications,
     markAsRead,
+    markSingleAsRead,
     markAllAsRead,
     deleteNotification,
     clearAllNotifications
