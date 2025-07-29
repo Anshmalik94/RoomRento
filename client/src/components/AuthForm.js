@@ -263,6 +263,15 @@ function AuthForm({ setToken }) {
           </span>
         </div>
       </div>
+      
+      {/* Toast Message */}
+      <ToastMessage
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        message={toastMessage}
+        type={toastType}
+        duration={4000}
+      />
     </div>
   );
 }
