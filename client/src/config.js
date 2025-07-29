@@ -48,9 +48,7 @@ const getBaseURL = () => {
   const possibleBackends = [
     process.env.REACT_APP_API_URL,
     process.env.REACT_APP_BASE_URL,
-    'https://roomrento.onrender.com',
-    'https://roomrento-backend.onrender.com',
-    'https://roomrento-api.onrender.com'
+    'https://roomrento.onrender.com'
   ].filter(Boolean);
   
   const fallbackUrl = possibleBackends[0];
@@ -117,11 +115,9 @@ apiClient.interceptors.response.use(
     if (!error.response && !originalRequest._retry) {
       originalRequest._retry = true;
       
-      // Try alternative backends
+      // Try alternative backends - only use working URL
       const alternativeBackends = [
-        'https://roomrento.onrender.com',
-        'https://roomrento-backend.onrender.com',
-        'https://roomrento-api.onrender.com'
+        'https://roomrento.onrender.com'
       ];
       
       for (const backend of alternativeBackends) {
