@@ -734,13 +734,13 @@ function AddRoom({ token }) {
   };
 
   return (
-    <div className="add-room-container">
+    <div className="container-fluid py-4" style={{ background: 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)', minHeight: '100vh' }}>
       {loading && <LoadingSpinner isLoading={loading} message="Adding your property..." />}
       <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
-      <div className="container mt-5 pt-5">
-        <div className="row">
-          <div className="col-lg-8 mx-auto">
-            <div className="card shadow-lg border-0">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-lg-10">
+            <div className="card shadow-lg border-0 rounded-4">
               <div className="card-header text-white p-4 rounded-top-4" style={{background: '#6f42c1'}}>
                 <div className="d-flex align-items-center justify-content-between">
                   <div>

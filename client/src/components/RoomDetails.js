@@ -362,31 +362,33 @@ function RoomDetails() {
                       </div>
                     )}
                     
-                    <div className="row g-2">
-                      <div className="col-6">
+                    <div className="row g-3">
+                      <div className="col-12">
                         <button 
-                          className="btn btn-success w-100"
+                          className="btn w-100 rounded-pill fw-bold py-3 shadow-sm"
                           style={{
-                            backgroundColor: '#25d366',
+                            background: 'linear-gradient(135deg, #25d366, #128c7e)',
                             border: 'none',
-                            borderRadius: '8px',
-                            fontWeight: '600'
+                            color: 'white',
+                            fontSize: '1.1rem'
                           }}
                           onClick={handleWhatsApp}
                         >
-                          <i className="bi bi-whatsapp me-1"></i> WhatsApp
+                          <i className="bi bi-whatsapp me-2"></i>
+                          Chat on WhatsApp
                         </button>
                       </div>
-                      <div className="col-6">
+                      <div className="col-12">
                         <button 
-                          className="btn btn-outline-primary w-100"
+                          className="btn btn-outline-primary w-100 rounded-pill fw-bold py-3 shadow-sm"
                           style={{
-                            borderRadius: '8px',
-                            fontWeight: '600'
+                            borderWidth: '2px',
+                            fontSize: '1.1rem'
                           }}
                           onClick={handleCall}
                         >
-                          <i className="bi bi-telephone me-1"></i> Call
+                          <i className="bi bi-telephone me-2"></i>
+                          Call Owner
                         </button>
                       </div>
                     </div>
