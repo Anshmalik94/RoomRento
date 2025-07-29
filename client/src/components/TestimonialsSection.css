@@ -27,3 +27,48 @@
   object-fit: cover;
   border: 3px solid #007bff; /* Blue border instead of red */
 }
+
+/* Carousel Styling */
+.carousel-indicators {
+  margin-bottom: -20px;
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: #6f42c1;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  margin: 0 4px;
+}
+
+.carousel-indicators .active {
+  background-color: #8e44ad;
+  transform: scale(1.2);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  color: #6f42c1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #6f42c1;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-size: 20px;
+}
+
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+  background-color: #8e44ad;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+.carousel-item {
+  padding: 20px 0;
+}
