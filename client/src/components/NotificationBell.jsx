@@ -13,28 +13,7 @@ const NotificationBell = ({ bellIcon }) => {
 
   const token = localStorage.getItem('token');
 
-  const fetchUnreadCount = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/notifications/unread-count`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUnreadCount(response.data?.unreadCount || 0);
-    } catch (error) {
-      // Handle error silently for production, set count to 0
-      setUnreadCount(0);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (token) {
-      fetchUnreadCount();
-      // Set up polling for notifications every 30 seconds
-      const interval = setInterval(fetchUnreadCount, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [token, fetchUnreadCount]);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (loading) return;
     
     setLoading(true);
@@ -42,31 +21,52 @@ const NotificationBell = ({ bellIcon }) => {
       const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Ensure we always have an array (fix: use .data.data.notifications)
+      // Ensure we always have an array
       const notificationsData = response.data?.data?.notifications || [];
       setNotifications(notificationsData);
+      
+      // Calculate unread count from fetched notifications to ensure consistency
+      const unreadFromNotifications = notificationsData.filter(n => !n.isRead).length;
+      setUnreadCount(unreadFromNotifications);
     } catch (error) {
       console.error('Error fetching notifications:', error);
-      // Set to empty array on error to prevent undefined errors
       setNotifications([]);
+      setUnreadCount(0);
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, loading]);
 
-  const markAsSeen = async (notificationId) => {
+  useEffect(() => {
+    if (token) {
+      // Fetch notifications and count on mount
+      fetchNotifications();
+      // Set up polling for notifications every 30 seconds
+      const interval = setInterval(fetchNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [token, fetchNotifications]);
+
+  // Mark notification as read using the correct API endpoint
+  const markAsRead = async (notificationId) => {
     try {
-      await axios.patch(`${API_URL}/api/notifications/${notificationId}/seen`, {}, {
+      // Immediately update UI for better UX
+      setNotifications(prev => prev.map(notif => 
+        notif._id === notificationId ? { ...notif, isRead: true } : notif
+      ));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      // Call the correct API endpoint
+      await axios.patch(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Update local state
-      setNotifications(prev => prev.map(notif => 
-        notif._id === notificationId ? { ...notif, seen: true } : notif
-      ));
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      // Refetch to ensure backend sync
+      await fetchNotifications();
     } catch (error) {
-      console.error('Error marking notification as seen:', error);
+      console.error('Error marking notification as read:', error);
+      // Revert UI change on error and refetch correct state
+      await fetchNotifications();
     }
   };
 
@@ -157,7 +157,7 @@ const NotificationBell = ({ bellIcon }) => {
                 className={`notification-item border-bottom ${!notification.seen ? 'unread' : ''}`}
                 onClick={() => {
                   if (!notification.seen) {
-                    markAsSeen(notification._id);
+                    markAsRead(notification._id);
                   }
                   setShowDropdown(false);
                 }}
