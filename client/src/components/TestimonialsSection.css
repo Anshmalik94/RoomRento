@@ -6,6 +6,23 @@
   transform: translateY(-5px);
 }
 
+.user-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6f42c1, #8e44ad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #6f42c1;
+  box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+}
+
+.testimonial-user-icon {
+  font-size: 2rem;
+  color: white;
+}
+
 .testimonial-img {
   object-fit: cover;
   border: 3px solid #007bff; /* Blue border instead of red */

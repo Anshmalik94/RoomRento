@@ -8,19 +8,36 @@ function TestimonialsSection() {
       name: 'Ravi Sharma',
       review:
         'RoomRento made my room hunting experience so smooth! I found a verified room within 2 days.',
-      image: 'https://randomuser.me/api/portraits/men/32.jpg',
     },
     {
       name: 'Priya Mehta',
       review:
         'The platform is super easy to use. I loved the direct contact feature with the owner.',
-      image: 'https://randomuser.me/api/portraits/women/44.jpg',
     },
     {
       name: 'Aman Verma',
       review:
         'Highly recommended! I was able to book my room and contact the landlord instantly.',
-      image: 'https://randomuser.me/api/portraits/men/51.jpg',
+    },
+    {
+      name: 'Sneha Gupta',
+      review:
+        'Amazing service! The room verification process gave me complete confidence before booking.',
+    },
+    {
+      name: 'Rohit Kumar',
+      review:
+        'Found my perfect PG within a week. The filter options made it so easy to find what I needed.',
+    },
+    {
+      name: 'Neha Singh',
+      review:
+        'Excellent platform for room hunting. The owner contact feature saved me so much time.',
+    },
+    {
+      name: 'Vikash Yadav',
+      review:
+        'Best room rental platform I have used. Quick response from owners and verified listings.',
     },
   ];
 
@@ -28,17 +45,13 @@ function TestimonialsSection() {
     <section className="testimonials-section py-5 bg-white">
       <div className="container text-center">
         <h2 className="fw-bold mb-4">What Our Users Say</h2>
-        <div className="row">
+        <div className="row g-4">
           {testimonials.map((t, index) => (
-            <div className="col-md-4 mb-4" key={index}>
+            <div className="col-lg-4 col-md-6 mb-4" key={index}>
               <div className="card h-100 shadow-sm border-0 p-4 testimonial-card">
-                <img
-                  src={t.image}
-                  alt={t.name}
-                  className="rounded-circle mb-3 mx-auto testimonial-img"
-                  width="80"
-                  height="80"
-                />
+                <div className="user-icon-wrapper mb-3 mx-auto">
+                  <i className="fas fa-user testimonial-user-icon"></i>
+                </div>
                 <h5 className="mb-1">{t.name}</h5>
                 <p className="text-muted fst-italic mt-2">"{t.review}"</p>
               </div>
