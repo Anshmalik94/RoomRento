@@ -38,7 +38,10 @@ const allowedOrigins = [
   'https://roomrento.onrender.com',
   'https://roomrento-server.onrender.com',
   'https://roomrento-api.onrender.com',
-  'https://roomrento.com' // Add deployed frontend domain
+  'https://roomrento.com', // Add deployed frontend domain
+  'https://www.roomrento.com', // Add www version
+  'https://roomrento.vercel.app', // Vercel deployment
+  'https://roomrento.netlify.app' // Netlify deployment
 ];
 
 // Socket.IO Setup with CORS
@@ -123,13 +126,17 @@ app.use(
       // Allow requests with no origin (mobile apps, curl, etc.)
       if (!origin) return callback(null, true);
       
+      console.log('CORS check for origin:', origin);
+      
       // Check if origin is in allowed list or matches patterns
       if (
         allowedOrigins.includes(origin) ||
         /\.vercel\.app$/.test(origin) || // Allow all Vercel preview URLs
         /\.onrender\.com$/.test(origin) || // Allow all Render URLs
-        /localhost:\d+$/.test(origin) // Allow all localhost ports
+        /localhost:\d+$/.test(origin) || // Allow all localhost ports
+        /\.netlify\.app$/.test(origin) // Allow all Netlify URLs
       ) {
+        console.log('CORS allowed for:', origin);
         return callback(null, true);
       } else {
         console.log('Blocked by CORS:', origin);
@@ -138,10 +145,29 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     optionsSuccessStatus: 200 // For legacy browser support
   })
 );
+
+// Add preflight handling for all routes
+app.options('*', cors());
+
+// Additional CORS headers for extra compatibility
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin) || 
+      /\.vercel\.app$/.test(origin) || 
+      /\.onrender\.com$/.test(origin) || 
+      /localhost:\d+$/.test(origin) ||
+      /\.netlify\.app$/.test(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  next();
+});
 
 // ✅ Middleware
 app.use(express.json());
