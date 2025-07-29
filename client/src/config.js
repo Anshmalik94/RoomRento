@@ -24,14 +24,14 @@ const getBaseURL = () => {
       return process.env.REACT_APP_API_URL;
     }
     // Use BASE_URL from env or fallback
-    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
     console.log('Using Vercel URL:', url);
     return url;
   }
   
   // If frontend is on Render
   if (currentHost.includes('onrender.com')) {
-    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
     console.log('Using Render URL:', url);
     return url;
   }
@@ -39,7 +39,7 @@ const getBaseURL = () => {
   // Custom domain check - try multiple backends
   if (currentHost.includes('roomrento.com')) {
     // Try primary backend first, then fallbacks
-    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento-backend.onrender.com';
+    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
     console.log('Using custom domain URL:', url);
     return url;
   }
@@ -48,9 +48,9 @@ const getBaseURL = () => {
   const possibleBackends = [
     process.env.REACT_APP_API_URL,
     process.env.REACT_APP_BASE_URL,
+    'https://roomrento.onrender.com',
     'https://roomrento-backend.onrender.com',
-    'https://roomrento-api.onrender.com',
-    'https://roomrento.onrender.com'
+    'https://roomrento-api.onrender.com'
   ].filter(Boolean);
   
   const fallbackUrl = possibleBackends[0];
@@ -119,8 +119,9 @@ apiClient.interceptors.response.use(
       
       // Try alternative backends
       const alternativeBackends = [
-        'https://roomrento-api.onrender.com',
-        'https://roomrento.onrender.com'
+        'https://roomrento.onrender.com',
+        'https://roomrento-backend.onrender.com',
+        'https://roomrento-api.onrender.com'
       ];
       
       for (const backend of alternativeBackends) {
