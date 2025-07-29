@@ -1,46 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './HeroSection.css'; // custom styles
 
 function HeroSection() {
-  const scrollToExplore = () => {
-    const section = document.getElementById("explore-newly-listed");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const backgroundImages = [
+    '/images/assest/image3.jpg',
+    '/images/assest/image4.jpg'
+  ];
+
+  // Auto change background every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [backgroundImages.length]);
 
   return (
-    <section
-      className="hero-section py-5"
-      // Gradient and border-radius now handled in CSS
-    >
-      <div className="container">
-        <div className="row align-items-center min-vh-75">
-          <div className="col-md-6 mb-4 mb-md-0 text-center text-md-start">
-            <h1 className="display-4 fw-bold mb-3 animate__animated animate__fadeInLeft">
-              Find your perfect <span style={{ color: '#FFD700' }}>Room</span>, <span style={{ color: '#FFD700' }}>Shop</span>, or <span style={{ color: '#FFD700' }}>Hotel</span>
-            </h1>
-            <p className="lead mb-4 animate__animated animate__fadeInLeft animate__delay-1s">
-              With RoomRento — No broker, No commission, No hidden charges. Talk directly to the owner.
-            </p>
-            <button
-              onClick={scrollToExplore}
-              className="btn btn-primary btn-lg btn-pill animate__animated animate__fadeInUp animate__delay-2s"
-            >
-              <i className="bi bi-search me-2"></i>Start Exploring
-            </button>
-          </div>
-          <div className="col-md-6 text-center animate__animated animate__fadeInRight">
-            <img
-              src="/images/banner.png"
-              alt="Find Room, Shop, or Hotel with RoomRento"
-              className="img-fluid hero-img"
-              style={{ maxHeight: '400px', objectFit: 'contain' }}
-            />
-          </div>
-        </div>
-      </div>
+    <section className="hero-section-minimal">
+      {/* Background Images */}
+      {backgroundImages.map((image, index) => (
+        <div
+          key={index}
+          className={`hero-background ${index === currentImageIndex ? 'active' : ''}`}
+          style={{
+            backgroundImage: `url(${image})`
+          }}
+        />
+      ))}
+      
+      {/* Overlay */}
+      <div className="hero-overlay" />
+      
     </section>
   );
 }
