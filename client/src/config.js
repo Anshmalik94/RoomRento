@@ -2,6 +2,12 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
+  // EMERGENCY FIX: Force correct URL for production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🚨 PRODUCTION MODE: Forcing correct backend URL');
+    return 'https://roomrento.onrender.com';
+  }
+  
   // Development mode check first
   if (process.env.NODE_ENV === 'development') {
     return process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
