@@ -56,6 +56,9 @@ function AuthForm({ setToken }) {
         ? { email: formData.email, password: formData.password }
         : formData;
 
+      console.log('Sending request to:', `${BASE_URL}${endpoint}`);
+      console.log('Payload:', payload);
+      
       const res = await axios.post(`${BASE_URL}${endpoint}`, payload);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
@@ -67,6 +70,7 @@ function AuthForm({ setToken }) {
       showToastMessage(isLogin ? "Login Successful!" : "Registration Successful!", "success");
       setTimeout(() => navigate("/"), 1500);
     } catch (err) {
+      console.error('Auth error:', err);
       showToastMessage(err.response?.data?.msg || "Failed, please try again.", "error");
     } finally {
       setLoading(false);

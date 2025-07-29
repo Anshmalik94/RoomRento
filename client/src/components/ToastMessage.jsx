@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
+import './ToastMessage.css';
 
 const ToastMessage = ({ show, onClose, message, type = 'info', duration = 4000 }) => {
   useEffect(() => {
@@ -60,13 +61,7 @@ const ToastMessage = ({ show, onClose, message, type = 'info', duration = 4000 }
   return (
     <ToastContainer 
       position="top-end" 
-      className="p-3"
-      style={{ 
-        position: 'fixed', 
-        top: '20px', 
-        right: '20px', 
-        zIndex: 9999 
-      }}
+      className="toast-container-custom p-3"
     >
       <Toast 
         show={show} 
@@ -75,7 +70,7 @@ const ToastMessage = ({ show, onClose, message, type = 'info', duration = 4000 }
         className="text-white"
       >
         <Toast.Header>
-          <span className="me-2">{getToastIcon()}</span>
+          <span className="me-2" style={{ fontSize: '16px' }}>{getToastIcon()}</span>
           <strong className="me-auto">{getHeaderText()}</strong>
           <small>just now</small>
         </Toast.Header>

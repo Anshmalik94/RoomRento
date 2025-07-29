@@ -8,6 +8,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 
 // Components
 import ResponsiveNavbar from "./components/ResponsiveNavbar";
+import ToastMessage from "./components/ToastMessage";
 import NotFound404 from "./components/404";
 import RoomsList from "./components/RoomsList";
 import RoomDetails from "./components/RoomDetails";
@@ -47,6 +48,18 @@ function App() {
     name: localStorage.getItem("userName") || "", 
     email: localStorage.getItem("email") || "" 
   });
+  
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("info");
+  
+  // Toast message function
+  const showToastMessage = (message, type = "info") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+  };
   const [filters, setFilters] = useState({
     location: "",
     roomType: "",
@@ -143,12 +156,21 @@ function App() {
       localStorage.clear();
       setToken("");
       setUserInfo({ name: "", email: "" });
-      navigate("/");
+      showToastMessage("Logged out successfully!", "success");
+      setTimeout(() => navigate("/"), 1000);
     }
   };
 
     return (
       <>
+        {/* Toast Messages */}
+        <ToastMessage 
+          show={showToast}
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setShowToast(false)}
+        />
+        
         {/* Responsive Navbar Component */}
         {!isLoginPage && (
           <ResponsiveNavbar 
