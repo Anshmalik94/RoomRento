@@ -734,7 +734,7 @@ function AddRoom({ token }) {
   };
 
   return (
-    <div className="container-fluid py-4" style={{ background: 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)', minHeight: '100vh' }}>
+    <div className="container-fluid py-4" style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%)', minHeight: '100vh' }}>
       {loading && <LoadingSpinner isLoading={loading} message="Adding your property..." />}
       <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
       <div className="container">
