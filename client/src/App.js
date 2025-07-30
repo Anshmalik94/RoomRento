@@ -15,7 +15,6 @@ import RoomDetails from "./components/RoomDetails";
 import AddRoom from "./components/AddRoom";
 import AddHotel from "./components/AddHotel";
 import AddShop from "./components/AddShop";
-import AuthForm from "./components/AuthForm";
 import AuthModal from "./components/AuthModal";
 import HelpSupport from "./components/HelpSupport";
 import Hotels from "./components/Hotels";
@@ -167,8 +166,17 @@ function App() {
       name: localStorage.getItem("userName") || "",
       email: localStorage.getItem("email") || ""
     });
+    
+    // Show login success toast message
+    showToastMessage("Welcome back! Login successful!", "success");
+    
+    // Close login modal first
+    setShowLoginModal(false);
+    
     // Redirect to homepage after successful login
-    navigate('/');
+    setTimeout(() => {
+      navigate('/');
+    }, 500);
   };
   const handleRentifyOption = (option) => {
     setShowRentifyModal(false);

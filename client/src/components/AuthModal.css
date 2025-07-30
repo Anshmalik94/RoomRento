@@ -1,7 +1,29 @@
 /* Auth Modal Styles */
 .auth-modal .modal-dialog {
-  max-width: 320px;
+  max-width: 400px;
   margin: 1rem auto;
+  width: 95%;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 576px) {
+  .auth-modal .modal-dialog {
+    max-width: 95%;
+    margin: 0.5rem auto;
+  }
+  
+  .auth-modal-container {
+    padding: 15px;
+    margin: 10px;
+  }
+  
+  .auth-modal-brand-title {
+    font-size: 1.3rem;
+  }
+  
+  .auth-modal-welcome-text {
+    font-size: 1rem;
+  }
 }
 
 .auth-modal .modal-content {
@@ -189,6 +211,25 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-bottom: 10px;
+}
+
+/* Mobile responsive grid */
+@media (max-width: 480px) {
+  .auth-modal-register-form-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  
+  .auth-modal-input-group input,
+  .auth-modal-input-group select {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .auth-modal-continue-btn {
+    padding: 12px;
+    font-size: 16px;
+  }
 }
 
 /* Role Selector */

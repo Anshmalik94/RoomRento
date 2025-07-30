@@ -51,28 +51,48 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
           };
 
       const res = await axios.post(`${BASE_URL}${endpoint}`, payload);
-      setToken(res.data.token);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
-      localStorage.setItem("email", formData.email);
       
-      // Store name from response or construct from form data
-      const userName = res.data.user?.name || 
-                      res.data.name || 
-                      `${formData.firstname} ${formData.lastname}`.trim() ||
-                      formData.email.split('@')[0];
-      
-      localStorage.setItem("userName", userName);
-      
-      showToastMessage(isLogin ? "Login Successful!" : "Registration Successful!", "success");
-      
-      // Close modal and redirect after longer delay to show toast
-      setTimeout(() => {
+      // Handle registration vs login differently
+      if (isLogin) {
+        // Login - set tokens and redirect
+        setToken(res.data.token);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
+        localStorage.setItem("email", formData.email);
+        
+        // Store name from response or construct from form data
+        const userName = res.data.user?.name || 
+                        res.data.name || 
+                        `${formData.firstname} ${formData.lastname}`.trim() ||
+                        formData.email.split('@')[0];
+        
+        localStorage.setItem("userName", userName);
+        
+        // Don't show AuthModal toast for login - App.js will handle it
+        // showToastMessage("Login Successful!", "success");
+        
+        // Close modal and redirect immediately for login
         onHide();
         if (onSuccessRedirect) {
           onSuccessRedirect();
         }
-      }, 2500);
+      } else {
+        // Registration - don't login automatically, just show success and switch to login
+        showToastMessage("Registration Successful! Please login with your credentials.", "success");
+        
+        // Switch to login form after registration
+        setTimeout(() => {
+          setIsLogin(true);
+          setFormData({
+            firstname: "",
+            lastname: "",
+            email: formData.email, // Keep email for convenience
+            password: "",
+            confirmPassword: "",
+            role: "renter",
+          });
+        }, 1500);
+      }
     } catch (err) {
       showToastMessage(err.response?.data?.msg || "Failed, please try again.", "error");
     } finally {
@@ -97,15 +117,14 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
       localStorage.setItem("email", decoded.email);
       localStorage.setItem("userName", decoded.name || `${decoded.given_name} ${decoded.family_name}`);
       
-      showToastMessage("Google Login Successful!", "success");
+      // Don't show AuthModal toast for Google login - App.js will handle it
+      // showToastMessage("Google Login Successful!", "success");
       
-      // Close modal and redirect after longer delay to show toast
-      setTimeout(() => {
-        onHide();
-        if (onSuccessRedirect) {
-          onSuccessRedirect();
-        }
-      }, 2500);
+      // Close modal and redirect immediately
+      onHide();
+      if (onSuccessRedirect) {
+        onSuccessRedirect();
+      }
     } catch (err) {
       console.error("Google login error:", err);
       showToastMessage(err.response?.data?.msg || "Google Login Failed", "error");
