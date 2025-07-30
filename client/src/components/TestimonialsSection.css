@@ -72,3 +72,139 @@
 .carousel-item {
   padding: 20px 0;
 }
+
+/* Mobile Responsive Styles - More Aggressive */
+@media (max-width: 991px) {
+  /* Tablet styles */
+  .testimonials-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .testimonial-card {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials-section {
+    padding: 2rem 0 !important;
+  }
+  
+  .testimonials-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  /* Force mobile layout */
+  .carousel-inner .row .col-lg-4,
+  .carousel-inner .row .col-md-6 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .testimonial-card {
+    margin-bottom: 1rem;
+    padding: 1.5rem !important;
+    text-align: center;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .user-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem !important;
+  }
+  
+  .testimonial-user-icon {
+    font-size: 1.5rem;
+  }
+  
+  .testimonial-card h5 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .testimonial-card p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-top: 0.5rem !important;
+  }
+  
+  /* Mobile carousel controls */
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 8%;
+  }
+  
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 30px;
+    height: 30px;
+    background-size: 15px;
+  }
+  
+  .carousel-indicators {
+    margin-bottom: -10px;
+  }
+  
+  .carousel-indicators [data-bs-target] {
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
+  }
+  
+  .carousel-item {
+    padding: 15px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimonials-section {
+    padding: 1.5rem 0 !important;
+  }
+  
+  .testimonials-section h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Force single column on small mobile */
+  .carousel-inner .row .col-lg-4,
+  .carousel-inner .row .col-md-6,
+  .carousel-inner .row .col-sm-8,
+  .carousel-inner .row .col-10 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .testimonial-card {
+    padding: 1rem !important;
+    margin-bottom: 0.8rem;
+    max-width: 350px;
+  }
+  
+  .user-icon-wrapper {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .testimonial-user-icon {
+    font-size: 1.2rem;
+  }
+  
+  .testimonial-card h5 {
+    font-size: 1rem;
+  }
+  
+  .testimonial-card p {
+    font-size: 0.85rem;
+  }
+  
+  /* Hide carousel controls on very small screens */
+  .carousel-control-prev,
+  .carousel-control-next {
+    display: none;
+  }
+}

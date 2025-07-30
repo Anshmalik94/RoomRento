@@ -76,15 +76,15 @@ function TestimonialsSection() {
           <div className="carousel-inner">
             {/* Slide 1 - First 3 testimonials */}
             <div className="carousel-item active">
-              <div className="row g-4 justify-content-center">
+              <div className="row g-3 justify-content-center">
                 {testimonials.slice(0, 3).map((t, index) => (
-                  <div className="col-lg-4 col-md-6" key={index}>
-                    <div className="card h-100 shadow-sm border-0 p-4 testimonial-card">
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-12" key={index}>
+                    <div className="card h-100 shadow-sm border-0 p-3 testimonial-card mx-auto">
                       <div className="user-icon-wrapper mb-3 mx-auto">
                         <i className="fas fa-user testimonial-user-icon"></i>
                       </div>
-                      <h5 className="mb-1">{t.name}</h5>
-                      <p className="text-muted fst-italic mt-2">"{t.review}"</p>
+                      <h5 className="mb-1 text-center">{t.name}</h5>
+                      <p className="text-muted fst-italic mt-2 text-center">"{t.review}"</p>
                     </div>
                   </div>
                 ))}
@@ -93,10 +93,10 @@ function TestimonialsSection() {
 
             {/* Slide 2 - Next 3 testimonials */}
             <div className="carousel-item">
-              <div className="row g-4 justify-content-center">
+              <div className="row g-3 justify-content-center">
                 {testimonials.slice(3, 6).map((t, index) => (
-                  <div className="col-lg-4 col-md-6" key={index + 3}>
-                    <div className="card h-100 shadow-sm border-0 p-4 testimonial-card">
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-12" key={index + 3}>
+                    <div className="card h-100 shadow-sm border-0 p-3 testimonial-card mx-auto">
                       <div className="user-icon-wrapper mb-3 mx-auto">
                         <i className="fas fa-user testimonial-user-icon"></i>
                       </div>
@@ -110,15 +110,15 @@ function TestimonialsSection() {
 
             {/* Slide 3 - Last testimonial */}
             <div className="carousel-item">
-              <div className="row g-4 justify-content-center">
+              <div className="row g-3 justify-content-center">
                 {testimonials.slice(6, 7).map((t, index) => (
-                  <div className="col-lg-4 col-md-6" key={index + 6}>
-                    <div className="card h-100 shadow-sm border-0 p-4 testimonial-card">
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-12" key={index + 6}>
+                    <div className="card h-100 shadow-sm border-0 p-3 testimonial-card mx-auto">
                       <div className="user-icon-wrapper mb-3 mx-auto">
                         <i className="fas fa-user testimonial-user-icon"></i>
                       </div>
-                      <h5 className="mb-1">{t.name}</h5>
-                      <p className="text-muted fst-italic mt-2">"{t.review}"</p>
+                      <h5 className="mb-1 text-center">{t.name}</h5>
+                      <p className="text-muted fst-italic mt-2 text-center">"{t.review}"</p>
                     </div>
                   </div>
                 ))}

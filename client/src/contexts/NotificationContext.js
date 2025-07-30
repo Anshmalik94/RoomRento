@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import socketService from '../services/socketService';
 import { API_URL } from '../config';
 
@@ -148,6 +148,16 @@ export function NotificationProvider({ children }) {
         dispatch({ type: NOTIFICATION_ACTIONS.UPDATE_COUNT, payload: count });
       });
 
+      // Handle authentication errors
+      const unsubscribeAuthError = socketService.on('authError', (errorMessage) => {
+        console.log('Authentication error in notifications:', errorMessage);
+        
+        // Force logout by triggering a custom event
+        window.dispatchEvent(new CustomEvent('forceLogout', { 
+          detail: { reason: 'Token expired. Please login again.' } 
+        }));
+      });
+
       const unsubscribeNotificationsReceived = socketService.on('notificationsReceived', (data) => {
         dispatch({ type: NOTIFICATION_ACTIONS.SET_NOTIFICATIONS, payload: data });
       });
@@ -161,6 +171,7 @@ export function NotificationProvider({ children }) {
         unsubscribeConnected();
         unsubscribeNewNotification();
         unsubscribeCountUpdate();
+        unsubscribeAuthError();
         unsubscribeNotificationsReceived();
         unsubscribeError();
       };
@@ -175,11 +186,13 @@ export function NotificationProvider({ children }) {
   }, []);
 
   // API calls
-  const fetchNotifications = async (page = 1, limit = 20) => {
+  const fetchNotifications = useCallback(async (page = 1, limit = 20) => {
     try {
+      console.log('📡 NotificationContext: Fetching notifications...', { page, limit });
       dispatch({ type: NOTIFICATION_ACTIONS.SET_LOADING, payload: true });
       
       const token = localStorage.getItem('token');
+      console.log('🔑 NotificationContext token check:', token ? 'EXISTS' : 'NOT FOUND');
       
       const response = await fetch(`${API_URL}/api/notifications?page=${page}&limit=${limit}`, {
         headers: {
@@ -189,33 +202,19 @@ export function NotificationProvider({ children }) {
       });
 
       const data = await response.json();
+      console.log('✅ NotificationContext API response:', data);
       
       if (data.success) {
+        console.log('📝 Setting notifications in context:', data.data.notifications?.length, 'items, unread:', data.data.unreadCount);
         dispatch({ type: NOTIFICATION_ACTIONS.SET_NOTIFICATIONS, payload: data.data });
       } else {
         throw new Error(data.message || 'Failed to fetch notifications');
       }
     } catch (error) {
+      console.error('❌ NotificationContext fetch error:', error);
       dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: error.message });
     }
-  };
-
-  const fetchUnreadCount = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/notifications/unread-count`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        dispatch({ type: NOTIFICATION_ACTIONS.SET_UNREAD_COUNT, payload: data.unreadCount });
-      }
-    } catch (error) {
-      console.error('Error fetching unread count:', error);
-    }
-  };
+  }, []);
 
   const markAsRead = async (notificationIds = []) => {
     try {
@@ -254,11 +253,15 @@ export function NotificationProvider({ children }) {
 
   // New function for marking single notification as read
   const markSingleAsRead = async (notificationId) => {
+    console.log('🔄 NotificationContext: markSingleAsRead called with ID:', notificationId);
     try {
       // Immediately update UI for responsiveness
       dispatch({ type: NOTIFICATION_ACTIONS.MARK_AS_READ, payload: [notificationId] });
+      console.log('✅ UI updated optimistically for notification:', notificationId);
       
       const token = localStorage.getItem('token');
+      console.log('🔑 Token for markSingleAsRead:', token ? 'EXISTS' : 'NOT FOUND');
+      
       const response = await fetch(`${API_URL}/api/notifications/${notificationId}/read`, {
         method: 'PATCH',
         headers: {
@@ -268,19 +271,23 @@ export function NotificationProvider({ children }) {
       });
 
       const data = await response.json();
+      console.log('📡 markSingleAsRead API response:', data);
       
       if (data.success) {
+        console.log('✅ markSingleAsRead API success');
         // Emit to socket for real-time update
         socketService.markNotificationAsRead([notificationId]);
         // Refetch notifications to get updated state from backend
         await fetchNotifications();
       } else {
+        console.error('❌ markSingleAsRead API failed:', data.message);
         // Revert UI changes if API call failed
         dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: data.message || 'Failed to mark as read' });
         // Refetch to get correct state
         await fetchNotifications();
       }
     } catch (error) {
+      console.error('❌ markSingleAsRead error:', error);
       dispatch({ type: NOTIFICATION_ACTIONS.SET_ERROR, payload: error.message });
       // Refetch to get correct state
       await fetchNotifications();

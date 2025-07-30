@@ -8,13 +8,16 @@ const router = express.Router();
 router.get('/', auth, async (req, res) => {
   try {
     const { page = 1, limit = 20 } = req.query;
+    console.log('Fetching notifications for user:', req.user.id, 'page:', page, 'limit:', limit);
+    
     const result = await notificationService.getUserNotifications(
       req.user.id, 
       parseInt(page), 
       parseInt(limit)
     );
-    // Debug log: print notifications for this user
-    console.log('Notifications for user', req.user.id, ':', result.notifications);
+    
+    console.log('Found notifications:', result.notifications.length, 'unread:', result.unreadCount);
+    
     res.json({
       success: true,
       data: result
@@ -85,6 +88,39 @@ router.patch('/mark-all-read', auth, async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: 'Failed to mark all notifications as read' 
+    });
+  }
+});
+
+// Mark single notification as read
+router.patch('/:id/read', auth, async (req, res) => {
+  try {
+    const notificationId = req.params.id;
+    console.log('Marking notification as read:', notificationId, 'for user:', req.user.id);
+    
+    const result = await notificationService.markNotificationsAsRead(
+      req.user.id, 
+      [notificationId]
+    );
+
+    if (result.modifiedCount === 0) {
+      console.log('Notification not found or already read:', notificationId);
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Notification not found or already read' 
+      });
+    }
+
+    console.log('Notification marked as read successfully:', notificationId);
+    res.json({
+      success: true,
+      message: 'Notification marked as read'
+    });
+  } catch (error) {
+    console.error('Mark single notification as read error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to mark notification as read' 
     });
   }
 });

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { API_URL } from '../config';
 import './RoomsList.css'; // Reuse existing styles
 import TopRatedList from './TopRatedList';
+import LoadingSpinner from './LoadingSpinner';
 
 const AllPropertiesSection = ({ filters }) => {
   const [properties, setProperties] = useState([]);
@@ -141,10 +142,8 @@ const AllPropertiesSection = ({ filters }) => {
     return (
       <div className="container my-5">
         <div className="text-center">
-          <div className="spinner-border" style={{color: '#6f42c1'}} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-2" style={{color: '#000'}}>Loading properties...</p>
+          <LoadingSpinner />
+          <p className="mt-3" style={{color: '#6f42c1', fontWeight: '500'}}>Loading properties...</p>
         </div>
       </div>
     );

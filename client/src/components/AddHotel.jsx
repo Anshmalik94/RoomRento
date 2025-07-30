@@ -5,6 +5,7 @@ import LoadGoogleMaps from './LoadGoogleMaps';
 import { API_URL } from '../config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddRoom.css';
+import { Toast, ToastContainer } from 'react-bootstrap';
 
 const AddHotel = ({ token }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -17,6 +18,11 @@ const AddHotel = ({ token }) => {
   const [message, setMessage] = useState('');
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  
+  // Toast states
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('success');
 
   const [hotelData, setHotelData] = useState({
     title: '',

@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "react-helmet": "^6.1.0",
     "swiper": "^11.2.10"
   }
 }

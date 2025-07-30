@@ -40,12 +40,23 @@ class SocketService {
 
       this.socket.on('connect_error', (error) => {
         console.warn('Socket connection failed:', error.message);
-        // Don't treat authentication errors as critical
+        
+        // Handle authentication errors more gracefully
         if (error.message.includes('Authentication error')) {
-          console.log('Invalid token - skipping socket connection');
+          console.log('Authentication failed - clearing token and redirecting to login');
+          
+          // Clear invalid token
+          localStorage.removeItem('token');
+          localStorage.removeItem('userName');
+          localStorage.removeItem('email');
+          
+          // Emit logout event to trigger app-wide logout
+          this.emit('authError', error.message);
+          
           this.disconnect();
           return;
         }
+        
         this.emit('connected', false);
       });
 

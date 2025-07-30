@@ -1,55 +1,103 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Dropdown, Spinner } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import { Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config';
+import LoadingSpinner from './LoadingSpinner';
 import './NotificationBell.css';
 
 const NotificationBell = ({ bellIcon }) => {
+  console.log('🚀 NotificationBell component rendered!');
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const isMountedRef = useRef(true);
+  const pollingIntervalRef = useRef(null);
+  const fetchTimeoutRef = useRef(null);
 
   const token = localStorage.getItem('token');
-
-  const fetchNotifications = useCallback(async () => {
-    if (loading) return;
-    
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      // Ensure we always have an array
-      const notificationsData = response.data?.data?.notifications || [];
-      setNotifications(notificationsData);
-      
-      // Calculate unread count from fetched notifications to ensure consistency
-      const unreadFromNotifications = notificationsData.filter(n => !n.isRead).length;
-      setUnreadCount(unreadFromNotifications);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-      setNotifications([]);
-      setUnreadCount(0);
-    } finally {
-      setLoading(false);
-    }
-  }, [token, loading]);
-
+  console.log('🔑 Token check in NotificationBell:', token ? 'EXISTS' : 'NOT FOUND');
+  
   useEffect(() => {
-    if (token) {
-      // Fetch notifications and count on mount
-      fetchNotifications();
+    console.log('🔄 NotificationBell mounted, token exists:', !!token);
+    isMountedRef.current = true;
+    const currentToken = localStorage.getItem('token');
+    console.log('🔄 Current token in useEffect:', currentToken ? 'Found' : 'Not found');
+    
+    // Define fetchNotifications inside useEffect to avoid dependency issues
+    const fetchNotifications = async () => {
+      if (!currentToken || !isMountedRef.current) {
+        console.log('❌ No token or component unmounted, skipping fetch');
+        return;
+      }
+      
+      try {
+        console.log('📡 Fetching notifications...');
+        setLoading(true);
+        const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
+          headers: { Authorization: `Bearer ${currentToken}` }
+        });
+        console.log('✅ Notifications response:', response.data);
+        const notificationsData = response.data?.data?.notifications || [];
+        
+        if (isMountedRef.current) {
+          console.log('📝 Setting notifications:', notificationsData.length, 'items');
+          setNotifications(notificationsData);
+          const unreadFromNotifications = notificationsData.filter(n => !n.isRead).length;
+          console.log('🔴 Unread count:', unreadFromNotifications);
+          setUnreadCount(unreadFromNotifications);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching notifications:', error);
+        if (isMountedRef.current) {
+          setNotifications([]);
+          setUnreadCount(0);
+        }
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    if (currentToken) {
+      // Fetch notifications immediately with delay
+      fetchTimeoutRef.current = setTimeout(() => {
+        if (isMountedRef.current) {
+          fetchNotifications();
+        }
+      }, 500);
+      
       // Set up polling for notifications every 30 seconds
-      const interval = setInterval(fetchNotifications, 30000);
-      return () => clearInterval(interval);
+      pollingIntervalRef.current = setInterval(() => {
+        if (isMountedRef.current) {
+          fetchNotifications();
+        }
+      }, 30000);
     }
-  }, [token, fetchNotifications]);
+    
+    // Cleanup function
+    return () => {
+      isMountedRef.current = false;
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+        fetchTimeoutRef.current = null;
+      }
+    };
+  }, []); // Empty dependency array since we handle token inside
 
   // Mark notification as read using the correct API endpoint
   const markAsRead = async (notificationId) => {
+    const currentToken = localStorage.getItem('token');
+    if (!currentToken) return;
+    
     try {
+      console.log('🔄 Marking notification as read:', notificationId);
       // Immediately update UI for better UX
       setNotifications(prev => prev.map(notif => 
         notif._id === notificationId ? { ...notif, isRead: true } : notif
@@ -57,23 +105,74 @@ const NotificationBell = ({ bellIcon }) => {
       setUnreadCount(prev => Math.max(0, prev - 1));
 
       // Call the correct API endpoint
-      await axios.patch(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.patch(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
+        headers: { Authorization: `Bearer ${currentToken}` }
       });
+      console.log('✅ Mark as read response:', response.data);
       
-      // Refetch to ensure backend sync
-      await fetchNotifications();
+      // Refetch to ensure backend sync after a delay
+      setTimeout(async () => {
+        if (isMountedRef.current) {
+          try {
+            const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
+              headers: { Authorization: `Bearer ${currentToken}` }
+            });
+            const notificationsData = response.data?.data?.notifications || [];
+            if (isMountedRef.current) {
+              setNotifications(notificationsData);
+              const unreadFromNotifications = notificationsData.filter(n => !n.isRead).length;
+              setUnreadCount(unreadFromNotifications);
+            }
+          } catch (error) {
+            console.error('Error refetching notifications:', error);
+          }
+        }
+      }, 200);
     } catch (error) {
       console.error('Error marking notification as read:', error);
       // Revert UI change on error and refetch correct state
-      await fetchNotifications();
+      setTimeout(async () => {
+        if (isMountedRef.current) {
+          try {
+            const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
+              headers: { Authorization: `Bearer ${currentToken}` }
+            });
+            const notificationsData = response.data?.data?.notifications || [];
+            if (isMountedRef.current) {
+              setNotifications(notificationsData);
+              const unreadFromNotifications = notificationsData.filter(n => !n.isRead).length;
+              setUnreadCount(unreadFromNotifications);
+            }
+          } catch (error) {
+            console.error('Error refetching notifications:', error);
+          }
+        }
+      }, 200);
     }
   };
 
   const handleDropdownToggle = (isOpen) => {
+    console.log('🔔 Notification bell clicked, dropdown is now:', isOpen);
     setShowDropdown(isOpen);
     if (isOpen && (!notifications || notifications.length === 0)) {
-      fetchNotifications();
+      const currentToken = localStorage.getItem('token');
+      setTimeout(async () => {
+        if (isMountedRef.current && currentToken) {
+          try {
+            const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
+              headers: { Authorization: `Bearer ${currentToken}` }
+            });
+            const notificationsData = response.data?.data?.notifications || [];
+            if (isMountedRef.current) {
+              setNotifications(notificationsData);
+              const unreadFromNotifications = notificationsData.filter(n => !n.isRead).length;
+              setUnreadCount(unreadFromNotifications);
+            }
+          } catch (error) {
+            console.error('Error fetching notifications on dropdown:', error);
+          }
+        }
+      }, 200);
     }
   };
 
@@ -142,8 +241,12 @@ const NotificationBell = ({ bellIcon }) => {
         <div className="notification-list" style={{ maxHeight: '300px', overflowY: 'auto' }}>
           {loading ? (
             <div className="text-center py-3">
-              <Spinner animation="border" size="sm" />
-              <div className="small text-muted mt-2">Loading...</div>
+              <LoadingSpinner 
+                isLoading={true} 
+                message="Loading..." 
+                inline={true} 
+                size="small"
+              />
             </div>
           ) : (!notifications || notifications.length === 0) ? (
             <div className="text-center py-4 text-muted">
@@ -154,9 +257,21 @@ const NotificationBell = ({ bellIcon }) => {
             (notifications || []).map((notification) => (
               <Dropdown.Item
                 key={notification._id}
-                className={`notification-item border-bottom ${!notification.seen ? 'unread' : ''}`}
+                className={`notification-item border-bottom ${!notification.isRead ? 'unread' : ''}`}
                 onClick={() => {
-                  if (!notification.seen) {
+                  console.log('🎯 Notification clicked:', notification._id, notification.message);
+                  console.log('🔍 Notification details:', notification);
+                  console.log('🌍 Navigation will go to:', 
+                    notification.relatedRoomId 
+                      ? `/room/${notification.relatedRoomId}` 
+                      : notification.relatedBookingId 
+                      ? '/my-booking-requests' 
+                      : notification.type === 'booking_request'
+                      ? '/my-booking-requests'
+                      : '#'
+                  );
+                  if (!notification.isRead) {
+                    console.log('📝 Marking as read:', notification._id);
                     markAsRead(notification._id);
                   }
                   setShowDropdown(false);
@@ -167,6 +282,8 @@ const NotificationBell = ({ bellIcon }) => {
                     ? `/room/${notification.relatedRoomId}` 
                     : notification.relatedBookingId 
                     ? '/my-booking-requests' 
+                    : notification.type === 'booking_request'
+                    ? '/my-booking-requests'
                     : '#'
                 }
               >
@@ -182,7 +299,7 @@ const NotificationBell = ({ bellIcon }) => {
                       {getTimeAgo(notification.createdAt)}
                     </div>
                   </div>
-                  {!notification.seen && (
+                  {!notification.isRead && (
                     <div className="unread-indicator"></div>
                   )}
                 </div>

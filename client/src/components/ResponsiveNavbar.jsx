@@ -1,4 +1,4 @@
-import NotificationBell from './NotificationBell';
+import NotificationBellDisplay from './NotificationBellDisplay';
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -114,7 +114,7 @@ const ResponsiveNavbar = ({
             {/* Notification Bell (Right) */}
             {token && (
               <div className="ms-2 d-flex align-items-center">
-                <NotificationBell bellIcon={<FaBell style={{ fontSize: '20px', color: '#6f42c1' }} />} />
+                <NotificationBellDisplay bellIcon={<FaBell style={{ fontSize: '20px', color: '#6f42c1' }} />} />
               </div>
             )}
           </div>
@@ -195,7 +195,7 @@ const ResponsiveNavbar = ({
               {/* Notifications Dropdown (bell icon stays the same) */}
               {token && (
                 <li className="nav-item d-flex align-items-center">
-                  <NotificationBell bellIcon={<FaBell style={{ fontSize: '18px', color: '#6f42c1' }} />} />
+                  <NotificationBellDisplay bellIcon={<FaBell style={{ fontSize: '18px', color: '#6f42c1' }} />} />
                 </li>
               )}
 
@@ -434,7 +434,7 @@ const ResponsiveNavbar = ({
               
               {token && (
                 <li className="mb-2 d-flex align-items-center">
-                  <NotificationBell bellIcon={<FaBell className="me-3" style={{ color: '#6f42c1' }} />} />
+                  <NotificationBellDisplay bellIcon={<FaBell className="me-3" style={{ color: '#6f42c1' }} />} />
                 </li>
               )}
             </ul>

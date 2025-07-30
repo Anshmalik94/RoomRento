@@ -2,15 +2,23 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
+  // FORCE LOCALHOST FOR LOCAL DEVELOPMENT
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.log('🔧 LOCAL DEVELOPMENT: Forcing localhost:5000');
+    return 'http://localhost:5000';
+  }
+
+  // Development mode check FIRST - highest priority
+  if (process.env.NODE_ENV === 'development') {
+    const devUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+    console.log('🔧 DEVELOPMENT MODE: Using', devUrl);
+    return devUrl;
+  }
+
   // EMERGENCY FIX: Force correct URL for production
   if (process.env.NODE_ENV === 'production') {
     console.log('🚨 PRODUCTION MODE: Forcing correct backend URL');
     return 'https://roomrento.onrender.com';
-  }
-  
-  // Development mode check first
-  if (process.env.NODE_ENV === 'development') {
-    return process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
   }
   
   // Always use production URL if available

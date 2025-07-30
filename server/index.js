@@ -10,8 +10,8 @@ const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 
-// Disable mongoose buffering (newer syntax)
-mongoose.set('bufferCommands', false);
+// Enable mongoose buffering to wait for connection
+mongoose.set('bufferCommands', true);
 
 const roomRoutes = require('./routes/rooms');
 const authRoutes = require('./routes/auth');
@@ -77,6 +77,14 @@ io.use(async (socket, next) => {
     next();
   } catch (error) {
     console.error('Socket authentication error:', error);
+    
+    // Handle specific JWT errors
+    if (error.name === 'TokenExpiredError') {
+      return next(new Error('Authentication error: Token expired. Please login again.'));
+    } else if (error.name === 'JsonWebTokenError') {
+      return next(new Error('Authentication error: Invalid token format.'));
+    }
+    
     next(new Error('Authentication error: Invalid token'));
   }
 });
@@ -126,7 +134,10 @@ app.use(
       // Allow requests with no origin (mobile apps, curl, etc.)
       if (!origin) return callback(null, true);
       
-      console.log('CORS check for origin:', origin);
+      // Only log in development mode
+      if (process.env.NODE_ENV === 'development') {
+        console.log('CORS check for origin:', origin);
+      }
       
       // Check if origin is in allowed list or matches patterns
       if (
@@ -136,10 +147,14 @@ app.use(
         /localhost:\d+$/.test(origin) || // Allow all localhost ports
         /\.netlify\.app$/.test(origin) // Allow all Netlify URLs
       ) {
-        console.log('CORS allowed for:', origin);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('CORS allowed for:', origin);
+        }
         return callback(null, true);
       } else {
-        console.log('Blocked by CORS:', origin);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Blocked by CORS:', origin);
+        }
         return callback(new Error('Not allowed by CORS'));
       }
     },

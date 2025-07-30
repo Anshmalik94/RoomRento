@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 // Contexts
 import { NotificationProvider } from "./contexts/NotificationContext";
@@ -83,6 +83,36 @@ function App() {
         document.body.style.paddingBottom = '0px';
       };
     }, []); // No dependencies needed since we always set the same value
+
+    // Force logout listener for token expiration
+    useEffect(() => {
+      const handleForceLogout = (event) => {
+        console.log('Force logout triggered:', event.detail.reason);
+        
+        // Clear all localStorage data
+        localStorage.removeItem("token");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("email");
+        
+        // Update state
+        setToken("");
+        setUserInfo({ name: "", email: "" });
+        
+        // Show notification to user
+        setToastMessage(event.detail.reason || 'Session expired. Please login again.');
+        setToastType('warning');
+        setShowToast(true);
+        
+        // Redirect to login
+        navigate('/login');
+      };
+
+      window.addEventListener('forceLogout', handleForceLogout);
+      
+      return () => {
+        window.removeEventListener('forceLogout', handleForceLogout);
+      };
+    }, [navigate]);
 
   // Homepage Component
   const Homepage = () => (
@@ -196,6 +226,7 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={token ? <Navigate to="/" /> : <Navigate to="/" />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/notifications-test" element={<NotificationsPage />} />
             
             {/* Protected Routes */}
             <Route path="/rooms" element={<PrivateRoute><RoomsList filters={filters} /></PrivateRoute>} />

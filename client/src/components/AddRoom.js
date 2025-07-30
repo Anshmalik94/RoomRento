@@ -6,7 +6,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import LoadGoogleMaps from "./LoadGoogleMaps";
 import MapPicker from "./MapPicker";
 import LoadingSpinner from "./LoadingSpinner";
-import { Card, Row, Col, Form, Button } from "react-bootstrap";
+import { Card, Row, Col, Form, Button, Toast, ToastContainer } from "react-bootstrap";
 
 function AddRoom({ token }) {
   const [data, setData] = useState({
@@ -38,6 +38,12 @@ function AddRoom({ token }) {
   const [message, setMessage] = useState('');
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  
+  // Toast states
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('success'); // success, danger, warning, info
+  
   const navigate = useNavigate();
 
   const facilityOptions = [
@@ -52,6 +58,49 @@ function AddRoom({ token }) {
   ];
 
   const furnishedOptions = ['Fully Furnished', 'Semi Furnished', 'Unfurnished'];
+
+  // Toast utility function
+  const showToastMessage = (message, variant = 'success') => {
+    setToastMessage(message);
+    setToastVariant(variant);
+    setShowToast(true);
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+      setShowToast(false);
+    }, 5000);
+  };
+
+  // Toast helper functions
+  const getToastBg = (variant) => {
+    switch(variant) {
+      case 'success': return 'success';
+      case 'danger': return 'danger';
+      case 'warning': return 'warning';
+      case 'info': return 'info';
+      default: return 'primary';
+    }
+  };
+
+  const getToastIcon = (variant) => {
+    switch(variant) {
+      case 'success': return '✅';
+      case 'danger': return '❌';
+      case 'warning': return '⚠️';
+      case 'info': return 'ℹ️';
+      default: return '📢';
+    }
+  };
+
+  const getToastTitle = (variant) => {
+    switch(variant) {
+      case 'success': return 'Success';
+      case 'danger': return 'Error';
+      case 'warning': return 'Warning';
+      case 'info': return 'Information';
+      default: return 'Notification';
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -280,12 +329,16 @@ function AddRoom({ token }) {
     console.log("Images to upload:", images.length);
     
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
-      setMessage("Please fill all required fields correctly.");
+      const errorMsg = "Please fill all required fields correctly.";
+      setMessage(errorMsg);
+      showToastMessage(errorMsg, 'danger');
       return;
     }
 
     if (images.length === 0) {
-      setMessage("Please upload at least one image.");
+      const errorMsg = "Please upload at least one image.";
+      setMessage(errorMsg);
+      showToastMessage(errorMsg, 'warning');
       return;
     }
 
@@ -341,7 +394,9 @@ function AddRoom({ token }) {
       console.log("Room creation response:", response.data);
       
       // Room added successfully
-      setMessage("Room added successfully!");
+      const successMsg = "🎉 Room added successfully!";
+      setMessage(successMsg);
+      showToastMessage(successMsg, 'success');
       
       setTimeout(() => {
         navigate("/owner-dashboard");
@@ -370,6 +425,7 @@ function AddRoom({ token }) {
       }
       
       setMessage(errorMessage);
+      showToastMessage(`❌ ${errorMessage}`, 'danger');
     } finally {
       setLoading(false);
       setUploadProgress(0);
@@ -737,6 +793,28 @@ function AddRoom({ token }) {
     <div className="container-fluid py-4" style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%)', minHeight: '100vh' }}>
       {loading && <LoadingSpinner isLoading={loading} message="Adding your property..." />}
       <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
+      
+      {/* Toast Container */}
+      <ToastContainer position="top-end" className="p-3">
+        <Toast 
+          show={showToast} 
+          onClose={() => setShowToast(false)}
+          bg={getToastBg(toastVariant)}
+          text={toastVariant === 'warning' ? 'dark' : 'white'}
+          delay={5000}
+          autohide
+        >
+          <Toast.Header closeButton={true}>
+            <strong className="me-auto">
+              {getToastIcon(toastVariant)} {getToastTitle(toastVariant)}
+            </strong>
+          </Toast.Header>
+          <Toast.Body className="fw-medium">
+            {toastMessage}
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
+      
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-10">
