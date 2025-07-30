@@ -7,7 +7,8 @@ import {
 import axios from 'axios';
 import { API_URL } from '../config';
 import './RoomDetails.css';
-import LoadGoogleMaps from './LoadGoogleMaps';
+import { loadGoogleMapsScript } from './LoadGoogleMaps';
+import ErrorBoundary from './ErrorBoundary';
 import MapPicker from './MapPicker';
 import LoadingSpinner from './LoadingSpinner';
 import TopRatedList from './TopRatedList';
@@ -25,6 +26,16 @@ function RoomDetails() {
     guests: 1,
     message: ''
   });
+
+  // Load Google Maps on component mount
+  useEffect(() => {
+    loadGoogleMapsScript()
+      .then(() => setMapsLoaded(true))
+      .catch((error) => {
+        console.error('Failed to load Google Maps:', error);
+        setMapsLoaded(true); // Continue anyway
+      });
+  }, []);
 
   const currentUserId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
@@ -206,7 +217,6 @@ function RoomDetails() {
 
   return (
     <div className="room-details-page">
-      <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
       <Container className="my-4">
         <Button variant="outline-secondary" className="mb-4" onClick={() => navigate(-1)}>
           <i className="bi bi-arrow-left me-2"></i> Back
@@ -415,11 +425,13 @@ function RoomDetails() {
                 {room.latitude && room.longitude && mapsLoaded ? (
                   <>
                     <div className="border rounded mb-3 overflow-hidden" style={{ height: '200px', backgroundColor: '#fff' }}>
-                      <MapPicker
-                        latitude={parseFloat(room.latitude)}
-                        longitude={parseFloat(room.longitude)}
-                        setLatLng={() => {}} // Read-only in details view
-                      />
+                      <ErrorBoundary component="map">
+                        <MapPicker
+                          latitude={parseFloat(room.latitude)}
+                          longitude={parseFloat(room.longitude)}
+                          setLatLng={() => {}} // Read-only in details view
+                        />
+                      </ErrorBoundary>
                     </div>
                     
                     <button 

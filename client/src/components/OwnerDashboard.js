@@ -6,7 +6,7 @@ import { Container, Row, Col, Card, Badge, Nav, Button } from 'react-bootstrap';
 import LoadingSpinner from './LoadingSpinner';
 import './OwnerDashboard.css';
 
-const OwnerDashboard = () => {
+const OwnerDashboard = ({ handleRentifyClick }) => {
   const [listings, setListings] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -37,11 +37,14 @@ const OwnerDashboard = () => {
       const token = localStorage.getItem('token');
       
 
-      // Fetch listings (rooms and shops)
-      const [roomsResponse, shopsResponse] = await Promise.all([
+      // Fetch listings (rooms, hotels, and shops)
+      const [roomsResponse, hotelsResponse, shopsResponse] = await Promise.all([
         axios.get(`${API_URL}/api/rooms/my-listings`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
+        axios.get(`${API_URL}/api/hotels/my-listings`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(() => ({ data: [] })),
         axios.get(`${API_URL}/api/shops/my-listings`, {
           headers: { Authorization: `Bearer ${token}` }
         }).catch(() => ({ data: [] }))
@@ -53,8 +56,9 @@ const OwnerDashboard = () => {
       });
 
       const roomData = (roomsResponse.data || []).map(r => ({ ...r, propertyType: 'Room' }));
+      const hotelData = (hotelsResponse.data || []).map(h => ({ ...h, propertyType: 'Hotel' }));
       const shopData = (shopsResponse.data || []).map(s => ({ ...s, propertyType: 'Shop' }));
-      const allListings = [...roomData, ...shopData];
+      const allListings = [...roomData, ...hotelData, ...shopData];
       const bookingData = bookingsResponse.data;
 
       setListings(allListings);
@@ -85,19 +89,21 @@ const OwnerDashboard = () => {
     }
   };
 
-  const handleToggleStatus = async (roomId, currentStatus) => {
+  const handleToggleStatus = async (itemId, currentStatus, propertyType) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`${API_URL}/api/rooms/${roomId}/toggle-visibility`, 
+      const endpoint = propertyType === 'Hotel' ? 'hotels' : propertyType === 'Shop' ? 'shops' : 'rooms';
+      
+      await axios.patch(`${API_URL}/api/${endpoint}/${itemId}/toggle-visibility`, 
         {}, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
       // Update local state
-      setListings(prev => prev.map(room => 
-        room._id === roomId 
-          ? { ...room, isVisible: !currentStatus }
-          : room
+      setListings(prev => prev.map(item => 
+        item._id === itemId 
+          ? { ...item, isVisible: !currentStatus }
+          : item
       ));
       
       // Update stats
@@ -105,28 +111,30 @@ const OwnerDashboard = () => {
       
     } catch (error) {
       console.error('Error toggling status:', error);
-      alert('Error updating room status');
+      alert(`Error updating ${propertyType.toLowerCase()} status`);
     }
   };
 
-  const handleDeleteRoom = async (roomId) => {
-    if (!window.confirm('Are you sure you want to delete this room?')) {
+  const handleDeleteItem = async (itemId, propertyType) => {
+    if (!window.confirm(`Are you sure you want to delete this ${propertyType.toLowerCase()}?`)) {
       return;
     }
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${API_URL}/api/rooms/${roomId}`, {
+      const endpoint = propertyType === 'Hotel' ? 'hotels' : propertyType === 'Shop' ? 'shops' : 'rooms';
+      
+      await axios.delete(`${API_URL}/api/${endpoint}/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       // Remove from local state
-      setListings(prev => prev.filter(room => room._id !== roomId));
+      setListings(prev => prev.filter(item => item._id !== itemId));
       fetchListings(); // Refresh stats
       
     } catch (error) {
-      console.error('Error deleting room:', error);
-      alert('Error deleting room');
+      console.error(`Error deleting ${propertyType.toLowerCase()}:`, error);
+      alert(`Error deleting ${propertyType.toLowerCase()}`);
     }
   };
 
@@ -166,12 +174,12 @@ const OwnerDashboard = () => {
     }
   };
 
-  const getFilteredRooms = () => {
+  const getFilteredProperties = () => {
     switch (activeTab) {
       case 'active':
-        return listings.filter(room => room.isVisible !== false);
+        return listings.filter(property => property.isVisible !== false);
       case 'inactive':
-        return listings.filter(room => room.isVisible === false);
+        return listings.filter(property => property.isVisible === false);
       default:
         return listings;
     }
@@ -191,15 +199,15 @@ const OwnerDashboard = () => {
     </Col>
   );
 
-  const RoomCard = ({ room }) => (
+  const PropertyCard = ({ property }) => (
     <Col md={6} lg={4} className="mb-4">
       <Card className="h-100 shadow-sm room-card">
         <div className="position-relative">
-          {room.images && room.images.length > 0 ? (
+          {property.images && property.images.length > 0 ? (
             <Card.Img 
               variant="top" 
-              src={room.images[0]} 
-              alt={room.title}
+              src={property.images[0]} 
+              alt={property.title}
               style={{ height: '200px', objectFit: 'cover' }}
             />
           ) : (
@@ -211,26 +219,32 @@ const OwnerDashboard = () => {
             </div>
           )}
           <Badge 
-            bg={room.isVisible !== false ? 'success' : 'secondary'} 
+            bg={property.isVisible !== false ? 'success' : 'secondary'} 
             className="position-absolute top-0 end-0 m-2"
           >
-            {room.isVisible !== false ? 'Active' : 'Inactive'}
+            {property.isVisible !== false ? 'Active' : 'Inactive'}
+          </Badge>
+          <Badge 
+            bg="info" 
+            className="position-absolute top-0 start-0 m-2"
+          >
+            {property.propertyType}
           </Badge>
         </div>
         
         <Card.Body>
-          <Card.Title className="h5 mb-2">{room.title}</Card.Title>
+          <Card.Title className="h5 mb-2">{property.title}</Card.Title>
           <Card.Text className="text-muted mb-2">
             <i className="bi bi-geo-alt me-2"></i>
-            {room.location || room.city}
+            {property.location || property.city}
           </Card.Text>
           <Card.Text className="text-muted mb-2">
             <i className="bi bi-currency-rupee me-2"></i>
-            ₹{room.rent || room.price}/month
+            ₹{property.rent || property.price}/month
           </Card.Text>
           <Card.Text className="text-muted">
             <i className="bi bi-house me-2"></i>
-            {room.roomType}
+            {property.roomType || property.category || property.propertyType}
           </Card.Text>
         </Card.Body>
         
@@ -238,7 +252,7 @@ const OwnerDashboard = () => {
           <div className="d-flex gap-2 flex-wrap">
             <Button 
               as={Link}
-              to={`/edit-property/${room._id}`}
+              to={`/edit-property/${property._id}`}
               variant="outline-primary" 
               size="sm"
               className="flex-fill"
@@ -246,18 +260,18 @@ const OwnerDashboard = () => {
               <i className="bi bi-pencil me-1"></i>Edit
             </Button>
             <Button 
-              variant={room.isVisible !== false ? "outline-warning" : "outline-success"}
+              variant={property.isVisible !== false ? "outline-warning" : "outline-success"}
               size="sm"
-              onClick={() => handleToggleStatus(room._id, room.isVisible)}
+              onClick={() => handleToggleStatus(property._id, property.isVisible, property.propertyType)}
               className="flex-fill"
             >
-              <i className={`bi ${room.isVisible !== false ? 'bi-eye-slash' : 'bi-eye'} me-1`}></i>
-              {room.isVisible !== false ? 'Hide' : 'Show'}
+              <i className={`bi ${property.isVisible !== false ? 'bi-eye-slash' : 'bi-eye'} me-1`}></i>
+              {property.isVisible !== false ? 'Hide' : 'Show'}
             </Button>
             <Button 
               variant="outline-danger" 
               size="sm"
-              onClick={() => handleDeleteRoom(room._id)}
+              onClick={() => handleDeleteItem(property._id, property.propertyType)}
               className="flex-fill"
             >
               <i className="bi bi-trash me-1"></i>Delete
@@ -289,9 +303,14 @@ const OwnerDashboard = () => {
               </h1>
               <p className="lead text-muted">Manage your property listings and track performance</p>
             </div>
-            <Button as={Link} to="/add-property" variant="primary" size="lg" className="mb-2">
+            <Button 
+              onClick={handleRentifyClick} 
+              variant="primary" 
+              size="lg" 
+              className="mb-2"
+            >
               <i className="bi bi-plus-circle me-2"></i>
-              Add New Property
+              Rentify - Add Property
             </Button>
           </div>
         </Col>
@@ -300,7 +319,7 @@ const OwnerDashboard = () => {
       {/* Statistics Cards */}
       <Row className="mb-5">
         <StatCard 
-          title="Total Rooms Listed" 
+          title="Total Properties Listed" 
           value={stats.totalListings} 
           icon="bi bi-building" 
           color="border-primary" 
@@ -330,7 +349,7 @@ const OwnerDashboard = () => {
         <Card.Header className="bg-white">
           <Nav variant="tabs" className="card-header-tabs">
             {[
-              { key: 'all', label: 'All Rooms', count: stats.totalListings },
+              { key: 'all', label: 'All Properties', count: stats.totalListings },
               { key: 'active', label: 'Active', count: stats.activeListings },
               { key: 'inactive', label: 'Inactive', count: stats.inactiveListings },
               { key: 'requests', label: 'Booking Requests', count: bookingRequests.filter(req => req.status === 'pending').length }
@@ -425,12 +444,12 @@ const OwnerDashboard = () => {
           </Row>
         )
       ) : (
-        // Room Listings Section
-        getFilteredRooms().length === 0 ? (
+        // Property Listings Section
+        getFilteredProperties().length === 0 ? (
           <Card className="text-center py-5">
             <Card.Body>
               <i className="bi bi-house-x display-1 text-muted mb-3"></i>
-              <h4>No {activeTab === 'all' ? '' : activeTab} rooms found</h4>
+              <h4>No {activeTab === 'all' ? '' : activeTab} properties found</h4>
               <p className="text-muted">
                 {activeTab === 'all' 
                   ? "You haven't listed any properties yet." 
@@ -438,17 +457,20 @@ const OwnerDashboard = () => {
                 }
               </p>
               {activeTab === 'all' && (
-                <Button as={Link} to="/add-property" variant="primary">
+                <Button 
+                  onClick={handleRentifyClick} 
+                  variant="primary"
+                >
                   <i className="bi bi-plus-circle me-2"></i>
-                  List Your First Property
+                  Rentify - List Your First Property
                 </Button>
               )}
             </Card.Body>
           </Card>
         ) : (
           <Row>
-            {getFilteredRooms().map((room) => (
-              <RoomCard key={room._id} room={room} />
+            {getFilteredProperties().map((property) => (
+              <PropertyCard key={property._id} property={property} />
             ))}
           </Row>
         )

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MapPicker from './MapPicker';
-import LoadGoogleMaps from './LoadGoogleMaps';
+import ErrorBoundary from './ErrorBoundary';
 import { API_URL } from '../config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddRoom.css';
@@ -17,6 +17,12 @@ const AddShop = ({ token }) => {
   const [message, setMessage] = useState('');
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [showMap, setShowMap] = useState(false);
+
+  // Load Google Maps on component mount
+  useEffect(() => {
+    // Google Maps will be loaded by the MapPicker component
+    setMapsLoaded(true);
+  }, []);
 
   const [shopData, setShopData] = useState({
     title: '',
@@ -35,7 +41,13 @@ const AddShop = ({ token }) => {
     businessType: '',
     openingHours: '09:00',
     closingHours: '21:00',
-    parkingSpaces: ''
+    parkingSpaces: '',
+    // Additional fields for address components
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+    landmark: ''
   });
 
   const amenitiesList = [
@@ -103,19 +115,41 @@ const AddShop = ({ token }) => {
     setErrors(prev => ({ ...prev, location: '' }));
   };
 
-  const handleUseCurrentLocation = () => {
+  const handleUseCurrentLocation = async () => {
+    // Check if geolocation is supported
     if (!navigator.geolocation) {
-      setMessage("Geolocation is not supported by your browser.");
+      const errorMsg = "❌ Geolocation is not supported by your browser.";
+      setMessage(errorMsg);
       return;
     }
 
+    // Check for permissions first
+    try {
+      const permission = await navigator.permissions.query({name: 'geolocation'});
+      if (permission.state === 'denied') {
+        const errorMsg = "❌ Location access denied. Please enable location in browser settings.";
+        setMessage(errorMsg);
+        return;
+      }
+    } catch (err) {
+      console.warn("Permissions API not supported, continuing with geolocation...");
+    }
+
     setLoading(true);
-    setMessage("Detecting your location... please wait.");
+    setMessage("📍 Detecting your location... please wait.");
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 15000, // 15 seconds timeout
+      maximumAge: 300000 // 5 minutes cache
+    };
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          const { latitude, longitude } = position.coords;
+          const { latitude, longitude, accuracy } = position.coords;
+
+          console.log("📍 Location detected:", { latitude, longitude, accuracy });
 
           // Set coordinates first
           setShopData(prev => ({
@@ -124,21 +158,31 @@ const AddShop = ({ token }) => {
             longitude: longitude,
           }));
 
-          // Try reverse geocoding to get address details
-          const address = await reverseGeocode(latitude, longitude);
-          
-          // If geocoding fails, set a basic location string
-          if (!address) {
-            const basicLocation = `Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`;
-            setShopData(prev => ({
-              ...prev,
-              location: basicLocation
-            }));
+          // Use reverse geocoding to get address details
+          try {
+            // Check if Google Maps is available
+            if (!window.google?.maps?.Geocoder) {
+              console.warn("⚠️ Google Maps Geocoder not available");
+              const warningMsg = "✅ Location detected. Please fill address details manually.";
+              setMessage(warningMsg);
+            } else {
+              await reverseGeocode(latitude, longitude);
+              console.log("✅ Reverse geocoding completed successfully");
+              setMessage("✅ Location and address detected!");
+            }
+          } catch (geocodeError) {
+            console.warn("⚠️ Reverse geocoding failed:", geocodeError);
+            const warningMsg = "✅ Location detected. Please fill address details manually.";
+            setMessage(warningMsg);
           }
+
+          // Show map after successful location detection
+          setShowMap(true);
           
-          setMessage("Location detected successfully!");
+          const successMsg = `✅ Location detected successfully! (Accuracy: ${Math.round(accuracy)}m)`;
+          setMessage(successMsg);
+          
           setLoading(false);
-          setShowMap(true); // Show map after location detection
           
           // Clear any existing location errors
           setErrors(prev => ({
@@ -146,68 +190,137 @@ const AddShop = ({ token }) => {
             location: ''
           }));
         } catch (error) {
-          // Still set basic location even if geocoding fails
-          const basicLocation = `Location detected: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-          setShopData(prev => ({
-            ...prev,
-            location: basicLocation
-          }));
-          setMessage("Location detected successfully!");
+          console.error("Reverse geocoding error:", error);
+          const warningMsg = "✅ Location detected but failed to fetch address. Please fill manually.";
+          setMessage(warningMsg);
           setLoading(false);
-          setShowMap(true); // Show map even if geocoding fails
-          
-          // Clear any existing location errors
-          setErrors(prev => ({
-            ...prev,
-            location: ''
-          }));
         }
       },
       (error) => {
-        setMessage("Failed to detect location. Please allow location access and ensure GPS is turned on.");
+        console.error("Geolocation error:", error);
+        let errorMessage = "";
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "❌ Location access denied. Please allow location in your browser and try again.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "❌ Location information unavailable. Please check your GPS or try again.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "❌ Location request timed out. Please try again.";
+            break;
+          default:
+            errorMessage = "❌ An unknown location error occurred. Please try again.";
+            break;
+        }
+        
+        setMessage(errorMessage);
         setLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      options
     );
   };
 
   // Reverse geocoding function using Google Maps API
   const reverseGeocode = async (lat, lng) => {
     try {
+      console.log("🔍 Starting reverse geocoding for:", { lat, lng });
+      
+      // Enhanced Google Maps availability check
       if (!window.google || !window.google.maps || !window.google.maps.Geocoder) {
-        console.warn("Google Maps not available for geocoding");
-        return null;
+        console.warn("❌ Google Maps not available for geocoding");
+        throw new Error("Google Maps API not loaded");
       }
 
-      const geocoder = new window.google.maps.Geocoder();
-      const response = await new Promise((resolve, reject) => {
+      console.log("✅ Google Maps Geocoder available, starting geocoding...");
+      
+      // Create geocoder instance safely
+      let geocoder;
+      try {
+        geocoder = new window.google.maps.Geocoder();
+      } catch (geocoderError) {
+        console.error("❌ Failed to create Geocoder:", geocoderError);
+        throw new Error("Failed to initialize geocoder");
+      }
+
+      // Wrap geocoding in Promise with timeout
+      const geocodePromise = new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+          reject(new Error('Geocoding request timed out'));
+        }, 10000); // 10 second timeout
+
         geocoder.geocode(
-          { location: { lat, lng } },
+          { location: { lat: parseFloat(lat), lng: parseFloat(lng) } },
           (results, status) => {
-            if (status === 'OK' && results[0]) {
+            clearTimeout(timeoutId);
+            
+            if (status === 'OK' && results && results[0]) {
               resolve(results[0]);
             } else {
-              reject(new Error('Geocoding failed'));
+              reject(new Error(`Geocoding failed with status: ${status}`));
             }
           }
         );
       });
 
+      const response = await geocodePromise;
+
+      // Parse address components with better address detection
+      const addressComponents = response.address_components || [];
+      let formattedAddress = response.formatted_address || '';
+      let city = '';
+      let state = '';
+      let pincode = '';
+      let landmark = '';
+
       // Parse address components
-      // eslint-disable-next-line no-unused-vars
-      const addressComponents = response.address_components;
-      const formattedAddress = response.formatted_address;
-      
-      // Update shop data with detected location
+      addressComponents.forEach(component => {
+        const types = component.types || [];
+        
+        if (types.includes('postal_code')) {
+          pincode = component.long_name;
+        }
+        if (types.includes('locality')) {
+          city = component.long_name;
+        }
+        if (types.includes('administrative_area_level_1')) {
+          state = component.long_name;
+        }
+        if (types.includes('sublocality_level_1') || types.includes('neighborhood')) {
+          landmark = component.long_name;
+        }
+      });
+
+      console.log("🏢 Shop geocoding results:", { formattedAddress, city, state, pincode, landmark });
+
+      // Update shop data with detected location details safely
       setShopData(prev => ({
         ...prev,
-        location: formattedAddress
+        location: formattedAddress || prev.location,
+        address: formattedAddress || prev.address,
+        city: city || prev.city,
+        state: state || prev.state,
+        pincode: pincode || prev.pincode,
+        landmark: landmark || prev.landmark,
       }));
 
-      return formattedAddress;
+      return { success: true, formattedAddress, city, state, pincode, landmark };
+
     } catch (error) {
-      console.error('Reverse geocoding error:', error);
-      return null;
+      console.error('❌ Reverse geocoding failed:', error);
+      
+      // Fallback to basic location setting without breaking the app
+      try {
+        setShopData((prev) => ({
+          ...prev,
+          location: `Lat: ${parseFloat(lat).toFixed(6)}, Lng: ${parseFloat(lng).toFixed(6)}`,
+        }));
+      } catch (setDataError) {
+        console.error('❌ Failed to set fallback location:', setDataError);
+      }
+
+      throw error; // Re-throw to handle in calling function
     }
   };
 
@@ -472,18 +585,66 @@ const AddShop = ({ token }) => {
                 <label className="form-label fw-bold">Location *</label>
                 
                 <div className="mb-3">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary mb-3"
-                    onClick={handleUseCurrentLocation}
-                    disabled={loading}
-                  >
-                    <i className="bi bi-geo-alt-fill me-2"></i>
-                    Use Current Location
-                  </button>
+                  <div className="d-flex flex-wrap gap-3 mb-4">
+                    <button
+                      type="button"
+                      className="btn btn-primary flex-fill shadow-sm"
+                      onClick={handleUseCurrentLocation}
+                      disabled={loading}
+                      style={{ minHeight: '45px' }}
+                    >
+                      <div className="d-flex align-items-center justify-content-center">
+                        {loading ? (
+                          <>
+                            <div className="spinner-border spinner-border-sm me-2" role="status">
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                            Detecting Location...
+                          </>
+                        ) : (
+                          <>
+                            <i className="bi bi-geo-alt-fill me-2"></i>
+                            Use Current Location
+                          </>
+                        )}
+                      </div>
+                    </button>
+                    
+                    {shopData.latitude && shopData.longitude && (
+                      <button
+                        type="button"
+                        className="btn btn-outline-info flex-fill shadow-sm"
+                        onClick={() => setShowMap(!showMap)}
+                        style={{ minHeight: '45px' }}
+                      >
+                        <div className="d-flex align-items-center justify-content-center">
+                          <i className={`bi ${showMap ? 'bi-eye-slash' : 'bi-map'} me-2`}></i>
+                          {showMap ? 'Hide Map' : 'Show Map'}
+                        </div>
+                      </button>
+                    )}
+                  </div>
                   
+                  {/* Location Status */}
+                  {shopData.latitude && shopData.longitude && (
+                    <div className="alert alert-success border-0 py-3 mb-3" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)' }}>
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-check-circle-fill text-success me-3" style={{ fontSize: '1.2rem' }}></i>
+                        <div>
+                          <strong className="text-success">Location Successfully Detected!</strong>
+                          <div className="mt-1">
+                            <small className="text-muted">
+                              <i className="bi bi-geo-alt me-1"></i>
+                              Coordinates: {parseFloat(shopData.latitude).toFixed(6)}, {parseFloat(shopData.longitude).toFixed(6)}
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {message && (
-                    <div className={`alert ${message.includes('success') ? 'alert-success' : 'alert-info'} py-2`}>
+                    <div className={`alert ${message.includes('success') || message.includes('✅') ? 'alert-success' : 'alert-info'} border-0 py-2 mb-3`}>
                       <small>{message}</small>
                     </div>
                   )}
@@ -518,24 +679,42 @@ const AddShop = ({ token }) => {
                 {errors.location && <div className="text-danger small mt-1">{errors.location}</div>}
                 
                 {/* Map Section */}
-                {showMap && mapsLoaded && shopData.latitude && shopData.longitude && (
+                {showMap && shopData.latitude && shopData.longitude && (
                   <div className="mt-4">
                     <h6 className="mb-2">
                       <i className="bi bi-map me-2"></i>
-                      Location on Map
+                      Interactive Location Map
                     </h6>
-                    <div className="border rounded overflow-hidden">
-                      <MapPicker
-                        latitude={parseFloat(shopData.latitude)}
-                        longitude={parseFloat(shopData.longitude)}
-                        onLocationSelect={(latLng) => {
-                          setShopData(prev => ({
-                            ...prev,
-                            latitude: latLng.lat,
-                            longitude: latLng.lng
-                          }));
-                        }}
-                      />
+                    <div className="border rounded overflow-hidden shadow-sm">
+                      <ErrorBoundary component="map">
+                        <MapPicker
+                          latitude={parseFloat(shopData.latitude)}
+                          longitude={parseFloat(shopData.longitude)}
+                          setLatLng={(latLng) => {
+                            setShopData(prev => ({
+                              ...prev,
+                              latitude: latLng.lat,
+                              longitude: latLng.lng
+                            }));
+                          }}
+                          onLocationSelect={(location, lat, lng) => {
+                            setShopData(prev => ({
+                              ...prev,
+                              latitude: lat,
+                              longitude: lng
+                            }));
+                            // Optionally reverse geocode the new location
+                            reverseGeocode(lat, lng);
+                          }}
+                        />
+                      </ErrorBoundary>
+                    </div>
+                    
+                    <div className="mt-2 p-2 bg-light rounded">
+                      <small className="text-muted d-block">
+                        <i className="bi bi-cursor me-1"></i>
+                        <strong>Tip:</strong> Click anywhere on the map to set precise location for your shop
+                      </small>
                     </div>
                   </div>
                 )}
@@ -545,6 +724,73 @@ const AddShop = ({ token }) => {
                     <small className="text-muted">Selected: {shopData.location}</small>
                   </div>
                 )}
+              </div>
+
+              {/* Address Details Section */}
+              <div className="row g-3 mt-3">
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">City</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="city"
+                    value={shopData.city || ''}
+                    onChange={handleInputChange}
+                    placeholder="Enter city name (e.g. Delhi, Mumbai)"
+                  />
+                  <small className="text-muted">
+                    <i className="bi bi-info-circle me-1"></i>
+                    Avoid division names, enter actual city name
+                  </small>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">State</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="state"
+                    value={shopData.state || ''}
+                    onChange={handleInputChange}
+                    placeholder="Enter state"
+                  />
+                </div>
+                <div className="col-12">
+                  <label className="form-label fw-bold">Full Address</label>
+                  <textarea
+                    className="form-control"
+                    name="address"
+                    value={shopData.address || ''}
+                    onChange={handleInputChange}
+                    rows="3"
+                    placeholder="Enter complete address with shop number, street, area..."
+                  />
+                  <small className="text-muted">
+                    <i className="bi bi-geo-alt me-1"></i>
+                    This will be auto-filled when you use current location
+                  </small>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">Pincode</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="pincode"
+                    value={shopData.pincode || ''}
+                    onChange={handleInputChange}
+                    placeholder="Enter pincode"
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">Landmark</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="landmark"
+                    value={shopData.landmark || ''}
+                    onChange={handleInputChange}
+                    placeholder="Nearby landmark"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -783,9 +1029,6 @@ const AddShop = ({ token }) => {
           </div>
         </div>
       </div>
-      
-      {/* Load Google Maps */}
-      <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
     </div>
   );
 };

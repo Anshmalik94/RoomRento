@@ -41,96 +41,63 @@ function TestimonialsSection() {
     },
   ];
 
+  // Create desktop slides (3 cards per slide) and mobile slides (1 card per slide)
+  const desktopSlides = [];
+  for (let i = 0; i < testimonials.length; i += 3) {
+    desktopSlides.push(testimonials.slice(i, i + 3));
+  }
+
   return (
     <section className="testimonials-section py-5 bg-white">
       <div className="container text-center">
         <h2 className="fw-bold mb-4">What Our Users Say</h2>
         
-        {/* Bootstrap Carousel */}
-        <div id="testimonialsCarousel" className="carousel slide" data-bs-ride="carousel">
-          {/* Carousel Indicators */}
+        {/* Desktop Carousel - Hidden on mobile */}
+        <div id="testimonialsCarouselDesktop" className="carousel slide d-none d-md-block" data-bs-ride="carousel">
+          {/* Desktop Indicators */}
           <div className="carousel-indicators">
-            <button 
-              type="button" 
-              data-bs-target="#testimonialsCarousel" 
-              data-bs-slide-to="0" 
-              className="active" 
-              aria-current="true" 
-              aria-label="Slide 1">
-            </button>
-            <button 
-              type="button" 
-              data-bs-target="#testimonialsCarousel" 
-              data-bs-slide-to="1" 
-              aria-label="Slide 2">
-            </button>
-            <button 
-              type="button" 
-              data-bs-target="#testimonialsCarousel" 
-              data-bs-slide-to="2" 
-              aria-label="Slide 3">
-            </button>
+            {desktopSlides.map((_, index) => (
+              <button 
+                key={index}
+                type="button" 
+                data-bs-target="#testimonialsCarouselDesktop" 
+                data-bs-slide-to={index} 
+                className={index === 0 ? 'active' : ''}
+                aria-current={index === 0 ? 'true' : 'false'}
+                aria-label={`Slide ${index + 1}`}>
+              </button>
+            ))}
           </div>
 
-          {/* Carousel Items */}
+          {/* Desktop Carousel Items */}
           <div className="carousel-inner">
-            {/* Slide 1 - First 3 testimonials */}
-            <div className="carousel-item active">
-              <div className="row g-3 justify-content-center">
-                {testimonials.slice(0, 3).map((t, index) => (
-                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-12" key={index}>
-                    <div className="card h-100 shadow-sm border-0 p-3 testimonial-card mx-auto">
-                      <div className="user-icon-wrapper mb-3 mx-auto">
-                        <i className="fas fa-user testimonial-user-icon"></i>
+            {desktopSlides.map((slideTestimonials, slideIndex) => (
+              <div 
+                key={slideIndex}
+                className={`carousel-item ${slideIndex === 0 ? 'active' : ''}`}
+              >
+                <div className="row g-3 justify-content-center">
+                  {slideTestimonials.map((t, index) => (
+                    <div className="col-xl-4 col-lg-4 col-md-6" key={index}>
+                      <div className="card h-100 shadow-sm border-0 p-2 testimonial-card mx-auto">
+                        <div className="user-icon-wrapper mb-2 mx-auto">
+                          <i className="fas fa-user testimonial-user-icon"></i>
+                        </div>
+                        <h5 className="mb-1 text-center fw-semibold">{t.name}</h5>
+                        <p className="text-muted fst-italic mt-1 text-center small">"{t.review}"</p>
                       </div>
-                      <h5 className="mb-1 text-center">{t.name}</h5>
-                      <p className="text-muted fst-italic mt-2 text-center">"{t.review}"</p>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-
-            {/* Slide 2 - Next 3 testimonials */}
-            <div className="carousel-item">
-              <div className="row g-3 justify-content-center">
-                {testimonials.slice(3, 6).map((t, index) => (
-                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-12" key={index + 3}>
-                    <div className="card h-100 shadow-sm border-0 p-3 testimonial-card mx-auto">
-                      <div className="user-icon-wrapper mb-3 mx-auto">
-                        <i className="fas fa-user testimonial-user-icon"></i>
-                      </div>
-                      <h5 className="mb-1">{t.name}</h5>
-                      <p className="text-muted fst-italic mt-2">"{t.review}"</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Slide 3 - Last testimonial */}
-            <div className="carousel-item">
-              <div className="row g-3 justify-content-center">
-                {testimonials.slice(6, 7).map((t, index) => (
-                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10 col-12" key={index + 6}>
-                    <div className="card h-100 shadow-sm border-0 p-3 testimonial-card mx-auto">
-                      <div className="user-icon-wrapper mb-3 mx-auto">
-                        <i className="fas fa-user testimonial-user-icon"></i>
-                      </div>
-                      <h5 className="mb-1 text-center">{t.name}</h5>
-                      <p className="text-muted fst-italic mt-2 text-center">"{t.review}"</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Carousel Controls */}
+          {/* Desktop Controls */}
           <button 
             className="carousel-control-prev" 
             type="button" 
-            data-bs-target="#testimonialsCarousel" 
+            data-bs-target="#testimonialsCarouselDesktop" 
             data-bs-slide="prev">
             <span className="carousel-control-prev-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Previous</span>
@@ -138,7 +105,65 @@ function TestimonialsSection() {
           <button 
             className="carousel-control-next" 
             type="button" 
-            data-bs-target="#testimonialsCarousel" 
+            data-bs-target="#testimonialsCarouselDesktop" 
+            data-bs-slide="next">
+            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+            <span className="visually-hidden">Next</span>
+          </button>
+        </div>
+
+        {/* Mobile Carousel - Hidden on desktop */}
+        <div id="testimonialsCarouselMobile" className="carousel slide d-md-none" data-bs-ride="carousel">
+          {/* Mobile Indicators */}
+          <div className="carousel-indicators">
+            {testimonials.map((_, index) => (
+              <button 
+                key={index}
+                type="button" 
+                data-bs-target="#testimonialsCarouselMobile" 
+                data-bs-slide-to={index} 
+                className={index === 0 ? 'active' : ''}
+                aria-current={index === 0 ? 'true' : 'false'}
+                aria-label={`Slide ${index + 1}`}>
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile Carousel Items */}
+          <div className="carousel-inner">
+            {testimonials.map((t, index) => (
+              <div 
+                className={`carousel-item ${index === 0 ? 'active' : ''}`} 
+                key={index}
+              >
+                <div className="row g-3 justify-content-center">
+                  <div className="col-10 col-sm-8">
+                    <div className="card h-100 shadow-sm border-0 p-2 testimonial-card mx-auto">
+                      <div className="user-icon-wrapper mb-2 mx-auto">
+                        <i className="fas fa-user testimonial-user-icon"></i>
+                      </div>
+                      <h5 className="mb-1 text-center fw-semibold">{t.name}</h5>
+                      <p className="text-muted fst-italic mt-1 text-center small">"{t.review}"</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Controls */}
+          <button 
+            className="carousel-control-prev" 
+            type="button" 
+            data-bs-target="#testimonialsCarouselMobile" 
+            data-bs-slide="prev">
+            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span className="visually-hidden">Previous</span>
+          </button>
+          <button 
+            className="carousel-control-next" 
+            type="button" 
+            data-bs-target="#testimonialsCarouselMobile" 
             data-bs-slide="next">
             <span className="carousel-control-next-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Next</span>

@@ -372,4 +372,30 @@ router.get('/owner/my-shops', auth, async (req, res) => {
   }
 });
 
+// ✅ PATCH toggle visibility (Protected route)
+router.patch('/:id/toggle-visibility', auth, async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.params.id);
+    
+    if (!shop) {
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+    
+    if (shop.owner.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    
+    shop.isVisible = !shop.isVisible;
+    await shop.save();
+    
+    res.json({ 
+      message: 'Shop visibility updated successfully',
+      isVisible: shop.isVisible 
+    });
+  } catch (error) {
+    console.error('Error toggling shop visibility:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 module.exports = router;

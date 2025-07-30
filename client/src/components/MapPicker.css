@@ -1,6 +1,7 @@
 
+/* Enhanced Map Container Styles */
 .map-container {
-  min-height: 300px;
+  min-height: 350px;
   width: 100%;
   margin-top: 10px;
   border-radius: 12px;
@@ -8,25 +9,126 @@
   cursor: crosshair;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
   background: #f8f9fa;
-  border: 1px solid #dee2e6;
+  border: 2px solid #e9ecef;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .map-container:hover {
-  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
-  transform: scale(1.01);
+  box-shadow: 0 8px 25px rgba(111, 66, 193, 0.15);
+  transform: scale(1.005);
 }
 
+/* Loading States */
+.map-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.map-loading .spinner-border {
+  width: 2rem;
+  height: 2rem;
+  border-width: 3px;
+}
+
+.map-loading h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.map-loading p {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* Error States */
+.map-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+}
+
+.map-error i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #ffc107;
+}
+
+.map-error h6 {
+  color: #856404;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.map-error p {
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .map-container {
-    min-height: 220px;
+    min-height: 280px;
+  }
+  
+  .map-loading,
+  .map-error {
+    padding: 1.5rem;
+  }
+  
+  .map-loading h6,
+  .map-error h6 {
+    font-size: 1rem;
+  }
+  
+  .map-loading p,
+  .map-error p {
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .map-container {
-    min-height: 150px;
+    min-height: 250px;
   }
+  
+  .map-loading,
+  .map-error {
+    padding: 1rem;
+  }
+  
+  .map-error i {
+    font-size: 2rem;
+  }
+}
+
+/* Animation for smooth transitions */
+.map-container * {
+  transition: all 0.3s ease;
+}
+
+/* Info window custom styling */
+.gm-style-iw {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.gm-style-iw-d {
+  padding: 8px !important;
+  font-family: 'Inter', sans-serif !important;
 }

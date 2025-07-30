@@ -344,6 +344,32 @@ router.get('/owner/my-hotels', auth, async (req, res) => {
   }
 });
 
+// ✅ PATCH toggle visibility (Protected route)
+router.patch('/:id/toggle-visibility', auth, async (req, res) => {
+  try {
+    const hotel = await Hotel.findById(req.params.id);
+    
+    if (!hotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+    
+    if (hotel.owner.toString() !== req.user.userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    
+    hotel.isVisible = !hotel.isVisible;
+    await hotel.save();
+    
+    res.json({ 
+      message: 'Hotel visibility updated successfully',
+      isVisible: hotel.isVisible 
+    });
+  } catch (error) {
+    console.error('Error toggling hotel visibility:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // ✅ GET hotels for the logged-in user
 router.get('/my-listings', auth, async (req, res) => {
   try {

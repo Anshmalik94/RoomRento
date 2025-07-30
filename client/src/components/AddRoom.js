@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import LoadGoogleMaps from "./LoadGoogleMaps";
+import { loadGoogleMapsScript } from "./LoadGoogleMaps";
+import ErrorBoundary from './ErrorBoundary';
 import MapPicker from "./MapPicker";
 import LoadingSpinner from "./LoadingSpinner";
 import { Card, Row, Col, Form, Button, Toast, ToastContainer } from "react-bootstrap";
 
-function AddRoom({ token }) {
+function AddRoom({ token, isEdit = false }) {
+  const { id } = useParams(); // Get property ID from URL for editing
+  const [propertyType, setPropertyType] = useState('Room'); // Track property type for edit mode
+  
   const [data, setData] = useState({
     title: "",
     description: "",
@@ -45,6 +49,81 @@ function AddRoom({ token }) {
   const [toastVariant, setToastVariant] = useState('success'); // success, danger, warning, info
   
   const navigate = useNavigate();
+
+  // Fetch property data for editing
+  useEffect(() => {
+    const fetchPropertyData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        
+        // Try to fetch from different endpoints to determine property type
+        let response;
+        let type;
+        
+        try {
+          response = await axios.get(`${API_URL}/api/rooms/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          type = 'Room';
+        } catch {
+          try {
+            response = await axios.get(`${API_URL}/api/hotels/${id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            type = 'Hotel';
+          } catch {
+            response = await axios.get(`${API_URL}/api/shops/${id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            type = 'Shop';
+          }
+        }
+
+        if (response && response.data) {
+          const property = response.data;
+          setPropertyType(type);
+          
+          // Map property data to form fields
+          setData({
+            title: property.title || "",
+            description: property.description || "",
+            price: property.price || property.rent || "",
+            phone: property.phone || property.contactNumber || "",
+            location: property.location || property.city || "",
+            roomType: property.roomType || property.category || "",
+            furnished: property.furnished || "",
+            pincode: property.pincode || "",
+            city: property.city || property.location || "",
+            state: property.state || "",
+            landmark: property.landmark || "",
+            address: property.address || "",
+            latitude: property.latitude || "",
+            longitude: property.longitude || "",
+            facilities: property.facilities || property.amenities || [],
+            maxOccupancy: property.maxOccupancy || 1,
+            area: property.area || ""
+          });
+
+          // Set existing images
+          if (property.images && property.images.length > 0) {
+            setImagePreviews(property.images);
+          }
+
+          showToastMessage('Property data loaded successfully!', 'success');
+        }
+      } catch (error) {
+        console.error('Error fetching property data:', error);
+        showToastMessage('Error loading property data', 'danger');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isEdit && id) {
+      fetchPropertyData();
+    }
+  }, [isEdit, id]);
 
   const facilityOptions = [
     'Wi-Fi', 'AC', 'Parking', 'Gym', 'Swimming Pool', 'Security', 
@@ -181,19 +260,44 @@ function AddRoom({ token }) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleUseCurrentLocation = () => {
+  const handleUseCurrentLocation = async () => {
+    // Check if geolocation is supported
     if (!navigator.geolocation) {
-      setMessage("Geolocation is not supported by your browser.");
+      const errorMsg = "❌ Geolocation is not supported by your browser.";
+      setMessage(errorMsg);
+      showToastMessage(errorMsg, 'danger');
       return;
     }
 
+    // Check for permissions first
+    try {
+      const permission = await navigator.permissions.query({name: 'geolocation'});
+      if (permission.state === 'denied') {
+        const errorMsg = "❌ Location access denied. Please enable location in browser settings.";
+        setMessage(errorMsg);
+        showToastMessage(errorMsg, 'danger');
+        return;
+      }
+    } catch (err) {
+      console.warn("Permissions API not supported, continuing with geolocation...");
+    }
+
     setLoading(true);
-    setMessage("Detecting your location... please wait.");
+    setMessage("📍 Detecting your location... please wait.");
+    showToastMessage("📍 Detecting location...", 'info');
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 15000, // 15 seconds timeout
+      maximumAge: 300000 // 5 minutes cache
+    };
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          const { latitude, longitude } = position.coords;
+          const { latitude, longitude, accuracy } = position.coords;
+
+          console.log("📍 Location detected:", { latitude, longitude, accuracy });
 
           // Set coordinates first
           setData((prev) => ({
@@ -203,110 +307,202 @@ function AddRoom({ token }) {
           }));
 
           // Use reverse geocoding to get address details
-          await reverseGeocode(latitude, longitude);
+          try {
+            // First ensure Google Maps is loaded
+            await loadGoogleMapsScript();
+            
+            // Now do reverse geocoding
+            if (!window.google?.maps?.Geocoder) {
+              console.warn("⚠️ Google Maps Geocoder not available after loading");
+              const warningMsg = "✅ Location detected. Please fill address details manually.";
+              setMessage(warningMsg);
+              showToastMessage("📍 Location detected, fill address manually", 'warning');
+            } else {
+              await reverseGeocode(latitude, longitude);
+              console.log("✅ Reverse geocoding completed successfully");
+              showToastMessage("✅ Location and address detected!", 'success');
+            }
+          } catch (geocodeError) {
+            console.warn("⚠️ Reverse geocoding failed:", geocodeError);
+            const warningMsg = "✅ Location detected. Please fill address details manually.";
+            setMessage(warningMsg);
+            showToastMessage("📍 Location detected, fill address manually", 'warning');
+          }
           
           // Show map after successful location detection
           setShowMap(true);
-          if (!window.google || !window.google.maps || !window.google.maps.Map) {
-            console.error("Google Maps API is not loaded properly.");
-            setMessage("Map failed to load. Please try again later.");
-            return;
-          }
-
-          // Initialize map with detected location
-          const mapElement = document.getElementById("map-container");
-          if (mapElement) {
-            const map = new window.google.maps.Map(mapElement, {
-              center: { lat: latitude, lng: longitude },
-              zoom: 15,
-            });
-
-            new window.google.maps.Marker({
-              position: { lat: latitude, lng: longitude },
-              map: map,
-              title: "Detected Location",
-            });
-          } else {
-            console.warn("Map container element not found.");
-          }
-          setMessage("Location detected successfully!");
+          
+          const successMsg = `✅ Location detected successfully! (Accuracy: ${Math.round(accuracy)}m)`;
+          setMessage(successMsg);
+          
           setLoading(false);
         } catch (error) {
-          setMessage("Location detected but failed to fetch full address.");
+          console.error("Reverse geocoding error:", error);
+          const warningMsg = "✅ Location detected but failed to fetch address. Please fill manually.";
+          setMessage(warningMsg);
+          showToastMessage("⚠️ Location detected, please fill address manually", 'warning');
           setLoading(false);
         }
       },
       (error) => {
-        setMessage("Failed to detect location. Please allow location access and ensure GPS is turned on.");
+        console.error("Geolocation error:", error);
+        let errorMessage = "";
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "❌ Location access denied. Please allow location in your browser and try again.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "❌ Location information unavailable. Please check your GPS or try again.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "❌ Location request timed out. Please try again.";
+            break;
+          default:
+            errorMessage = "❌ An unknown location error occurred. Please try again.";
+            break;
+        }
+        
+        setMessage(errorMessage);
+        showToastMessage(errorMessage, 'danger');
         setLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      options
     );
   };
 
   // Reverse geocoding function using Google Maps API
   const reverseGeocode = async (lat, lng) => {
     try {
+      console.log("🔍 Starting reverse geocoding for:", { lat, lng });
+      
+      // Enhanced Google Maps availability check
       if (!window.google || !window.google.maps || !window.google.maps.Geocoder) {
-        console.warn("Google Maps not available for geocoding");
-        return null;
+        console.warn("❌ Google Maps not available for geocoding");
+        throw new Error("Google Maps API not loaded");
       }
 
-      const geocoder = new window.google.maps.Geocoder();
-      const response = await new Promise((resolve, reject) => {
+      console.log("✅ Google Maps Geocoder available, starting geocoding...");
+      
+      // Create geocoder instance safely
+      let geocoder;
+      try {
+        geocoder = new window.google.maps.Geocoder();
+      } catch (geocoderError) {
+        console.error("❌ Failed to create Geocoder:", geocoderError);
+        throw new Error("Failed to initialize geocoder");
+      }
+
+      // Wrap geocoding in Promise with timeout
+      const geocodePromise = new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+          reject(new Error('Geocoding request timed out'));
+        }, 10000); // 10 second timeout
+
         geocoder.geocode(
-          { location: { lat, lng } },
+          { location: { lat: parseFloat(lat), lng: parseFloat(lng) } },
           (results, status) => {
-            if (status === 'OK' && results[0]) {
+            clearTimeout(timeoutId);
+            
+            if (status === 'OK' && results && results[0]) {
               resolve(results[0]);
             } else {
-              reject(new Error('Geocoding failed'));
+              reject(new Error(`Geocoding failed with status: ${status}`));
             }
           }
         );
       });
 
-      // Parse address components
-      const addressComponents = response.address_components;
-      let address = response.formatted_address;
+      const response = await geocodePromise;
+
+      // Parse address components with better city detection
+      const addressComponents = response.address_components || [];
+      let address = response.formatted_address || '';
       let pincode = '';
       let city = '';
       let state = '';
       let landmark = '';
+      let district = '';
 
+      // First pass - collect all components
       addressComponents.forEach(component => {
-        if (component.types.includes('postal_code')) {
+        const types = component.types || [];
+        
+        if (types.includes('postal_code')) {
           pincode = component.long_name;
         }
-        if (component.types.includes('locality') || component.types.includes('administrative_area_level_2')) {
-          city = component.long_name;
+        if (types.includes('locality')) {
+          city = component.long_name; // Preferred city name
         }
-        if (component.types.includes('administrative_area_level_1')) {
+        if (types.includes('administrative_area_level_2')) {
+          district = component.long_name; // District/Division name
+        }
+        if (types.includes('administrative_area_level_1')) {
           state = component.long_name;
         }
-        if (component.types.includes('sublocality') || component.types.includes('neighborhood')) {
+        if (types.includes('sublocality_level_1') || types.includes('neighborhood')) {
           landmark = component.long_name;
         }
       });
 
-      // Update form data with detected location details
+      // Smart city detection - avoid divisions
+      if (!city && district) {
+        // If no locality found, check if district is a valid city name
+        // Avoid common division patterns
+        const divisionPatterns = /division|district|tehsil|block/i;
+        if (!divisionPatterns.test(district)) {
+          city = district;
+        }
+      }
+
+      // Fallback for city detection
+      if (!city) {
+        addressComponents.forEach(component => {
+          const types = component.types || [];
+          if (types.includes('sublocality') || 
+              types.includes('administrative_area_level_3')) {
+            if (!city) city = component.long_name;
+          }
+        });
+      }
+
+      // Final fallback - extract from formatted address
+      if (!city && address) {
+        const addressParts = address.split(',').map(part => part.trim());
+        if (addressParts.length >= 2) {
+          city = addressParts[addressParts.length - 3] || addressParts[1];
+        }
+      }
+
+      console.log("🏠 Geocoding results:", { address, city, state, pincode, landmark });
+
+      // Update form data with detected location details safely
       setData((prev) => ({
         ...prev,
-        address: address,
-        pincode: pincode,
-        city: city,
-        state: state,
-        landmark: landmark,
-        location: `${city}, ${state}`,
+        address: address || prev.address,
+        pincode: pincode || prev.pincode,
+        city: city || prev.city,
+        state: state || prev.state,
+        landmark: landmark || prev.landmark,
+        location: city && state ? `${city}, ${state}` : prev.location,
       }));
 
+      return { success: true, address, city, state, pincode, landmark };
+
     } catch (error) {
-      console.error('Reverse geocoding failed:', error);
-      // Fallback to basic location setting
-      setData((prev) => ({
-        ...prev,
-        location: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
-      }));
+      console.error('❌ Reverse geocoding failed:', error);
+      
+      // Fallback to basic location setting without breaking the app
+      try {
+        setData((prev) => ({
+          ...prev,
+          location: `Lat: ${parseFloat(lat).toFixed(6)}, Lng: ${parseFloat(lng).toFixed(6)}`,
+        }));
+      } catch (setDataError) {
+        console.error('❌ Failed to set fallback location:', setDataError);
+      }
+
+      throw error; // Re-throw to handle in calling function
     }
   };
 
@@ -380,21 +576,41 @@ function AddRoom({ token }) {
         return;
       }
 
-      const response = await axios.post(`${API_URL}/api/rooms`, formData, {
-        headers: { 
-          Authorization: `Bearer ${authToken}`,
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(progress);
-        }
-      });
+      // Determine API endpoint and method based on edit mode
+      let response;
+      if (isEdit && id) {
+        // Update existing property
+        const endpoint = propertyType === 'Hotel' ? 'hotels' : propertyType === 'Shop' ? 'shops' : 'rooms';
+        response = await axios.put(`${API_URL}/api/${endpoint}/${id}`, formData, {
+          headers: { 
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'multipart/form-data'
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(progress);
+          }
+        });
+      } else {
+        // Create new property
+        response = await axios.post(`${API_URL}/api/rooms`, formData, {
+          headers: { 
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'multipart/form-data'
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(progress);
+          }
+        });
+      }
       
-      console.log("Room creation response:", response.data);
+      console.log("Property operation response:", response.data);
       
-      // Room added successfully
-      const successMsg = "🎉 Room added successfully!";
+      // Success message
+      const successMsg = isEdit 
+        ? `🎉 ${propertyType} updated successfully!` 
+        : "🎉 Room added successfully!";
       setMessage(successMsg);
       showToastMessage(successMsg, 'success');
       
@@ -437,9 +653,11 @@ function AddRoom({ token }) {
       case 1:
         return (
           <Card className="step-card">
-            <Card.Header className="step-header">
-              <i className="bi bi-house-door"></i>
-              <h5>Basic Information</h5>
+            <Card.Header className="step-header bg-primary text-white">
+              <div className="d-flex align-items-center">
+                <i className="bi bi-house-door me-2"></i>
+                <h5 className="mb-0">Basic Information</h5>
+              </div>
             </Card.Header>
             <Card.Body>
               <Row>
@@ -553,9 +771,11 @@ function AddRoom({ token }) {
       case 2:
         return (
           <Card className="step-card">
-            <Card.Header className="step-header">
-              <i className="bi bi-currency-rupee"></i>
-              <h5>Pricing & Contact</h5>
+            <Card.Header className="step-header bg-success text-white">
+              <div className="d-flex align-items-center">
+                <i className="bi bi-currency-rupee me-2"></i>
+                <h5 className="mb-0">Pricing & Contact</h5>
+              </div>
             </Card.Header>
             <Card.Body>
               <Row>
@@ -616,40 +836,100 @@ function AddRoom({ token }) {
       case 3:
         return (
           <Card className="step-card">
-            <Card.Header className="step-header">
-              <i className="bi bi-geo-alt"></i>
-              <h5>Location Details</h5>
+            <Card.Header className="step-header bg-info text-white">
+              <div className="d-flex align-items-center">
+                <i className="bi bi-geo-alt me-2"></i>
+                <h5 className="mb-0">Location Details</h5>
+              </div>
             </Card.Header>
             <Card.Body>
               <div className="mb-3">
-                <Button
-                  variant="outline-primary"
-                  onClick={handleUseCurrentLocation}
-                  disabled={loading}
-                  className="mb-3"
-                >
-                  <i className="bi bi-geo-alt-fill me-2"></i>
-                  Use Current Location
-                </Button>
+                <div className="d-flex flex-wrap gap-3 mb-4">
+                  <Button
+                    variant="primary"
+                    onClick={handleUseCurrentLocation}
+                    disabled={loading}
+                    className="flex-fill shadow-sm"
+                    style={{ minHeight: '45px' }}
+                  >
+                    <div className="d-flex align-items-center justify-content-center">
+                      {loading ? (
+                        <>
+                          <div className="spinner-border spinner-border-sm me-2" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                          Detecting Location...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-geo-alt-fill me-2"></i>
+                          Use Current Location
+                        </>
+                      )}
+                    </div>
+                  </Button>
+                  
+                  {data.latitude && data.longitude && (
+                    <Button
+                      variant="outline-info"
+                      onClick={() => setShowMap(!showMap)}
+                      className="flex-fill shadow-sm"
+                      style={{ minHeight: '45px' }}
+                    >
+                      <div className="d-flex align-items-center justify-content-center">
+                        <i className={`bi ${showMap ? 'bi-eye-slash' : 'bi-map'} me-2`}></i>
+                        {showMap ? 'Hide Map' : 'Show Map'}
+                      </div>
+                    </Button>
+                  )}
+                </div>
+
+                {/* Location Status */}
+                {data.latitude && data.longitude && (
+                  <div className="alert alert-success border-0 py-3 mb-3" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)' }}>
+                    <div className="d-flex align-items-center">
+                      <i className="bi bi-check-circle-fill text-success me-3" style={{ fontSize: '1.2rem' }}></i>
+                      <div>
+                        <strong className="text-success">Location Successfully Detected!</strong>
+                        <div className="mt-1">
+                          <small className="text-muted">
+                            <i className="bi bi-geo-alt me-1"></i>
+                            Coordinates: {parseFloat(data.latitude).toFixed(6)}, {parseFloat(data.longitude).toFixed(6)}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Map Section */}
                 {showMap && mapsLoaded && data.latitude && data.longitude && (
                   <div className="mb-4">
-                    <h6 className="mb-2">
-                      <i className="bi bi-map me-2"></i>
-                      Location on Map
-                    </h6>
-                    <div className="border rounded overflow-hidden">
-                      <MapPicker
-                        latitude={parseFloat(data.latitude)}
-                        longitude={parseFloat(data.longitude)}
-                        setLatLng={handleMapLocationChange}
-                      />
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                      <h6 className="mb-0 text-primary">
+                        <i className="bi bi-map me-2"></i>
+                        Interactive Location Map
+                      </h6>
+                      <small className="text-muted">
+                        <i className="bi bi-info-circle me-1"></i>
+                        Click to adjust location
+                      </small>
                     </div>
-                    <small className="text-muted">
-                      <i className="bi bi-info-circle me-1"></i>
-                      Click on the map to adjust the location pin
-                    </small>
+                    <div className="border rounded overflow-hidden shadow-sm">
+                      <ErrorBoundary component="map">
+                        <MapPicker
+                          latitude={parseFloat(data.latitude)}
+                          longitude={parseFloat(data.longitude)}
+                          setLatLng={handleMapLocationChange}
+                        />
+                      </ErrorBoundary>
+                    </div>
+                    <div className="mt-2 p-2 bg-light rounded">
+                      <small className="text-muted d-block">
+                        <i className="bi bi-cursor me-1"></i>
+                        <strong>Tip:</strong> Click anywhere on the map to set precise location for your property
+                      </small>
+                    </div>
                   </div>
                 )}
               </div>
@@ -663,12 +943,17 @@ function AddRoom({ token }) {
                       name="city"
                       value={data.city}
                       onChange={handleChange}
-                      placeholder="Enter city"
+                      placeholder="Enter city name (e.g. Delhi, Mumbai)"
                       isInvalid={!!errors.city}
+                      autoComplete="address-level2"
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.city}
                     </Form.Control.Feedback>
+                    <Form.Text className="text-muted">
+                      <i className="bi bi-info-circle me-1"></i>
+                      Avoid division names, enter actual city name
+                    </Form.Text>
                   </Form.Group>
                 </Col>
                 <Col md={6}>
@@ -689,16 +974,21 @@ function AddRoom({ token }) {
                 <Form.Label>Full Address *</Form.Label>
                 <Form.Control
                   as="textarea"
-                  rows={2}
+                  rows={3}
                   name="address"
                   value={data.address}
                   onChange={handleChange}
-                  placeholder="Enter complete address"
+                  placeholder="Enter complete address with house/flat number, street, area..."
                   isInvalid={!!errors.address}
+                  autoComplete="street-address"
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.address}
                 </Form.Control.Feedback>
+                <Form.Text className="text-muted">
+                  <i className="bi bi-geo-alt me-1"></i>
+                  This will be auto-filled when you use current location
+                </Form.Text>
               </Form.Group>
 
               <Row>
@@ -734,9 +1024,11 @@ function AddRoom({ token }) {
       case 4:
         return (
           <Card className="step-card">
-            <Card.Header className="step-header">
-              <i className="bi bi-images"></i>
-              <h5>Property Images</h5>
+            <Card.Header className="step-header bg-warning text-dark">
+              <div className="d-flex align-items-center">
+                <i className="bi bi-images me-2"></i>
+                <h5 className="mb-0">Property Images</h5>
+              </div>
             </Card.Header>
             <Card.Body>
               <Form.Group className="mb-3">
@@ -789,10 +1081,19 @@ function AddRoom({ token }) {
     }
   };
 
+  // Load Google Maps on component mount
+  React.useEffect(() => {
+    loadGoogleMapsScript()
+      .then(() => setMapsLoaded(true))
+      .catch((error) => {
+        console.error('Failed to load Google Maps:', error);
+        setMapsLoaded(true); // Continue anyway
+      });
+  }, []);
+
   return (
     <div className="container-fluid py-4" style={{ background: 'linear-gradient(135deg, #6f42c1 0%, #8e44ad 100%)', minHeight: '100vh' }}>
       {loading && <LoadingSpinner isLoading={loading} message="Adding your property..." />}
-      <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
       
       {/* Toast Container */}
       <ToastContainer position="top-end" className="p-3">
@@ -824,9 +1125,11 @@ function AddRoom({ token }) {
                   <div>
                     <h2 className="mb-1 fw-bold">
                       <i className="bi bi-house-door me-2"></i>
-                      Add New Property
+                      {isEdit ? `Edit ${propertyType}` : 'Add New Property'}
                     </h2>
-                    <p className="mb-0 opacity-75">List your property in 4 simple steps</p>
+                    <p className="mb-0 opacity-75">
+                      {isEdit ? `Update your ${propertyType.toLowerCase()} details` : 'List your property in 4 simple steps'}
+                    </p>
                   </div>
                   <div className="text-end">
                     <span className="badge bg-light text-dark fs-6 px-3 py-2">
@@ -942,12 +1245,12 @@ function AddRoom({ token }) {
                             {loading ? (
                               <>
                                 <span className="loading-spinner me-2" style={{width: '16px', height: '16px'}}></span>
-                                Adding Property...
+                                {isEdit ? `Updating ${propertyType}...` : 'Adding Property...'}
                               </>
                             ) : (
                               <>
                                 <i className="bi bi-check-circle me-2"></i>
-                                Rentify
+                                {isEdit ? `Update ${propertyType}` : 'Rentify'}
                               </>
                             )}
                           </button>

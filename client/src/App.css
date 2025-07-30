@@ -16,7 +16,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--primary-white);
+  background-color: #f8f9fa; /* Light gray background instead of pure white */
   color: var(--primary-black);
   padding-top: 80px !important;
 }

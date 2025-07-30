@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MapPicker from './MapPicker';
-import LoadGoogleMaps from './LoadGoogleMaps';
+import { loadGoogleMapsScript } from './LoadGoogleMaps';
+import ErrorBoundary from './ErrorBoundary';
 import { API_URL } from '../config';
+import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddRoom.css';
 import { Toast, ToastContainer } from 'react-bootstrap';
 
-const AddHotel = ({ token }) => {
+const AddHotel = ({ token, isEdit = false }) => {
+  const { id } = useParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -18,6 +21,16 @@ const AddHotel = ({ token }) => {
   const [message, setMessage] = useState('');
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  
+  // Load Google Maps on component mount
+  useEffect(() => {
+    loadGoogleMapsScript()
+      .then(() => setMapsLoaded(true))
+      .catch((error) => {
+        console.error('Failed to load Google Maps:', error);
+        setMapsLoaded(true); // Continue anyway
+      });
+  }, []);
   
   // Toast states
   const [showToast, setShowToast] = useState(false);
@@ -791,8 +804,6 @@ const AddHotel = ({ token }) => {
         </div>
       </div>
       
-      {/* Load Google Maps */}
-      <LoadGoogleMaps onLoad={() => setMapsLoaded(true)} />
     </div>
   );
 };

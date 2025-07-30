@@ -1,5 +1,29 @@
 /* Owner Dashboard Additional Styles */
 
+/* Dashboard layout improvements */
+.owner-dashboard {
+  background-color: var(--primary-white);
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.owner-dashboard .container-fluid {
+  background-color: var(--primary-white);
+}
+
+.owner-dashboard-header {
+  background: linear-gradient(135deg, #6f42c1, #5a359a);
+  color: white;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-radius: 0 0 20px 20px;
+}
+
+.owner-dashboard-content {
+  background-color: var(--primary-white);
+  padding: 1rem 0;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -35,6 +59,31 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
   }
+  
+  /* Mobile navigation tabs */
+  .nav-tabs {
+    flex-wrap: wrap;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .nav-tabs .nav-item {
+    flex: 1 1 50%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .nav-tabs .nav-link {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .nav-tabs .nav-link .badge {
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+  }
 }
 
 @media (max-width: 640px) {
@@ -49,6 +98,28 @@
   
   .space-x-2 > * + * {
     margin-left: 0;
+  }
+  
+  /* Small mobile tabs - 2x2 grid */
+  .nav-tabs .nav-item {
+    flex: 1 1 48%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .nav-tabs .nav-link {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.2rem;
+  }
+  
+  /* Dashboard header responsive */
+  .d-flex.align-items-center.justify-content-between {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+  
+  .display-5 {
+    font-size: 1.5rem !important;
   }
 }
 

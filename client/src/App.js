@@ -146,13 +146,11 @@ function App() {
     };
 
     const handleLogout = () => {
-      if (window.confirm('Are you sure you want to logout?')) {
-        localStorage.clear();
-        setToken("");
-        setUserInfo({ name: "", email: "" });
-        showToastMessage("Logged out successfully!", "success");
-        setTimeout(() => navigate("/"), 1000);
-      }
+      localStorage.clear();
+      setToken("");
+      setUserInfo({ name: "", email: "" });
+      showToastMessage("Logged out successfully!", "success");
+      setTimeout(() => navigate("/"), 1000);
     };
 
   // Homepage Component
@@ -253,7 +251,7 @@ function App() {
             <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
             
             {/* Owner Routes */}
-            <Route path="/owner-dashboard" element={<OwnerRoute><OwnerDashboard /></OwnerRoute>} />
+            <Route path="/owner-dashboard" element={<OwnerRoute><OwnerDashboard handleRentifyClick={handleRentifyClick} /></OwnerRoute>} />
             <Route path="/add-property" element={<OwnerRoute><AddRoom token={token} /></OwnerRoute>} />
             <Route path="/add-room" element={<OwnerRoute><AddRoom token={token} /></OwnerRoute>} />
             <Route path="/add-hotel" element={<OwnerRoute><AddHotel token={token} /></OwnerRoute>} />
