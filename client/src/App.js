@@ -113,6 +113,48 @@ function App() {
       };
     }, [navigate]);
 
+    // Event Handlers - moved inside AppContent to access navigate
+    const handleLoginSuccess = () => {
+      // Update token state with latest data from localStorage
+      const latestToken = localStorage.getItem("token") || "";
+      setToken(latestToken);
+      
+      // Update userInfo with latest data from localStorage
+      setUserInfo({
+        name: localStorage.getItem("userName") || "",
+        email: localStorage.getItem("email") || ""
+      });
+      
+      // Show login success toast message
+      showToastMessage("Welcome back! Login successful!", "success");
+      
+      // Close login modal first
+      setShowLoginModal(false);
+      
+      // Redirect to homepage after successful login
+      setTimeout(() => {
+        navigate('/');
+      }, 500);
+    };
+
+    const handleRentifyOption = (option) => {
+      setShowRentifyModal(false);
+      const routes = { room: '/add-room', hotel: '/add-hotel', shop: '/add-shop' };
+      if (routes[option]) {
+        navigate(routes[option]);
+      }
+    };
+
+    const handleLogout = () => {
+      if (window.confirm('Are you sure you want to logout?')) {
+        localStorage.clear();
+        setToken("");
+        setUserInfo({ name: "", email: "" });
+        showToastMessage("Logged out successfully!", "success");
+        setTimeout(() => navigate("/"), 1000);
+      }
+    };
+
   // Homepage Component
   const Homepage = () => (
     <>
@@ -160,44 +202,9 @@ function App() {
   const handleRentifyClose = () => setShowRentifyModal(false);
   const handleLoginModalShow = () => setShowLoginModal(true);
   const handleLoginModalHide = () => setShowLoginModal(false);
-  const handleLoginSuccess = () => {
-    // Update userInfo with latest data from localStorage
-    setUserInfo({
-      name: localStorage.getItem("userName") || "",
-      email: localStorage.getItem("email") || ""
-    });
-    
-    // Show login success toast message
-    showToastMessage("Welcome back! Login successful!", "success");
-    
-    // Close login modal first
-    setShowLoginModal(false);
-    
-    // Redirect to homepage after successful login
-    setTimeout(() => {
-      navigate('/');
-    }, 500);
-  };
-  const handleRentifyOption = (option) => {
-    setShowRentifyModal(false);
-    const routes = { room: '/add-room', hotel: '/add-hotel', shop: '/add-shop' };
-    if (routes[option]) {
-      navigate(routes[option]);
-    }
-  };
 
   // Get user role
   const userRole = localStorage.getItem("role"); // "owner" or "user"
-
-  const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      localStorage.clear();
-      setToken("");
-      setUserInfo({ name: "", email: "" });
-      showToastMessage("Logged out successfully!", "success");
-      setTimeout(() => navigate("/"), 1000);
-    }
-  };
 
     return (
       <>
