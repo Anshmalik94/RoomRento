@@ -24,7 +24,8 @@ function RoomDetails() {
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [bookingData, setBookingData] = useState({
     guests: 1,
-    message: ''
+    message: '',
+    phone: ''
   });
 
   // Load Google Maps on component mount
@@ -136,7 +137,10 @@ function RoomDetails() {
       checkInDate: currentDate,
       checkOutDate: checkoutDate, // Use next day
       guests: bookingData.guests || 1,
-      message: bookingData.message || ''
+      message: bookingData.message || '',
+      contactInfo: {
+        phone: bookingData.phone || ''
+      }
     };
     
     try {
@@ -186,6 +190,10 @@ function RoomDetails() {
   };
 
   const handleWhatsApp = () => {
+    if (!token) {
+      alert('Please login to contact the owner');
+      return;
+    }
     const phone = getOwnerPhone();
     const propertyType = room.type === 'Hotel' ? 'hotel' : room.type === 'Shop' ? 'shop' : 'room';
     const message = `Hi! I'm interested in your ${propertyType}: ${room.title}`;
@@ -193,6 +201,10 @@ function RoomDetails() {
   };
 
   const handleCall = () => {
+    if (!token) {
+      alert('Please login to contact the owner');
+      return;
+    }
     const phone = getOwnerPhone();
     window.location.href = `tel:${phone}`;
   };
@@ -228,23 +240,26 @@ function RoomDetails() {
             <Card className="mb-4 border-0 shadow-sm">
               <Card.Body className="p-0">
                 {room.images?.length > 0 ? (
-                  <Carousel className="room-carousel">
+                  <Carousel className="room-carousel" indicators={false}>
                     {room.images.map((img, i) => (
                       <Carousel.Item key={i}>
-                        <img
-                          className="d-block w-100 room-image"
-                          src={img.startsWith('http') ? img : `${API_URL}/${img}`}
-                          alt={`Room ${i + 1}`}
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80";
-                          }}
-                        />
+                        <div style={{ height: '450px', overflow: 'hidden' }}>
+                          <img
+                            className="d-block w-100 h-100"
+                            src={img.startsWith('http') ? img : `${API_URL}/${img}`}
+                            alt={`Room ${i + 1}`}
+                            style={{ objectFit: 'cover' }}
+                            loading="lazy"
+                            onError={(e) => {
+                              e.target.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80";
+                            }}
+                          />
+                        </div>
                       </Carousel.Item>
                     ))}
                   </Carousel>
                 ) : (
-                  <div className="no-image">
+                  <div className="no-image" style={{ height: '450px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
                     <i className="bi bi-image display-1 text-muted"></i>
                     <p className="text-muted">No images available</p>
                   </div>
@@ -351,61 +366,66 @@ function RoomDetails() {
                 </div>
 
                 {!isOwner ? (
-                  <div className="d-grid gap-2">
-                    {canBeBooked ? (
-                      <button 
-                        className="btn btn-primary btn-lg"
+                  <div className="d-grid gap-3">
+                    {canBeBooked && (
+                      <Button 
+                        size="lg"
+                        className="fw-bold py-3"
                         style={{
                           backgroundColor: '#6f42c1',
                           border: 'none',
-                          borderRadius: '8px',
-                          fontWeight: '600'
+                          borderRadius: '12px',
+                          fontSize: '1.1rem'
                         }}
                         onClick={() => setShowBookingModal(true)}
                       >
-                        <i className="bi bi-calendar-check me-2"></i> Book Now
-                      </button>
-                    ) : (
-                      <div className="alert alert-info" role="alert">
+                        <i className="bi bi-calendar-check me-2"></i>
+                        Book Now
+                      </Button>
+                    )}
+                    
+                    <Button 
+                      size="lg"
+                      className="fw-bold py-3"
+                      style={{
+                        background: 'linear-gradient(135deg, #25d366, #128c7e)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontSize: '1.1rem',
+                        color: 'white'
+                      }}
+                      onClick={handleWhatsApp}
+                    >
+                      <i className="bi bi-whatsapp me-2"></i>
+                      Chat on WhatsApp
+                    </Button>
+                    
+                    <Button 
+                      variant="outline-dark"
+                      size="lg"
+                      className="fw-bold py-3"
+                      style={{
+                        borderWidth: '2px',
+                        borderRadius: '12px',
+                        fontSize: '1.1rem'
+                      }}
+                      onClick={handleCall}
+                    >
+                      <i className="bi bi-telephone me-2"></i>
+                      Call Owner
+                    </Button>
+
+                    {!canBeBooked && (
+                      <div className="alert alert-info border-0 mt-2" style={{ borderRadius: '12px' }}>
                         <i className="bi bi-info-circle me-2"></i>
                         This property is for viewing only. Booking is not available for {room.type || 'this type of property'}.
                       </div>
                     )}
-                    
-                    <div className="row g-3">
-                      <div className="col-12">
-                        <button 
-                          className="btn w-100 rounded-pill fw-bold py-3 shadow-sm"
-                          style={{
-                            background: 'linear-gradient(135deg, #25d366, #128c7e)',
-                            border: 'none',
-                            color: 'white',
-                            fontSize: '1.1rem'
-                          }}
-                          onClick={handleWhatsApp}
-                        >
-                          <i className="bi bi-whatsapp me-2"></i>
-                          Chat on WhatsApp
-                        </button>
-                      </div>
-                      <div className="col-12">
-                        <button 
-                          className="btn btn-outline-primary w-100 rounded-pill fw-bold py-3 shadow-sm"
-                          style={{
-                            borderWidth: '2px',
-                            fontSize: '1.1rem'
-                          }}
-                          onClick={handleCall}
-                        >
-                          <i className="bi bi-telephone me-2"></i>
-                          Call Owner
-                        </button>
-                      </div>
-                    </div>
                   </div>
                 ) : (
-                  <div className="alert alert-info border-0" style={{backgroundColor: 'rgba(13, 202, 240, 0.1)'}}>
-                    <i className="bi bi-info-circle me-2"></i> This is your property
+                  <div className="alert alert-info border-0" style={{ backgroundColor: 'rgba(13, 202, 240, 0.1)', borderRadius: '12px' }}>
+                    <i className="bi bi-info-circle me-2"></i>
+                    This is your property
                   </div>
                 )}
               </Card.Body>
@@ -475,22 +495,50 @@ function RoomDetails() {
       </Container>
 
       {/* Booking Modal */}
-      <Modal show={showBookingModal} onHide={() => setShowBookingModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Book This Room</Modal.Title>
+      <Modal 
+        show={showBookingModal} 
+        onHide={() => setShowBookingModal(false)} 
+        centered
+        className="booking-modal"
+        size="sm"
+        style={{ zIndex: 1060 }}
+      >
+        <Modal.Header 
+          closeButton
+          style={{
+            background: 'linear-gradient(135deg, #6f42c1, #8e44ad)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '12px 12px 0 0',
+            padding: '0.75rem 1rem'
+          }}
+        >
+          <Modal.Title style={{ fontSize: '1.1rem' }}>
+            <i className="bi bi-calendar-check me-2"></i>
+            Book Room
+          </Modal.Title>
         </Modal.Header>
         <Form onSubmit={handleBookingSubmit}>
-          <Modal.Body>
-            <div className="mb-3 p-3 bg-light rounded">
-              <h6 className="mb-2">📅 Booking Date</h6>
-              <p className="mb-0 text-muted">Current Date: <strong>{new Date().toLocaleDateString()}</strong></p>
+          <Modal.Body style={{ 
+            padding: '1rem', 
+            background: 'white'
+          }}>
+            <div className="mb-2 p-2 rounded" style={{
+              background: 'rgba(111, 66, 193, 0.1)',
+              border: '1px solid rgba(111, 66, 193, 0.2)'
+            }}>
+              <small className="text-muted">Booking Date: <strong>{new Date().toLocaleDateString()}</strong></small>
             </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Number of Guests</Form.Label>
+            <Form.Group className="mb-2">
+              <Form.Label className="small fw-semibold">Guests</Form.Label>
               <Form.Select
+                size="sm"
                 value={bookingData.guests}
                 onChange={(e) => setBookingData({ ...bookingData, guests: parseInt(e.target.value) })}
+                style={{
+                  borderRadius: '6px'
+                }}
               >
                 {[1, 2, 3, 4, 5, 6].map(num => (
                   <option key={num} value={num}>{num} Guest{num > 1 ? 's' : ''}</option>
@@ -498,28 +546,82 @@ function RoomDetails() {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Message (Optional)</Form.Label>
+            <Form.Group className="mb-2">
+              <Form.Label className="small fw-semibold">Phone <span className="text-danger">*</span></Form.Label>
+              <Form.Control
+                size="sm"
+                type="tel"
+                maxLength={10}
+                pattern="[0-9]{10}"
+                required
+                placeholder="Enter phone number"
+                value={bookingData.phone}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^0-9]/g, '');
+                  setBookingData({ ...bookingData, phone: val });
+                }}
+                style={{
+                  borderRadius: '6px'
+                }}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-2">
+              <Form.Label className="small fw-semibold">Message (Optional)</Form.Label>
               <Form.Control
                 as="textarea"
+                size="sm"
                 rows={3}
-                placeholder="Any special requests or questions..."
+                placeholder="Any special requests..."
                 value={bookingData.message}
                 onChange={(e) => setBookingData({ ...bookingData, message: e.target.value })}
+                style={{
+                  resize: 'none',
+                  borderRadius: '6px'
+                }}
               />
             </Form.Group>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="outline-secondary" onClick={() => setShowBookingModal(false)}>
+          <Modal.Footer 
+            style={{
+              padding: '0.75rem 1rem',
+              background: 'white'
+            }}
+          >
+            <Button 
+              variant="outline-secondary" 
+              size="sm"
+              onClick={() => setShowBookingModal(false)}
+              style={{
+                borderRadius: '6px',
+                padding: '0.5rem 1rem'
+              }}
+            >
               Cancel
             </Button>
-            <Button variant="danger" type="submit" disabled={bookingLoading}>
+            <Button 
+              type="submit" 
+              size="sm"
+              disabled={bookingLoading}
+              style={{
+                background: 'linear-gradient(135deg, #6f42c1, #8e44ad)',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '0.5rem 1rem',
+                color: 'white'
+              }}
+            >
               {bookingLoading ? (
                 <>
-                  <span className="loading-spinner me-2" style={{width: '16px', height: '16px'}}></span>
-                  Sending Request...
+                  <span className="loading-spinner me-1" style={{width: '12px', height: '12px'}}></span>
+                  Sending...
                 </>
-              ) : 'Send Booking Request'}
+              ) : (
+                <>
+                  <i className="bi bi-send me-1"></i>
+                  Send Request
+                </>
+              )}
             </Button>
           </Modal.Footer>
         </Form>

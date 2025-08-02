@@ -1,52 +1,225 @@
+/* ===== MODERN ABOUT SECTION ===== */
+
 .about-section {
-  background-color: #d0e7ff; /* light blue background */
-  padding: 60px 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0;
 }
 
-.about-section h2 {
-  text-align: center;
-  color: #007bff; /* blue heading */
-  font-size: 2.2rem;
-  margin-bottom: 20px;
-  font-weight: 700;
+.about-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 70% 30%, rgba(111, 66, 193, 0.03) 0%, transparent 50%);
+  pointer-events: none;
 }
 
-.about-section p {
-  font-size: 1rem;
-  color: #444;
-  line-height: 1.6;
-  max-width: 750px;
-  margin: 0 auto 30px;
-  text-align: center;
+.text-purple {
+  color: #6f42c1 !important;
 }
 
-.about-section img {
-  max-height: 400px;
+/* About Image Wrapper */
+.about-image-wrapper {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 60px rgba(111, 66, 193, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.about-image-wrapper:hover {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 32px 80px rgba(111, 66, 193, 0.15),
+    0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.about-main-image {
   width: 100%;
+  height: 400px;
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  display: block;
-  margin: auto;
+  transition: transform 0.3s ease;
 }
 
-.zigzag-border {
-  border: 6px solid;
-  border-image: linear-gradient(45deg, #6f42c1, #ffffff) 1;
-  border-radius: 12px;
+.about-image-wrapper:hover .about-main-image {
+  transform: scale(1.05);
 }
 
+/* Floating Card */
+.floating-card {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: linear-gradient(135deg, #6f42c1 0%, #8b5bd1 100%);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  box-shadow: 
+    0 12px 40px rgba(111, 66, 193, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  animation: float 3s ease-in-out infinite;
+  z-index: 2;
+}
+
+.floating-card-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.floating-card i {
+  font-size: 1.5rem;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+/* About Content */
+.about-content {
+  padding-left: 1rem;
+}
+
+.about-title {
+  font-size: 2.5rem;
+  color: #212529;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.about-description {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #495057;
+}
+
+/* Stats Cards */
+.stat-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  border: 1px solid rgba(111, 66, 193, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6f42c1, #8b5bd1);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 16px 40px rgba(111, 66, 193, 0.12),
+    0 6px 16px rgba(0, 0, 0, 0.08);
+  border-color: rgba(111, 66, 193, 0.15);
+}
+
+.stat-card:hover::before {
+  transform: scaleX(1);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #6f42c1;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
-  .about-section h2 {
-    font-size: 1.8rem;
+  .about-section {
+    padding: 3rem 0;
   }
-
-  .about-section p {
-    font-size: 0.95rem;
-    padding: 0 15px;
+  
+  .about-title {
+    font-size: 2rem;
+    text-align: center;
   }
+  
+  .about-content {
+    padding-left: 0;
+    text-align: center;
+  }
+  
+  .about-description {
+    font-size: 1rem;
+  }
+  
+  .about-main-image {
+    height: 300px;
+  }
+  
+  .floating-card {
+    bottom: 15px;
+    left: 15px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .floating-card i {
+    font-size: 1.25rem;
+  }
+  
+  .floating-card span {
+    font-size: 0.9rem;
+  }
+  
+  .stat-card {
+    padding: 1.25rem 0.75rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-number {
+    font-size: 1.75rem;
+  }
+  
+  .stat-label {
+    font-size: 0.85rem;
+  }
+}
 
-  .about-section img {
-    max-height: 280px;
+@media (max-width: 576px) {
+  .about-main-image {
+    height: 250px;
+  }
+  
+  .floating-card {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
   }
 }

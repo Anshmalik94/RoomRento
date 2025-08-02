@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from "axios";
 import { API_URL } from "../config";
 import { useNavigate, useParams } from "react-router-dom";
@@ -113,7 +113,6 @@ function AddRoom({ token, isEdit = false }) {
           showToastMessage('Property data loaded successfully!', 'success');
         }
       } catch (error) {
-        console.error('Error fetching property data:', error);
         showToastMessage('Error loading property data', 'danger');
       } finally {
         setLoading(false);
@@ -123,7 +122,7 @@ function AddRoom({ token, isEdit = false }) {
     if (isEdit && id) {
       fetchPropertyData();
     }
-  }, [isEdit, id]);
+  }, [isEdit, id, showToastMessage]);
 
   const facilityOptions = [
     'Wi-Fi', 'AC', 'Parking', 'Gym', 'Swimming Pool', 'Security', 
@@ -139,7 +138,7 @@ function AddRoom({ token, isEdit = false }) {
   const furnishedOptions = ['Fully Furnished', 'Semi Furnished', 'Unfurnished'];
 
   // Toast utility function
-  const showToastMessage = (message, variant = 'success') => {
+  const showToastMessage = useCallback((message, variant = 'success') => {
     setToastMessage(message);
     setToastVariant(variant);
     setShowToast(true);
@@ -148,7 +147,7 @@ function AddRoom({ token, isEdit = false }) {
     setTimeout(() => {
       setShowToast(false);
     }, 5000);
-  };
+  }, []);
 
   // Toast helper functions
   const getToastBg = (variant) => {
@@ -279,7 +278,6 @@ function AddRoom({ token, isEdit = false }) {
         return;
       }
     } catch (err) {
-      console.warn("Permissions API not supported, continuing with geolocation...");
     }
 
     setLoading(true);
@@ -297,8 +295,6 @@ function AddRoom({ token, isEdit = false }) {
         try {
           const { latitude, longitude, accuracy } = position.coords;
 
-          console.log("📍 Location detected:", { latitude, longitude, accuracy });
-
           // Set coordinates first
           setData((prev) => ({
             ...prev,
@@ -313,17 +309,14 @@ function AddRoom({ token, isEdit = false }) {
             
             // Now do reverse geocoding
             if (!window.google?.maps?.Geocoder) {
-              console.warn("⚠️ Google Maps Geocoder not available after loading");
               const warningMsg = "✅ Location detected. Please fill address details manually.";
               setMessage(warningMsg);
               showToastMessage("📍 Location detected, fill address manually", 'warning');
             } else {
               await reverseGeocode(latitude, longitude);
-              console.log("✅ Reverse geocoding completed successfully");
               showToastMessage("✅ Location and address detected!", 'success');
             }
           } catch (geocodeError) {
-            console.warn("⚠️ Reverse geocoding failed:", geocodeError);
             const warningMsg = "✅ Location detected. Please fill address details manually.";
             setMessage(warningMsg);
             showToastMessage("📍 Location detected, fill address manually", 'warning');
@@ -374,16 +367,12 @@ function AddRoom({ token, isEdit = false }) {
   // Reverse geocoding function using Google Maps API
   const reverseGeocode = async (lat, lng) => {
     try {
-      console.log("🔍 Starting reverse geocoding for:", { lat, lng });
       
       // Enhanced Google Maps availability check
       if (!window.google || !window.google.maps || !window.google.maps.Geocoder) {
-        console.warn("❌ Google Maps not available for geocoding");
         throw new Error("Google Maps API not loaded");
       }
 
-      console.log("✅ Google Maps Geocoder available, starting geocoding...");
-      
       // Create geocoder instance safely
       let geocoder;
       try {
@@ -474,8 +463,6 @@ function AddRoom({ token, isEdit = false }) {
         }
       }
 
-      console.log("🏠 Geocoding results:", { address, city, state, pincode, landmark });
-
       // Update form data with detected location details safely
       setData((prev) => ({
         ...prev,
@@ -521,9 +508,6 @@ function AddRoom({ token, isEdit = false }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    console.log("Submit started - Form data:", data);
-    console.log("Images to upload:", images.length);
-    
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
       const errorMsg = "Please fill all required fields correctly.";
       setMessage(errorMsg);
@@ -558,17 +542,8 @@ function AddRoom({ token, isEdit = false }) {
     // Add images
     Array.from(images).forEach((img) => formData.append("images", img));
 
-    // Debug FormData
-    console.log("FormData entries:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, ":", value);
-    }
-
     try {
       const authToken = token || localStorage.getItem("token");
-      
-      console.log("Auth token:", authToken ? "Present" : "Missing");
-      console.log("API URL:", `${API_URL}/api/rooms`);
       
       if (!authToken) {
         setMessage("Authentication required. Please login again.");
@@ -604,8 +579,6 @@ function AddRoom({ token, isEdit = false }) {
           }
         });
       }
-      
-      console.log("Property operation response:", response.data);
       
       // Success message
       const successMsg = isEdit 

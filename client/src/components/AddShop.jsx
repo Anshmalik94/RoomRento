@@ -132,7 +132,6 @@ const AddShop = ({ token }) => {
         return;
       }
     } catch (err) {
-      console.warn("Permissions API not supported, continuing with geolocation...");
     }
 
     setLoading(true);
@@ -148,9 +147,6 @@ const AddShop = ({ token }) => {
       async (position) => {
         try {
           const { latitude, longitude, accuracy } = position.coords;
-
-          console.log("📍 Location detected:", { latitude, longitude, accuracy });
-
           // Set coordinates first
           setShopData(prev => ({
             ...prev,
@@ -162,16 +158,13 @@ const AddShop = ({ token }) => {
           try {
             // Check if Google Maps is available
             if (!window.google?.maps?.Geocoder) {
-              console.warn("⚠️ Google Maps Geocoder not available");
               const warningMsg = "✅ Location detected. Please fill address details manually.";
               setMessage(warningMsg);
             } else {
               await reverseGeocode(latitude, longitude);
-              console.log("✅ Reverse geocoding completed successfully");
               setMessage("✅ Location and address detected!");
             }
           } catch (geocodeError) {
-            console.warn("⚠️ Reverse geocoding failed:", geocodeError);
             const warningMsg = "✅ Location detected. Please fill address details manually.";
             setMessage(warningMsg);
           }
@@ -225,16 +218,10 @@ const AddShop = ({ token }) => {
   // Reverse geocoding function using Google Maps API
   const reverseGeocode = async (lat, lng) => {
     try {
-      console.log("🔍 Starting reverse geocoding for:", { lat, lng });
-      
       // Enhanced Google Maps availability check
       if (!window.google || !window.google.maps || !window.google.maps.Geocoder) {
-        console.warn("❌ Google Maps not available for geocoding");
         throw new Error("Google Maps API not loaded");
       }
-
-      console.log("✅ Google Maps Geocoder available, starting geocoding...");
-      
       // Create geocoder instance safely
       let geocoder;
       try {
@@ -291,9 +278,6 @@ const AddShop = ({ token }) => {
           landmark = component.long_name;
         }
       });
-
-      console.log("🏢 Shop geocoding results:", { formattedAddress, city, state, pincode, landmark });
-
       // Update shop data with detected location details safely
       setShopData(prev => ({
         ...prev,
@@ -403,7 +387,10 @@ const AddShop = ({ token }) => {
       
       // Reset form after successful submission
       setTimeout(() => {
-        window.location.href = '/my-listings';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          window.location.href = '/my-listings';
+        }, 100);
       }, 2000);
       
     } catch (error) {

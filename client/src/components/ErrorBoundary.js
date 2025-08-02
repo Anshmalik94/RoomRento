@@ -17,17 +17,14 @@ class ErrorBoundary extends React.Component {
     
     // Check if it's the specific DOM removeChild error we're trying to catch
     if (error.message && error.message.includes('removeChild')) {
-      console.log('DOM removeChild error caught and handled by ErrorBoundary');
     }
     
     // Check if it's a Google Maps API error
     if (error.message && (error.message.includes('Google Maps') || error.message.includes('maps'))) {
-      console.log('Google Maps API error caught by ErrorBoundary:', error.message);
     }
   }
 
   handleRetry = () => {
-    console.log('🔄 Retrying map component...');
     // Reset the error state
     this.setState({ hasError: false, error: null });
     
@@ -36,7 +33,6 @@ class ErrorBoundary extends React.Component {
       // Remove existing Google Maps script to force reload
       const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
       if (existingScript) {
-        console.log('🗑️ Removing existing Google Maps script for retry');
         existingScript.remove();
       }
       

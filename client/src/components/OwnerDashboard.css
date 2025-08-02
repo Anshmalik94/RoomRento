@@ -121,6 +121,83 @@
   .display-5 {
     font-size: 1.5rem !important;
   }
+  
+  /* Enhanced Mobile Dashboard Design */
+  .dashboard-header {
+    background: linear-gradient(135deg, #6f42c1 0%, #8b5bd1 100%);
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 0 0 20px 20px;
+    margin: 0 -1rem 2rem;
+    text-align: center;
+  }
+  
+  .dashboard-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dashboard-subtitle {
+    opacity: 0.9;
+    font-size: 1rem;
+  }
+  
+  /* Mobile stats improvements */
+  .stats-card {
+    border-radius: 16px;
+    border: 2px solid rgba(111, 66, 193, 0.1);
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.15);
+  }
+  
+  /* Mobile property cards */
+  .property-card {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid rgba(111, 66, 193, 0.1);
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+  }
+  
+  .property-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.15);
+  }
+  
+  /* Mobile buttons */
+  .btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #6f42c1 0%, #8b5bd1 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.4);
+  }
+  
+  /* Container improvements */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 /* Custom hover effects */

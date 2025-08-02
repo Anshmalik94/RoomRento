@@ -1,61 +1,246 @@
-/* Clean Room Card Styles - Consistent Layout */
-.room-card {
-  border: none !important;
-  border-radius: 12px !important;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
-  transition: none !important;
-  transform: none !important;
-  height: 100% !important; /* Ensure consistent height */
-  max-width: 100% !important;
+/* Modern Professional Room Card Styles */
+.room-card-modern {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  background: #fff !important;
+  height: 600px !important; /* Exact fixed height for ALL cards */
+  min-height: 600px !important; 
+  max-height: 600px !important; 
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important; /* Prevent any overflow */
 }
 
-/* Remove any hover effects */
-.room-card:hover,
-.room-card:focus {
-  transform: none !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
-  border: none !important;
-  border-radius: 12px !important;
-}
-
-/* Consistent image sizing */
-.room-card .responsive-image {
-  width: 100% !important;
-  height: 180px !important;
-  object-fit: cover !important;
-  border-radius: 0 !important;
-}
-
-/* Consistent card body */
-.room-card .card-body {
-  padding: 1rem !important;
+.room-card-modern .card-body {
+  flex: 1 !important; /* Allow card body to fill remaining space */
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
+  padding: 1.5rem !important; /* Fixed padding */
+  overflow: hidden !important; /* Prevent content overflow */
+}
+
+/* Fixed Image Height */
+.room-card-modern .position-relative {
+  height: 280px !important; /* Fixed image height */
+  flex-shrink: 0 !important; /* Prevent image from shrinking */
+  overflow: hidden !important;
+}
+
+.room-card-modern:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.room-card-modern:hover img {
+  transform: scale(1.05) !important;
+}
+
+/* Save Heart Button Hover Effects */
+.save-heart-modern:hover {
+  transform: scale(1.15) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Action Button Hover Effects */
+.room-card-modern .btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Price Badge Animation */
+.room-card-modern:hover .position-absolute:nth-child(3) {
+  transform: scale(1.05) !important;
+}
+
+/* Fixed Content Heights for Consistency */
+.room-card-modern .card-title {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+  height: 3rem !important; /* Fixed title height */
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.room-card-modern .badge {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600 !important;
+}
+
+/* Fixed height for features section */
+.room-card-modern .d-flex.flex-wrap.gap-2.mb-4 {
+  min-height: 2.5rem !important; /* Fixed height for features badges */
+  max-height: 2.5rem !important;
+  overflow: hidden !important;
+}
+
+/* Fixed height for location section */
+.room-card-modern .d-flex.align-items-center.mb-3.text-muted {
+  height: 1.5rem !important; /* Fixed height for location */
+}
+
+/* Responsive Design with Fixed Heights */
+@media (max-width: 991.98px) {
+  .room-card-modern {
+    margin-bottom: 1.5rem !important;
+    height: 550px !important; /* Exact fixed height for tablet */
+    min-height: 550px !important; 
+    max-height: 550px !important;
+  }
+  
+  .room-card-modern .position-relative {
+    height: 240px !important;
+  }
+  
+  .room-card-modern .card-body {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .room-card-modern {
+    height: 500px !important; /* Exact fixed height for mobile */
+    min-height: 500px !important; 
+    max-height: 500px !important;
+  }
+  
+  .room-card-modern .position-relative {
+    height: 220px !important;
+  }
+  
+  .room-card-modern .card-body {
+    padding: 1rem !important;
+  }
+  
+  .room-card-modern .card-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .room-card-modern .btn {
+    padding: 0.6rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Loading Animation for Images */
+.room-card-modern img {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus States for Accessibility */
+.room-card-modern:focus-within {
+  outline: 2px solid #6f42c1;
+  outline-offset: 2px;
+}
+
+.save-heart-modern:focus {
+  outline: 2px solid #dc3545;
+  outline-offset: 2px;
+}
+
+/* Button Gradient Hover Effects */
+.room-card-modern .btn[style*="linear-gradient"]:hover {
+  filter: brightness(1.1) !important;
+}
+
+/* Force exact card dimensions - Override all other styles */
+.room-card-modern,
+.room-card-modern.card,
+.room-card-modern.h-100 {
+  height: 600px !important;
+  min-height: 600px !important;
+  max-height: 600px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Force Bootstrap h-100 override */
+.room-card-modern.h-100 {
+  height: 600px !important;
+}
+
+/* Ensure all content fits within fixed dimensions */
+.room-card-modern * {
+  box-sizing: border-box !important;
+}
+
+/* Fixed action button area */
+.room-card-modern .mt-auto {
+  margin-top: auto !important;
+  flex-shrink: 0 !important;
   height: auto !important;
-  min-height: 140px !important;
+  min-height: 60px !important; /* Fixed button area height */
 }
 
-/* Clean button styling */
-.btn-room {
-  background: #6f42c1;
-  color: white;
+/* Legacy styles for backwards compatibility */
+.property-card {
   border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  width: 100%;
-  margin-top: auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: none;
 }
 
-.btn-room:hover {
-  background: #5a359a;
-  color: white;
+.property-card:hover {
   transform: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.hotel-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.hotel-card:hover {
+  transform: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header i {
+  font-size: 1.5rem;
+}
+
+.badge-property-type {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+.properties-grid {
+  gap: 1.5rem;
 }
 
 /* Property cards styling */

@@ -8,113 +8,123 @@ function BottomNav({ handleRentifyClick }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  if (!token) return null;
-
-  return (
-    <div 
-      className="bottom-nav-responsive d-lg-none"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        padding: '8px 16px',
-        backgroundColor: '#ffffff',
-        borderTop: '1px solid #dee2e6',
-        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'
-      }}
-    >
-      <NavLink 
-        to="/" 
-        style={({ isActive }) => ({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textDecoration: 'none',
-          color: isActive ? '#007bff' : '#6c757d',
-          fontSize: '0.75rem',
-          fontWeight: isActive ? '600' : 'normal',
-          transition: 'all 0.2s ease'
-        })}
-      >
-        <i className="bi bi-house" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-        <span>Home</span>
-      </NavLink>
-
-      <NavLink 
-        to="/rooms" 
-        style={({ isActive }) => ({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textDecoration: 'none',
-          color: isActive ? '#007bff' : '#6c757d',
-          fontSize: '0.75rem',
-          fontWeight: isActive ? '600' : 'normal',
-          transition: 'all 0.2s ease'
-        })}
-      >
-        <i className="bi bi-door-open" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-        <span>Rooms</span>
-      </NavLink>
-
-      {role === "renter" && (
-        <NavLink 
-          to="/hotels" 
-          style={({ isActive }) => ({
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: isActive ? '#007bff' : '#6c757d',
-            fontSize: '0.75rem',
-            fontWeight: isActive ? '600' : 'normal',
-            transition: 'all 0.2s ease'
-          })}
-        >
-          <i className="bi bi-building" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-          <span>Hotels</span>
-        </NavLink>
-      )}
-
-      {role === "owner" && (
-        <button 
-          onClick={handleRentifyClick}
+  // Show different navigation based on login status
+  if (!token) {
+    // Show help button for non-logged in users on mobile
+    return (
+      <>
+        <div 
+          className="mobile-help-nav d-lg-none"
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            border: 'none',
-            background: 'transparent',
-            color: '#6c757d',
-            fontSize: '0.75rem',
-            fontWeight: 'normal',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer'
+            position: 'fixed',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000
           }}
         >
-          <i className="bi bi-plus-circle" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-          <span>Rentify</span>
-        </button>
-      )}
+          <NavLink 
+            to="/help"
+            style={{
+              background: 'linear-gradient(135deg, #6f42c1, #8e44ad)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '25px',
+              padding: '12px 20px',
+              boxShadow: '0 4px 15px rgba(111, 66, 193, 0.3)',
+              fontWeight: 600,
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              textDecoration: 'none'
+            }}
+          >
+            <i className="bi bi-headset"></i>
+            Help & Support
+          </NavLink>
+        </div>
+      </>
+    );
+  }
 
+  return (
+    <div className="bottom-nav-container d-lg-none">
+      <div className="bottom-nav-items">
+        {/* Left Side - 2 items */}
+        <NavLink 
+          to="/" 
+          className="nav-item"
+        >
+          <i className="bi bi-house"></i>
+          <span>Home</span>
+        </NavLink>
 
+        {role === "owner" ? (
+          <NavLink 
+            to="/my-listings" 
+            className="nav-item"
+          >
+            <i className="bi bi-list-ul"></i>
+            <span>Listings</span>
+          </NavLink>
+        ) : (
+          <NavLink 
+            to="/help" 
+            className="nav-item"
+          >
+            <i className="bi bi-headset"></i>
+            <span>Help</span>
+          </NavLink>
+        )}
 
-      <NavLink 
-        to="/profile" 
-        style={({ isActive }) => ({
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textDecoration: 'none',
-          color: isActive ? '#007bff' : '#6c757d',
-          fontSize: '0.75rem',
-          fontWeight: isActive ? '600' : 'normal',
-          transition: 'all 0.2s ease'
-        })}
-      >
-        <i className="bi bi-person" style={{ fontSize: '20px', marginBottom: '2px' }}></i>
-        <span>Profile</span>
-      </NavLink>
+        {/* Center Elevated Button - Rentify for owners, Rooms for users */}
+        {role === "owner" ? (
+          <button 
+            onClick={handleRentifyClick}
+            className="center-button"
+          >
+            <i className="bi bi-plus-circle-fill"></i>
+            <span>Rentify</span>
+          </button>
+        ) : (
+          <NavLink 
+            to="/rooms"
+            className="center-button-link"
+          >
+            <i className="bi bi-door-open"></i>
+            <span>Rooms</span>
+          </NavLink>
+        )}
+
+        {/* Right Side - 2 items */}
+        {role === "owner" ? (
+          <NavLink 
+            to="/help"
+            className="nav-item"
+          >
+            <i className="bi bi-headset"></i>
+            <span>Help & Support</span>
+          </NavLink>
+        ) : (
+          <NavLink 
+            to="/bookings"
+            className="nav-item"
+          >
+            <i className="bi bi-calendar-check"></i>
+            <span>Bookings</span>
+          </NavLink>
+        )}
+
+        <NavLink 
+          to="/profile" 
+          className="nav-item"
+        >
+          <i className="bi bi-person"></i>
+          <span>Profile</span>
+        </NavLink>
+      </div>
     </div>
   );
 }

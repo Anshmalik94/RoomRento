@@ -150,8 +150,6 @@ export function NotificationProvider({ children }) {
 
       // Handle authentication errors
       const unsubscribeAuthError = socketService.on('authError', (errorMessage) => {
-        console.log('Authentication error in notifications:', errorMessage);
-        
         // Force logout by triggering a custom event
         window.dispatchEvent(new CustomEvent('forceLogout', { 
           detail: { reason: 'Token expired. Please login again.' } 
@@ -188,12 +186,9 @@ export function NotificationProvider({ children }) {
   // API calls
   const fetchNotifications = useCallback(async (page = 1, limit = 20) => {
     try {
-      console.log('📡 NotificationContext: Fetching notifications...', { page, limit });
       dispatch({ type: NOTIFICATION_ACTIONS.SET_LOADING, payload: true });
       
       const token = localStorage.getItem('token');
-      console.log('🔑 NotificationContext token check:', token ? 'EXISTS' : 'NOT FOUND');
-      
       const response = await fetch(`${API_URL}/api/notifications?page=${page}&limit=${limit}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -202,10 +197,7 @@ export function NotificationProvider({ children }) {
       });
 
       const data = await response.json();
-      console.log('✅ NotificationContext API response:', data);
-      
       if (data.success) {
-        console.log('📝 Setting notifications in context:', data.data.notifications?.length, 'items, unread:', data.data.unreadCount);
         dispatch({ type: NOTIFICATION_ACTIONS.SET_NOTIFICATIONS, payload: data.data });
       } else {
         throw new Error(data.message || 'Failed to fetch notifications');
@@ -253,15 +245,10 @@ export function NotificationProvider({ children }) {
 
   // New function for marking single notification as read
   const markSingleAsRead = async (notificationId) => {
-    console.log('🔄 NotificationContext: markSingleAsRead called with ID:', notificationId);
     try {
       // Immediately update UI for responsiveness
       dispatch({ type: NOTIFICATION_ACTIONS.MARK_AS_READ, payload: [notificationId] });
-      console.log('✅ UI updated optimistically for notification:', notificationId);
-      
       const token = localStorage.getItem('token');
-      console.log('🔑 Token for markSingleAsRead:', token ? 'EXISTS' : 'NOT FOUND');
-      
       const response = await fetch(`${API_URL}/api/notifications/${notificationId}/read`, {
         method: 'PATCH',
         headers: {
@@ -271,10 +258,7 @@ export function NotificationProvider({ children }) {
       });
 
       const data = await response.json();
-      console.log('📡 markSingleAsRead API response:', data);
-      
       if (data.success) {
-        console.log('✅ markSingleAsRead API success');
         // Emit to socket for real-time update
         socketService.markNotificationAsRead([notificationId]);
         // Refetch notifications to get updated state from backend

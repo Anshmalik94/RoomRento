@@ -6,7 +6,6 @@ import { Badge } from "react-bootstrap";
 import LoadingSpinner from "./LoadingSpinner";
 import "./MyListings.css";
 
-
 function MyListings() {
   const [myProperties, setMyProperties] = useState([]);
   const [loading, setLoading] = useState(true);

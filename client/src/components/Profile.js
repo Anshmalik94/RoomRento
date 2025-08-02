@@ -71,181 +71,351 @@ const Profile = () => {
   const role = localStorage.getItem('role');
 
   return (
-    <Container className="py-5">
-      <Row className="justify-content-center">
-        <Col lg={8}>
-          {message && (
-            <Alert variant={message.includes('successfully') ? 'success' : 'danger'}>
-              {message}
-            </Alert>
-          )}
+    <div style={{ 
+      minHeight: '100vh',
+      backgroundColor: '#000000',
+      backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(33,37,41,0.9) 100%)',
+      paddingTop: '2rem',
+      paddingBottom: '2rem'
+    }}>
+      <Container className="py-5">
+        <Row className="justify-content-center">
+          <Col lg={8}>
+            {message && (
+              <Alert 
+                variant={message.includes('successfully') ? 'success' : 'danger'}
+                className="mb-4"
+                style={{
+                  backgroundColor: message.includes('successfully') ? 'rgba(25, 135, 84, 0.2)' : 'rgba(220, 53, 69, 0.2)',
+                  borderColor: message.includes('successfully') ? 'rgba(25, 135, 84, 0.3)' : 'rgba(220, 53, 69, 0.3)',
+                  color: '#ffffff',
+                  border: '1px solid'
+                }}
+              >
+                {message}
+              </Alert>
+            )}
 
-          <Card className="shadow-sm">
-            <Card.Header className="bg-primary text-white">
-              <div className="d-flex align-items-center">
-                <i className="bi bi-person-circle me-3" style={{fontSize: '2.5rem'}}></i>
-                <div>
-                  <h4 className="mb-0">User Profile</h4>
-                  <small>
-                    {role === 'owner' ? 'Property Owner Account' : 'Renter Account'}
-                  </small>
+            <Card 
+              className="shadow-lg border-0"
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '15px'
+              }}
+            >
+              <Card.Header 
+                style={{
+                  background: 'linear-gradient(135deg, #6f42c1, #8e44ad)',
+                  border: 'none',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                  padding: '2rem',
+                  borderRadius: '15px 15px 0 0'
+                }}
+              >
+                <div className="d-flex align-items-center">
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center me-4"
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      color: '#ffffff',
+                      fontSize: '24px'
+                    }}
+                  >
+                    <i className="bi bi-person-circle"></i>
+                  </div>
+                  <div>
+                    <h3 className="mb-1" style={{ color: '#ffffff', fontWeight: '600' }}>User Profile</h3>
+                    <span 
+                      className={`badge ${role === 'owner' ? 'bg-success' : 'bg-info'}`}
+                      style={{ fontSize: '0.9rem', padding: '6px 12px' }}
+                    >
+                      {role === 'owner' ? 'Property Owner Account' : 'Renter Account'}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Card.Header>
+              </Card.Header>
 
-            <Card.Body className="p-4">
-              {!editing ? (
-                <>
-                  <Row className="mb-4">
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <strong className="text-muted d-block">Full Name</strong>
-                        <h5 className="mb-0">{user?.name || 'Not provided'}</h5>
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <strong className="text-muted d-block">Email Address</strong>
-                        <h5 className="mb-0">{user?.email || 'Not provided'}</h5>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <Row className="mb-4">
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <strong className="text-muted d-block">Phone Number</strong>
-                        <h5 className="mb-0">{user?.phone || 'Not provided'}</h5>
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="mb-3">
-                        <strong className="text-muted d-block">Account Type</strong>
-                        <span className={`badge ${role === 'owner' ? 'bg-success' : 'bg-info'} fs-6`}>
-                          {role === 'owner' ? 'Property Owner' : 'Renter'}
-                        </span>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <Row className="mb-4">
-                    <Col>
-                      <div className="mb-3">
-                        <strong className="text-muted d-block">Address</strong>
-                        <h5 className="mb-0">{user?.address || 'Not provided'}</h5>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  {role === 'owner' && (
+              <Card.Body style={{ padding: '2rem', backgroundColor: 'transparent' }}>
+                {!editing ? (
+                  <>
                     <Row className="mb-4">
-                      <Col>
-                        <Card className="bg-light">
-                          <Card.Body>
-                            <h6 className="text-primary">Owner Benefits</h6>
-                            <ul className="mb-0">
-                              <li>List unlimited properties</li>
-                              <li>Manage bookings and inquiries</li>
-                              <li>Access to analytics dashboard</li>
-                              <li>Priority customer support</li>
-                            </ul>
-                          </Card.Body>
-                        </Card>
+                      <Col md={6}>
+                        <div className="mb-4">
+                          <strong className="d-block mb-2" style={{ color: '#ffffff', opacity: 0.7, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Full Name</strong>
+                          <h5 className="mb-0" style={{ color: '#ffffff', fontWeight: '500' }}>{user?.name || 'Not provided'}</h5>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="mb-4">
+                          <strong className="d-block mb-2" style={{ color: '#ffffff', opacity: 0.7, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Email Address</strong>
+                          <h5 className="mb-0" style={{ color: '#ffffff', fontWeight: '500' }}>{user?.email || 'Not provided'}</h5>
+                        </div>
                       </Col>
                     </Row>
-                  )}
 
-                  <div className="d-flex gap-2">
-                    <Button variant="primary" onClick={() => setEditing(true)}>
-                      <i className="bi bi-pencil me-2"></i>Edit Profile
-                    </Button>
+                    <Row className="mb-4">
+                      <Col md={6}>
+                        <div className="mb-4">
+                          <strong className="d-block mb-2" style={{ color: '#ffffff', opacity: 0.7, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Phone Number</strong>
+                          <h5 className="mb-0" style={{ color: '#ffffff', fontWeight: '500' }}>{user?.phone || 'Not provided'}</h5>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="mb-4">
+                          <strong className="d-block mb-2" style={{ color: '#ffffff', opacity: 0.7, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Account Type</strong>
+                          <span className={`badge ${role === 'owner' ? 'bg-success' : 'bg-info'} fs-6`} style={{ padding: '8px 16px' }}>
+                            {role === 'owner' ? 'Property Owner' : 'Renter'}
+                          </span>
+                        </div>
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-4">
+                      <Col>
+                        <div className="mb-4">
+                          <strong className="d-block mb-2" style={{ color: '#ffffff', opacity: 0.7, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Address</strong>
+                          <h5 className="mb-0" style={{ color: '#ffffff', fontWeight: '500' }}>{user?.address || 'Not provided'}</h5>
+                        </div>
+                      </Col>
+                    </Row>
+
                     {role === 'owner' && (
-                      <Button variant="outline-primary" href="/owner-dashboard">
-                        <i className="bi bi-speedometer2 me-2"></i>Go to Dashboard
-                      </Button>
+                      <Row className="mb-4">
+                        <Col>
+                          <Card 
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.1)',
+                              borderRadius: '10px'
+                            }}
+                          >
+                            <Card.Body style={{ padding: '1.5rem' }}>
+                              <h6 style={{ color: '#ffffff', marginBottom: '1rem', fontWeight: '600' }}>
+                                <i className="bi bi-star-fill me-2" style={{ color: '#ffc107' }}></i>
+                                Owner Benefits
+                              </h6>
+                              <ul className="mb-0" style={{ color: '#ffffff', opacity: 0.8 }}>
+                                <li className="mb-2">List unlimited properties</li>
+                                <li className="mb-2">Manage bookings and inquiries</li>
+                                <li className="mb-2">Access to analytics dashboard</li>
+                                <li>Priority customer support</li>
+                              </ul>
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      </Row>
                     )}
-                  </div>
-                </>
-              ) : (
-                <Form onSubmit={handleUpdateProfile}>
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Full Name</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
 
-                  <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Phone Number</Form.Label>
-                        <Form.Control
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Account Type</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={role === 'owner' ? 'Property Owner' : 'Renter'}
-                          disabled
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
+                    <div className="d-flex gap-3 flex-wrap">
+                      <Button 
+                        onClick={() => setEditing(true)}
+                        style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: '#ffffff',
+                          padding: '12px 24px',
+                          borderRadius: '8px',
+                          fontWeight: '500',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                          e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                          e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        }}
+                      >
+                        <i className="bi bi-pencil me-2"></i>Edit Profile
+                      </Button>
+                      {role === 'owner' && (
+                        <Button 
+                          href="/owner-dashboard"
+                          style={{
+                            backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                            border: '1px solid rgba(25, 135, 84, 0.3)',
+                            color: '#ffffff',
+                            padding: '12px 24px',
+                            borderRadius: '8px',
+                            fontWeight: '500',
+                            transition: 'all 0.2s ease',
+                            textDecoration: 'none'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(25, 135, 84, 0.3)';
+                            e.target.style.borderColor = 'rgba(25, 135, 84, 0.4)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'rgba(25, 135, 84, 0.2)';
+                            e.target.style.borderColor = 'rgba(25, 135, 84, 0.3)';
+                          }}
+                        >
+                          <i className="bi bi-speedometer2 me-2"></i>Go to Dashboard
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <Form onSubmit={handleUpdateProfile}>
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label style={{ color: '#ffffff', fontWeight: '500' }}>Full Name</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            required
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              color: '#ffffff',
+                              borderRadius: '8px',
+                              padding: '12px'
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label style={{ color: '#ffffff', fontWeight: '500' }}>Email Address</Form.Label>
+                          <Form.Control
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              color: '#ffffff',
+                              borderRadius: '8px',
+                              padding: '12px'
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
 
-                  <Form.Group className="mb-4">
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      placeholder="Enter your complete address"
-                    />
-                  </Form.Group>
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label style={{ color: '#ffffff', fontWeight: '500' }}>Phone Number</Form.Label>
+                          <Form.Control
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              color: '#ffffff',
+                              borderRadius: '8px',
+                              padding: '12px'
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label style={{ color: '#ffffff', fontWeight: '500' }}>Account Type</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={role === 'owner' ? 'Property Owner' : 'Renter'}
+                            disabled
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.1)',
+                              color: '#ffffff',
+                              borderRadius: '8px',
+                              padding: '12px',
+                              opacity: 0.7
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
 
-                  <div className="d-flex gap-2">
-                    <Button type="submit" variant="success">
-                      <i className="bi bi-check-lg me-2"></i>Save Changes
-                    </Button>
-                    <Button variant="secondary" onClick={() => setEditing(false)}>
-                      <i className="bi bi-x-lg me-2"></i>Cancel
-                    </Button>
-                  </div>
-                </Form>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                    <Form.Group className="mb-4">
+                      <Form.Label style={{ color: '#ffffff', fontWeight: '500' }}>Address</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        placeholder="Enter your complete address"
+                        style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: '#ffffff',
+                          borderRadius: '8px',
+                          padding: '12px'
+                        }}
+                      />
+                    </Form.Group>
+
+                    <div className="d-flex gap-3 flex-wrap">
+                      <Button 
+                        type="submit"
+                        style={{
+                          backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                          border: '1px solid rgba(25, 135, 84, 0.3)',
+                          color: '#ffffff',
+                          padding: '12px 24px',
+                          borderRadius: '8px',
+                          fontWeight: '500',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = 'rgba(25, 135, 84, 0.3)';
+                          e.target.style.borderColor = 'rgba(25, 135, 84, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'rgba(25, 135, 84, 0.2)';
+                          e.target.style.borderColor = 'rgba(25, 135, 84, 0.3)';
+                        }}
+                      >
+                        <i className="bi bi-check-lg me-2"></i>Save Changes
+                      </Button>
+                      <Button 
+                        onClick={() => setEditing(false)}
+                        style={{
+                          backgroundColor: 'rgba(108, 117, 125, 0.2)',
+                          border: '1px solid rgba(108, 117, 125, 0.3)',
+                          color: '#ffffff',
+                          padding: '12px 24px',
+                          borderRadius: '8px',
+                          fontWeight: '500',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = 'rgba(108, 117, 125, 0.3)';
+                          e.target.style.borderColor = 'rgba(108, 117, 125, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'rgba(108, 117, 125, 0.2)';
+                          e.target.style.borderColor = 'rgba(108, 117, 125, 0.3)';
+                        }}
+                      >
+                        <i className="bi bi-x-lg me-2"></i>Cancel
+                      </Button>
+                    </div>
+                  </Form>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 

@@ -3,21 +3,22 @@
 
 /* Ensure body doesn't show white space when scrolling on login page */
 body.auth-page {
-  background: linear-gradient(180deg, #6f42c1 0%, #ffffff 100%);
+  background: rgba(0, 0, 0, 0.6);
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
 }
 
-/* Full-Page Login Screen with Gradient Background */
+/* Full-Page Login Screen with Light Dark Background */
 .auth-main-container {
   min-height: 100vh;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, #6f42c1 0%, #ffffff 100%);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
@@ -39,11 +40,12 @@ body.auth-page {
   pointer-events: none;
 }
 
-/* Translucent Login Box - Transparent Background */
+/* Light Dark Translucent Login Box - Like Navbar Theme */
 .auth-container {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 40px 35px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
@@ -54,15 +56,15 @@ body.auth-page {
   z-index: 2;
 }
 
-/* ROOMRENTO Brand Title - Black Color */
+/* ROOMRENTO Brand Title - White Color for Dark Theme */
 .auth-brand-title {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #000000;
+  color: #ffffff;
   margin-bottom: 25px;
   letter-spacing: 1px;
   text-align: center;
-  text-shadow: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* For white background containers */
@@ -85,14 +87,14 @@ body.auth-page {
   border-radius: 15px;
 }
 
-/* Welcome back text - Black Color */
+/* Welcome back text - White Color for Dark Theme */
 .auth-welcome-text {
   font-size: 1.8rem;
   font-weight: 600;
-  color: #000000;
+  color: #ffffff;
   margin-bottom: 30px;
   text-align: center;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* For white background containers */
@@ -101,7 +103,7 @@ body.auth-page {
   text-shadow: none;
 }
 
-/* Google Login Button - Simple styling */
+/* Google Login Button - Simple clean styling */
 .google-login {
   margin-bottom: 20px;
   width: 100%;
@@ -109,14 +111,24 @@ body.auth-page {
   justify-content: center;
 }
 
-/* Or divider - Black Color */
+.google-login > div {
+  width: 100%;
+  max-width: 300px;
+}
+
+.google-login iframe {
+  width: 100% !important;
+  max-width: 300px !important;
+}
+
+/* Or divider - White Color for Dark Theme */
 .auth-divider {
-  color: #000000;
+  color: #ffffff;
   font-size: 1rem;
   margin: 20px 0;
   text-align: center;
   position: relative;
-  text-shadow: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .auth-divider::before,
@@ -148,7 +160,7 @@ body.auth-page {
   right: 0;
 }
 
-/* Input Fields - Clean White Style */
+/* Input Fields - Dark Theme Style */
 .auth-input-group {
   position: relative;
   margin-bottom: 15px;
@@ -157,10 +169,10 @@ body.auth-page {
 .auth-input-group input {
   width: 100%;
   padding: 15px 20px;
-  border: 1px solid #e1e5e9;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
-  background: #ffffff;
-  color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
   font-size: 1rem;
   outline: none;
   transition: all 0.3s ease;
@@ -168,21 +180,21 @@ body.auth-page {
 }
 
 .auth-input-group input::placeholder {
-  color: #999;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 400;
 }
 
 .auth-input-group input:focus {
-  border-color: #6f42c1;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
-/* Continue Button */
+/* Continue Button - Dark Theme Style */
 .auth-continue-btn {
   width: 100%;
   padding: 16px;
-  background: #000000;
+  background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   font-weight: 600;
   font-size: 1.1rem;
@@ -194,7 +206,7 @@ body.auth-page {
 }
 
 .auth-continue-btn:hover {
-  background: #333333;
+  background: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -203,9 +215,9 @@ body.auth-page {
   transform: translateY(0);
 }
 
-/* Terms and Privacy Text - Black Color */
+/* Terms and Privacy Text - White Color for Dark Theme */
 .auth-terms {
-  color: #000000;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
   text-align: center;
   margin: 15px 0;
@@ -324,17 +336,17 @@ button:hover {
   background: #5a3a9e; /* darker purple on hover */
 }
 
-/* Toggle Text - Black Color */
+/* Toggle Text - White Color for Dark Theme */
 .toggle {
   text-align: center;
   font-size: 0.95rem;
   margin-top: 25px;
-  color: #000000;
-  text-shadow: none;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .toggle span {
-  color: #000000;
+  color: #ffffff;
   cursor: pointer;
   font-weight: 600;
   margin-left: 4px;

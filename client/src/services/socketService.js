@@ -29,22 +29,16 @@ class SocketService {
       });
 
       this.socket.on('connect', () => {
-        console.log('Socket connected successfully');
         this.emit('connected', true);
       });
 
       this.socket.on('disconnect', (reason) => {
-        console.log('Socket disconnected:', reason);
         this.emit('connected', false);
       });
 
       this.socket.on('connect_error', (error) => {
-        console.warn('Socket connection failed:', error.message);
-        
         // Handle authentication errors more gracefully
         if (error.message.includes('Authentication error')) {
-          console.log('Authentication failed - clearing token and redirecting to login');
-          
           // Clear invalid token
           localStorage.removeItem('token');
           localStorage.removeItem('userName');

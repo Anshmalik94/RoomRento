@@ -1,9 +1,90 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { Card, Badge } from "react-bootstrap";
 import { API_URL } from "../config";
+import './RoomCard.css'; // Use the same modern styles
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function HotelCard({ hotel }) {
-  const [imageColor, setImageColor] = useState('light'); // Default to light text
+  const [isSaved, setIsSaved] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+  
+  const currentUserId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  
+  // Check if property is saved on component mount and localStorage changes
+  useEffect(() => {
+    const updateSavedState = () => {
+      if (token && currentUserId) {
+        const savedProperties = JSON.parse(localStorage.getItem('savedProperties') || '[]');
+        setIsSaved(savedProperties.includes(hotel._id));
+      }
+    };
+
+    updateSavedState();
+
+    // Listen for custom events from other components only
+    const handleCustomSaveEvent = (event) => {
+      if (event.detail && event.detail.propertyId === hotel._id) {
+        setIsSaved(event.detail.isSaved);
+      }
+    };
+    
+    window.addEventListener('savedPropertiesChanged', handleCustomSaveEvent);
+
+    return () => {
+      window.removeEventListener('savedPropertiesChanged', handleCustomSaveEvent);
+    };
+  }, [hotel._id, token, currentUserId]);
+
+  const handleSaveToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Prevent multiple clicks
+    if (isToggling) return;
+    setIsToggling(true);
+    
+    if (!token) {
+      alert('Please login to save properties');
+      setIsToggling(false);
+      return;
+    }
+    
+    const savedProperties = JSON.parse(localStorage.getItem('savedProperties') || '[]');
+    let updatedSaved;
+    let newSavedState;
+    
+    if (isSaved) {
+      // Remove from saved (unsave) - Heart becomes unfilled
+      updatedSaved = savedProperties.filter(id => id !== hotel._id);
+      newSavedState = false;
+    } else {
+      // Add to saved - Heart becomes filled
+      if (!savedProperties.includes(hotel._id)) {
+        updatedSaved = [...savedProperties, hotel._id];
+        newSavedState = true;
+      } else {
+        setIsToggling(false);
+        return;
+      }
+    }
+    
+    // Remove duplicates and update localStorage
+    updatedSaved = [...new Set(updatedSaved)];
+    localStorage.setItem('savedProperties', JSON.stringify(updatedSaved));
+    
+    // Update local state immediately for instant UI feedback
+    setIsSaved(newSavedState);
+    
+    // Notify other components
+    window.dispatchEvent(new CustomEvent('savedPropertiesChanged', {
+      detail: { propertyId: hotel._id, isSaved: newSavedState }
+    }));
+    
+    // Reset toggling state
+    setTimeout(() => setIsToggling(false), 300);
+  };
 
   // Function to detect if image is light or dark
   const getImageBrightness = useCallback((imageSrc) => {
@@ -70,8 +151,7 @@ function HotelCard({ hotel }) {
   }, [hotel, getImageUrl, getImageBrightness]); // Add dependencies
 
   const imageUrl = getImageUrl();
-  // const currentUserId = localStorage.getItem("userId");
-  // const isOwner = currentUserId === hotel.owner?._id;
+  const isOwner = currentUserId === hotel.owner?._id;
 
   // const handleEdit = (e) => {
   //   e.preventDefault();
@@ -89,8 +169,7 @@ function HotelCard({ hotel }) {
   //         }
   //       });
   //       if (res.ok) window.location.reload();
-  //     } catch (error) {
-  //       console.error('Error deleting hotel:', error);
+  //     } catch (error) {
   //     }
   //   }
   // };
@@ -105,183 +184,282 @@ function HotelCard({ hotel }) {
   //   window.location.href = `mailto:${hotel.email}`;
   // };
 
-  const handleCardClick = () => {
-    // Redirect to hotel detail page using room detail route
-    window.location.href = `/room/${hotel._id}`;
+  const getHotelTitle = () => {
+    if (hotel.title && hotel.title !== "Hotel") return hotel.title;
+    const hotelType = hotel.category || "Hotel";
+    const city = hotel.location || "Location";
+    if (hotel.description && hotel.description !== "Hotel")
+      return `${hotelType} - ${hotel.description}`;
+    return `${hotelType} in ${city}`;
+  };
+
+  const displayTitle = getHotelTitle();
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      window.location.href = `/edit-hotel/${hotel._id}`;
+    }, 100);
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    if (window.confirm('Are you sure you want to delete this hotel?')) {
+      // Delete logic here
+    }
+  };
+
+  const handleWhatsApp = (e) => {
+    e.preventDefault();
+    window.open(`https://wa.me/${hotel.contactNumber || '1234567890'}`, '_blank');
+  };
+
+  const handleCall = (e) => {
+    e.preventDefault();
+    window.location.href = `tel:${hotel.contactNumber || '1234567890'}`;
   };
 
   return (
-    <div 
-      className="card h-100 shadow-sm border-0" 
+    <Card 
+      className="h-100 border-0 shadow-lg room-card-modern"
       style={{ 
-        borderRadius: '15px', 
+        borderRadius: '16px',
         overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease'
-      }}
-      onClick={handleCardClick}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}
     >
-      {/* Hotel Image */}
-      <div className="position-relative" style={{ height: '240px' }}>
-        <img
+      {/* Image Section with Overlays */}
+      <div className="position-relative" style={{ height: "280px" }}>
+        <Card.Img
+          variant="top"
           src={imageUrl}
-          alt={hotel.title}
-          className="card-img-top w-100 h-100"
-          style={{ objectFit: 'cover' }}
-          loading="lazy"
+          alt={displayTitle}
+          className="w-100 h-100"
+          style={{ 
+            objectFit: "cover",
+            transition: 'transform 0.3s ease'
+          }}
           onError={(e) => {
             e.target.src = "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
           }}
-          onLoad={() => {
-            // Re-analyze image when it loads
-            getImageBrightness(imageUrl);
+        />
+        
+        {/* Gradient Overlay for better text readability */}
+        <div 
+          className="position-absolute w-100 h-100"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)',
+            top: 0,
+            left: 0
           }}
         />
         
-        {/* Category Badge */}
+        {/* Property Type Badge - Top Left */}
         <div className="position-absolute top-0 start-0 m-3">
-          <span className="badge bg-success fs-6 px-3 py-2" style={{ borderRadius: '20px' }}>
-            <i className="bi bi-building me-1"></i>{hotel.category}
-          </span>
+          <Badge 
+            className="px-3 py-2 fw-bold text-uppercase"
+            style={{
+              background: 'linear-gradient(135deg, #28a745, #20c997)',
+              border: 'none',
+              borderRadius: '25px',
+              fontSize: '0.75rem',
+              letterSpacing: '0.5px',
+              boxShadow: '0 4px 12px rgba(40, 167, 69, 0.3)'
+            }}
+          >
+            {hotel.category || 'Hotel'}
+          </Badge>
         </div>
 
-        {/* Verified Badge */}
-        {hotel.owner?.isVerified && (
-          <div className="position-absolute top-0 end-0 m-3">
-            <span className="badge bg-primary fs-6 px-3 py-2" style={{ borderRadius: '20px' }}>
-              <i className="bi bi-patch-check-fill me-1"></i>Verified
-            </span>
-          </div>
+        {/* Price Badge - Top Right */}
+        <div className="position-absolute top-0 end-0 m-3">
+          <Badge 
+            className="px-3 py-2 fw-bold"
+            style={{
+              background: 'rgba(111, 66, 193, 0.9)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '25px',
+              fontSize: '0.9rem',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+            }}
+          >
+            ₹{hotel.price === 0 ? 'Free' : hotel.price?.toLocaleString()}
+            <small className="text-white ms-1">/night</small>
+          </Badge>
+        </div>
+
+        {/* Save Heart Button - Bottom Right of Image */}
+        {!isOwner && (
+          <button
+            className="position-absolute save-heart-modern"
+            style={{
+              bottom: '12px',
+              right: '12px',
+              background: isSaved ? '#dc3545' : 'rgba(255, 255, 255, 0.95)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '44px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              zIndex: 10,
+              transform: isToggling ? 'scale(1.2)' : 'scale(1)'
+            }}
+            onClick={handleSaveToggle}
+            disabled={isToggling}
+          >
+            <i 
+              className={`bi ${isSaved ? 'bi-heart-fill' : 'bi-heart'}`}
+              style={{ 
+                color: isSaved ? 'white' : '#dc3545',
+                fontSize: '20px',
+                transition: 'all 0.3s ease'
+              }}
+            />
+          </button>
         )}
 
-        {/* Available Facilities & Amenities Overlay */}
-        {hotel.amenities && hotel.amenities.length > 0 && (
-          <div className="position-absolute bottom-0 start-0 end-0 p-3">
-            <div className="d-flex flex-wrap gap-1 mb-2">
-              {hotel.amenities.slice(0, 4).map((amenity, index) => {
-                const textColor = imageColor === 'dark' ? '#000000' : '#ffffff';
-                const shadowColor = imageColor === 'dark' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)';
-                
-                return (
-                  <span 
-                    key={index} 
-                    className="small"
-                    style={{ 
-                      fontSize: '0.75rem', 
-                      padding: '4px 8px',
-                      color: textColor,
-                      textShadow: `2px 2px 4px ${shadowColor}`
-                    }}
-                  >
-                    {amenity}
-                  </span>
-                );
-              })}
-              {hotel.amenities.length > 4 && (
-                <span 
-                  className="small"
-                  style={{ 
-                    fontSize: '0.75rem', 
-                    padding: '4px 8px',
-                    color: imageColor === 'dark' ? '#000000' : '#ffffff',
-                    textShadow: `2px 2px 4px ${imageColor === 'dark' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)'}`
-                  }}
-                >
-                  +{hotel.amenities.length - 4}
-                </span>
-              )}
-            </div>
-            <div style={{ 
-              fontSize: '0.8rem', 
-              padding: '6px 10px',
-              color: imageColor === 'dark' ? '#000000' : '#ffffff',
-              textShadow: `2px 2px 4px ${imageColor === 'dark' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)'}`
-            }}>
-              <i className="bi bi-info-circle me-1"></i>
-              Available Facilities & Amenities
-            </div>
+        {/* Verification Badge - Bottom Left */}
+        {hotel.owner?.isVerified && (
+          <div className="position-absolute bottom-0 start-0 m-3">
+            <Badge 
+              className="px-2 py-1 fw-semibold d-flex align-items-center"
+              style={{
+                background: 'rgba(40, 167, 69, 0.95)',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: '0.75rem'
+              }}
+            >
+              <i className="bi bi-patch-check-fill me-1" style={{ fontSize: '0.8rem' }} />
+              Verified
+            </Badge>
           </div>
         )}
       </div>
 
-      {/* Hotel Content */}
-      <div className="card-body p-4 d-flex flex-column">
-        <div className="d-flex justify-content-between align-items-start mb-3">
-          <h5 className="card-title fw-bold mb-0 text-dark" style={{ fontSize: '1.3rem' }}>
-            {hotel.title}
-          </h5>
-        </div>
+      {/* Card Body */}
+      <Card.Body className="p-4 d-flex flex-column">
+        {/* Title */}
+        <Card.Title 
+          className="fw-bold mb-3 text-dark"
+          style={{
+            fontSize: '1.25rem',
+            lineHeight: '1.4',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            minHeight: '2.8rem'
+          }}
+        >
+          {displayTitle}
+        </Card.Title>
 
         {/* Location */}
-        <p className="text-muted mb-3 d-flex align-items-center">
-          <i className="bi bi-geo-alt-fill me-2 text-success"></i>
-          <span className="small">{hotel.location}</span>
-        </p>
-
-        {/* Price */}
-        <div className="mb-3">
-          <span className="h4 mb-0 fw-bold" style={{ color: '#000000' }}>
-            ₹{hotel.price?.toLocaleString()}
-            <small className="text-muted fs-6 fw-normal">/night</small>
+        <div className="d-flex align-items-center mb-3 text-muted">
+          <i className="bi bi-geo-alt-fill me-2" style={{ color: '#28a745', fontSize: '1rem' }} />
+          <span className="text-truncate" style={{ fontSize: '0.95rem' }}>
+            {hotel.location || "Location not specified"}
           </span>
         </div>
 
-        {/* Description */}
-        <p className="text-muted small mb-3" style={{
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          lineHeight: '1.6'
-        }}>
-          {hotel.description}
-        </p>
-
-        {/* Hotel Details */}
-        <div className="row g-2 mb-3">
+        {/* Features/Amenities */}
+        <div className="d-flex flex-wrap gap-2 mb-4">
           {hotel.totalRooms && (
-            <div className="col-6">
-              <div className="d-flex align-items-center">
-                <i className="bi bi-door-closed me-2 text-muted"></i>
-                <small className="text-muted fw-semibold">{hotel.totalRooms} Rooms</small>
-              </div>
-            </div>
+            <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
+              <i className="bi bi-door-closed me-1" />
+              {hotel.totalRooms} Rooms
+            </span>
           )}
           {hotel.checkInTime && (
-            <div className="col-6">
-              <div className="d-flex align-items-center">
-                <i className="bi bi-clock me-2 text-muted"></i>
-                <small className="text-muted fw-semibold">Check-in: {hotel.checkInTime}</small>
-              </div>
-            </div>
+            <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
+              <i className="bi bi-clock me-1" />
+              {hotel.checkInTime}
+            </span>
+          )}
+          {hotel.amenities && hotel.amenities.length > 0 && (
+            <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
+              <i className="bi bi-star me-1" />
+              {hotel.amenities.length} Amenities
+            </span>
           )}
         </div>
 
-        {/* Room Types */}
-        {hotel.roomTypes && hotel.roomTypes.length > 0 && (
-          <div className="mb-3">
-            <div className="d-flex flex-wrap gap-1">
-              {hotel.roomTypes.slice(0, 3).map((type, index) => (
-                <span key={index} className="badge bg-light text-dark border small">
-                  {type}
-                </span>
-              ))}
-              {hotel.roomTypes.length > 3 && (
-                <span className="badge bg-light text-dark border small">
-                  +{hotel.roomTypes.length - 3} more
-                </span>
-              )}
+        {/* Action Buttons */}
+        <div className="mt-auto">
+          {isOwner ? (
+            <div className="row g-2">
+              <div className="col-6">
+                <button 
+                  className="btn w-100 d-flex align-items-center justify-content-center"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(111, 66, 193, 0.1), rgba(111, 66, 193, 0.2))',
+                    color: '#6f42c1',
+                    border: '1px solid rgba(111, 66, 193, 0.3)',
+                    borderRadius: '12px',
+                    padding: '0.75rem',
+                    fontWeight: '600',
+                    fontSize: '0.9rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onClick={handleEdit}
+                >
+                  <i className="bi bi-pencil-square me-1" />
+                  Edit
+                </button>
+              </div>
+              <div className="col-6">
+                <button 
+                  className="btn w-100 d-flex align-items-center justify-content-center"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.2))',
+                    color: '#dc3545',
+                    border: '1px solid rgba(220, 53, 69, 0.3)',
+                    borderRadius: '12px',
+                    padding: '0.75rem',
+                    fontWeight: '600',
+                    fontSize: '0.9rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onClick={handleDelete}
+                >
+                  <i className="bi bi-trash3 me-1" />
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </div>
+          ) : (
+            <Link 
+              to={`/room/${hotel._id}`} 
+              className="btn w-100 text-decoration-none d-flex align-items-center justify-content-center"
+              style={{
+                background: 'linear-gradient(135deg, #28a745, #20c997)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '1rem',
+                fontWeight: '700',
+                fontSize: '1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                boxShadow: '0 6px 20px rgba(40, 167, 69, 0.4)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <i className="bi bi-calendar-check-fill me-2" style={{ fontSize: '1.1rem' }} />
+              Book Hotel
+            </Link>
+          )}
+        </div>
+      </Card.Body>
+    </Card>
   );
 }
 

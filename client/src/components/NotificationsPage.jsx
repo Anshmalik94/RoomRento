@@ -117,8 +117,6 @@ const NotificationsPage = () => {
 
   // Handle notification click
   const handleNotificationClick = async (notification) => {
-    console.log('Notification page click:', notification._id, notification.message);
-    
     // Mark as read if not already read
     if (!notification.isRead && !notification.read) {
       await markAsRead(notification._id);
@@ -136,12 +134,10 @@ const NotificationsPage = () => {
     }
     
     if (targetUrl) {
-      console.log('Navigating to:', targetUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => {
         window.location.href = targetUrl;
       }, 200);
-    } else {
-      console.log('No navigation target for notification:', notification._id);
     }
   };
 

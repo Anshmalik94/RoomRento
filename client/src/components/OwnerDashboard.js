@@ -35,7 +35,6 @@ const OwnerDashboard = ({ handleRentifyClick }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      
 
       // Fetch listings (rooms, hotels, and shops)
       const [roomsResponse, hotelsResponse, shopsResponse] = await Promise.all([

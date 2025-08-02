@@ -1,15 +1,42 @@
 {
   "short_name": "RoomRento",
-  "name": "RoomRento - Room & Property Rental Platform",
+  "name": "RoomRento",
   "icons": [
     {
       "src": "images/favicons/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "images/logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo56.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "monochrome"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#6f42c1",
-  "background_color": "#ffffff"
+  "theme_color": "#673ab7",
+  "background_color": "#ffffff",
+  "description": "Find and book rooms, shops, and hotels easily with RoomRento",
+  "categories": ["travel", "business"],
+  "screenshots": [
+    {
+      "src": "images/banner.png",
+      "type": "image/png",
+      "sizes": "1280x640"
+    }
+  ]
 }

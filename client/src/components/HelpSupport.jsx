@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Accordion, Button, Alert, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Accordion, Button } from 'react-bootstrap';
 import './HelpSupport.css';
 
 const HelpSupport = () => {
   const [activeKey, setActiveKey] = useState('0');
-  const [showContact, setShowContact] = useState(false);
 
   const faqData = [
     {
@@ -103,94 +102,25 @@ const HelpSupport = () => {
                 </h3>
               </Card.Header>
               <Card.Body className="text-center py-5">
-                <Row>
-                  <Col md={6} className="mb-4 mb-md-0">
-                    <div className="support-option">
-                      <i className="bi bi-whatsapp display-1 text-success mb-3"></i>
-                      <h4 className="fw-bold">WhatsApp Support</h4>
-                      <p className="text-muted mb-3">
-                        Get instant help via WhatsApp. Our team is available to assist you.
-                      </p>
-                      <Button 
-                        variant="success" 
-                        size="lg" 
-                        onClick={handleWhatsAppContact}
-                        className="rounded-pill px-4"
-                      >
-                        <i className="bi bi-whatsapp me-2"></i>
-                        Chat on WhatsApp
-                      </Button>
-                      <div className="mt-2 text-muted small">
-                        +91 8929082629
-                      </div>
-                    </div>
-                  </Col>
-                  <Col md={6}>
-                    <div className="support-option">
-                      <i className="bi bi-envelope display-1 text-purple mb-3"></i>
-                      <h4 className="fw-bold">Email Support</h4>
-                      <p className="text-muted mb-3">
-                        Send us your questions and we'll get back to you within 24 hours.
-                      </p>
-                      <Button 
-                        variant="outline-purple" 
-                        size="lg"
-                        onClick={() => setShowContact(!showContact)}
-                        className="rounded-pill px-4"
-                      >
-                        <i className="bi bi-envelope me-2"></i>
-                        Send Message
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
-
-                {showContact && (
-                  <Row className="mt-5">
-                    <Col lg={8} className="mx-auto">
-                      <Alert variant="info" className="border-0">
-                        <i className="bi bi-info-circle me-2"></i>
-                        For faster response, please use WhatsApp support above.
-                      </Alert>
-                      <Card className="border-0 shadow-sm">
-                        <Card.Body>
-                          <Form>
-                            <Row>
-                              <Col md={6} className="mb-3">
-                                <Form.Group>
-                                  <Form.Label>Your Name</Form.Label>
-                                  <Form.Control type="text" placeholder="Enter your name" />
-                                </Form.Group>
-                              </Col>
-                              <Col md={6} className="mb-3">
-                                <Form.Group>
-                                  <Form.Label>Email Address</Form.Label>
-                                  <Form.Control type="email" placeholder="Enter your email" />
-                                </Form.Group>
-                              </Col>
-                            </Row>
-                            <Form.Group className="mb-3">
-                              <Form.Label>Subject</Form.Label>
-                              <Form.Control type="text" placeholder="Brief description of your issue" />
-                            </Form.Group>
-                            <Form.Group className="mb-4">
-                              <Form.Label>Message</Form.Label>
-                              <Form.Control 
-                                as="textarea" 
-                                rows={4} 
-                                placeholder="Describe your issue in detail..."
-                              />
-                            </Form.Group>
-                            <Button variant="purple" size="lg" className="w-100 rounded-pill">
-                              <i className="bi bi-send me-2"></i>
-                              Send Message
-                            </Button>
-                          </Form>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  </Row>
-                )}
+                <div className="support-option">
+                  <i className="bi bi-whatsapp display-1 text-success mb-3"></i>
+                  <h4 className="fw-bold">WhatsApp Support</h4>
+                  <p className="text-muted mb-3">
+                    Get instant help via WhatsApp. Our team is available to assist you.
+                  </p>
+                  <Button 
+                    variant="success" 
+                    size="lg" 
+                    onClick={handleWhatsAppContact}
+                    className="rounded-pill px-4"
+                  >
+                    <i className="bi bi-whatsapp me-2"></i>
+                    Chat on WhatsApp
+                  </Button>
+                  <div className="mt-2 text-muted small">
+                    +91 8929082629
+                  </div>
+                </div>
               </Card.Body>
             </Card>
 

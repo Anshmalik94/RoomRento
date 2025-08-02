@@ -1,67 +1,441 @@
+/* Room Search Form - Premium Modern Design */
+
 .room-search-form-section {
-  margin-top: -50px;
-  z-index: 10;
+  margin-top: -80px;
+  z-index: 100;
   position: relative;
   background: transparent !important;
-  background-color: transparent !important;
-  /* Prevent any potential white flash */
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  transition: none !important;
-  animation: none !important;
+  padding: 0 1rem;
 }
 
-.room-search-form-section::before,
-.room-search-form-section::after {
-  display: none !important;
+.room-search-form-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(111, 66, 193, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 123, 255, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .room-search-form-card {
   border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08);
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  /* Ensure stable rendering */
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 32px 80px rgba(0, 0, 0, 0.12),
+    0 16px 40px rgba(111, 66, 193, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  padding: 1.8rem 2.5rem;
+}
+
+.room-search-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    #6f42c1 0%, 
+    #007bff 25%, 
+    #28a745 50%, 
+    #ffc107 75%, 
+    #dc3545 100%
+  );
+  opacity: 0.8;
+}
+
+.room-search-form-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 
+    0 48px 120px rgba(0, 0, 0, 0.15),
+    0 24px 60px rgba(111, 66, 193, 0.15),
+    0 12px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Enhanced Heading */
+.room-search-form-card h3 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #2c3e50, #6f42c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.room-search-form-card .text-muted {
+  font-size: 1.1rem;
+  color: #6c757d !important;
+  margin-bottom: 2rem !important;
 }
 
 .room-search-form-card .form-label {
-  font-weight: 500;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+}
+
+.room-search-form-card .form-label::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, #6f42c1, #007bff);
+  border-radius: 2px;
+}
+
+/* Enhanced Form Controls */
+.room-search-form-card .input-group {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(111, 66, 193, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.room-search-form-card .input-group::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(111, 66, 193, 0.05) 0%, 
+    rgba(0, 123, 255, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.room-search-form-card .input-group:focus-within {
+  border-color: #6f42c1;
+  box-shadow: 
+    0 0 0 4px rgba(111, 66, 193, 0.15),
+    0 8px 24px rgba(111, 66, 193, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.room-search-form-card .input-group:focus-within::before {
+  opacity: 1;
 }
 
 .room-search-form-card .input-group-text {
-  background: #ffffff;
-  border-right: 0;
-  color: #6f42c1; /* purple replacement */
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: none;
+  color: #6f42c1;
+  font-size: 1.2rem;
+  padding: 1rem 1.3rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
 }
 
 .room-search-form-card .form-control,
 .room-search-form-card .form-select {
-  border-left: 0;
+  border: none;
+  background: transparent;
+  padding: 1.2rem 1rem;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  box-shadow: none !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
-.room-search-form-card .btn-success {
-  background: #6f42c1; /* purple */
+.room-search-form-card .form-control:focus,
+.room-search-form-card .form-select:focus {
+  background: transparent;
   border: none;
-  border-radius: 8px;
+  box-shadow: none !important;
+  color: #2c3e50;
+}
+
+.room-search-form-card .form-control::placeholder {
+  color: #8e9aaf;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* Enhanced Primary Button */
+.room-search-form-card .btn-success {
+  background: linear-gradient(135deg, #6f42c1 0%, #8b5bd1 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+  color: white;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .room-search-form-card .btn-success:hover {
-  background: #5a3a9e; /* darker purple */
+  background: linear-gradient(135deg, #5a3a9e 0%, #7c4bb8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(111, 66, 193, 0.4);
+}
+
+.room-search-form-card .btn-success:active {
+  transform: translateY(0px);
+}
+
+/* Near Me Button Enhancement */
+.room-search-form-card .btn-outline-secondary {
+  border: 2px solid #6f42c1;
+  color: #6f42c1;
+  border-radius: 16px;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  background: transparent;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.room-search-form-card .btn-outline-secondary:hover {
+  background: linear-gradient(135deg, #6f42c1 0%, #8b5bd1 100%);
+  border-color: #6f42c1;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(111, 66, 193, 0.25);
+}
+
+/* Filter Badges Enhancement */
+.room-search-form-card .badge {
+  background: linear-gradient(135deg, #6f42c1, #8b5bd1) !important;
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  margin: 0.2rem;
+  border: none;
+  box-shadow: 0 2px 8px rgba(111, 66, 193, 0.2);
+  transition: all 0.3s ease;
+}
+
+.room-search-form-card .badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 991px) {
+  .room-search-form-section {
+    margin-top: -60px;
+    padding: 0 0.8rem;
+  }
+  
+  .room-search-form-card {
+    padding: 1.6rem 2rem;
+    border-radius: 20px;
+    max-width: 95%;
+  }
+  
+  .room-search-form-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .room-search-form-card .text-muted {
+    font-size: 1rem;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .room-search-form-card .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+  }
+  
+  .room-search-form-card .input-group {
+    border-radius: 12px;
+  }
+  
+  .room-search-form-card .form-control,
+  .room-search-form-card .form-select {
+    padding: 1rem 0.8rem;
+    font-size: 1rem;
+  }
+  
+  .room-search-form-card .btn-success {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    min-height: 50px;
+  }
 }
 
 @media (max-width: 768px) {
   .room-search-form-section {
-    margin-top: 20px;
-    padding: 1rem;
+    margin-top: -40px;
+    padding: 0 0.5rem;
   }
+  
   .room-search-form-card {
-    padding: 1.2rem;
+    padding: 1.8rem 1.2rem;
+    border-radius: 18px;
+    margin: 0 0.5rem;
+  }
+  
+  .room-search-form-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
+    text-align: center;
+  }
+  
+  .room-search-form-card .text-muted {
+    font-size: 0.95rem;
+    margin-bottom: 1.3rem !important;
+    text-align: center;
+  }
+  
+  .room-search-form-card .form-label {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .room-search-form-card .form-label::after {
+    width: 20px;
+    height: 1.5px;
+  }
+  
+  .room-search-form-card .input-group {
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  .room-search-form-card .form-control,
+  .room-search-form-card .form-select {
+    padding: 0.9rem 0.7rem;
+    font-size: 0.95rem;
+  }
+  
+  .room-search-form-card .input-group-text {
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .room-search-form-card .btn-success {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  
+  .room-search-form-card .btn-outline-secondary {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  
+  .room-search-form-card:hover {
+    transform: translateY(-4px) scale(1.005);
+  }
+}
+
+@media (max-width: 576px) {
+  .room-search-form-section {
+    margin-top: -20px;
+    padding: 0 0.3rem;
+  }
+  
+  .room-search-form-card {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+    margin: 0 0.3rem;
+  }
+  
+  .room-search-form-card h3 {
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
+  
+  .room-search-form-card .text-muted {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem !important;
+  }
+  
+  .room-search-form-card .form-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .room-search-form-card .input-group {
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+  }
+  
+  .room-search-form-card .form-control,
+  .room-search-form-card .form-select {
+    padding: 0.8rem 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  .room-search-form-card .input-group-text {
+    padding: 0.8rem 0.9rem;
+    font-size: 0.95rem;
+  }
+  
+  .room-search-form-card .btn-success {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.3px;
+    min-height: 46px;
+  }
+  
+  .room-search-form-card .btn-outline-secondary {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .room-search-form-card .badge {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    margin: 0.1rem;
   }
 }
 
@@ -72,227 +446,96 @@
 /* Zoom animation when section comes into view */
 .zoom-highlight {
   animation: zoomEffect 0.5s ease-in-out forwards;
-  transition: all 0.5s ease-in-out;
   background: transparent !important;
   background-color: transparent !important;
 }
 
-.zoom-highlight .room-search-form-card {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-}
-
 @keyframes zoomEffect {
   0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+    transform: scale(0.98);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 25px rgba(111, 66, 193, 0.2); /* purple glow */
   }
 }
 
-/* Near Me Button Inside Input Styling */
-.near-me-input-btn {
-  border-radius: 0 8px 8px 0;
-  font-size: 0.85rem;
-  padding: 0.575rem 0.75rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border: 1px solid #dee2e6;
-  border-left: none;
+/* Near Me Section Styling */
+.near-me-section {
+  border-top: 1px solid #e9ecef;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.near-me-section h6 {
+  color: #333;
+  font-weight: 600;
+}
+
+.near-me-section small {
+  color: #6c757d;
+}
+
+.btn-outline-primary {
+  border: 2px solid #6f42c1;
   color: #6f42c1;
-  background: #f8f9fa;
-  white-space: nowrap;
-  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 1rem 2.5rem;
+  letter-spacing: 0.5px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.near-me-input-btn:hover {
-  background: #6f42c1;
+.btn-outline-primary:hover {
+  background: linear-gradient(135deg, #6f42c1 0%, #8b5bd1 100%);
   border-color: #6f42c1;
-  color: #ffffff;
-  transform: none;
-  box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.25);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(111, 66, 193, 0.25);
 }
 
-.near-me-input-btn:active {
-  background: #5a3a9e;
-  color: #ffffff;
-  border-color: #5a3a9e;
-}
-
-.near-me-input-btn i {
-  font-size: 0.9rem;
-  margin-right: 0.25rem;
-}
-
-/* Unified Location Search Field - Travel App Style */
-.location-input-group {
-  position: relative;
-  border-radius: 12px;
-  background: #ffffff;
-  border: 2px solid #e9ecef;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(111, 66, 193, 0.08);
-  display: flex;
-  align-items: center;
-  min-height: 48px;
-}
-
-.location-input-group:hover {
+.btn-outline-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
   border-color: #6f42c1;
-  box-shadow: 0 4px 20px rgba(111, 66, 193, 0.12);
 }
 
-.location-input-group:focus-within {
-  border-color: #6f42c1;
-  box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.15);
-  transform: translateY(-1px);
-}
-
-.location-input-group .input-group-text {
+/* Enhanced Form Styling */
+.room-search-form-card .form-control:focus,
+.room-search-form-card .form-select:focus {
+  background: rgba(111, 66, 193, 0.02);
   border: none;
-  background: transparent;
-  padding: 0 0 0 16px;
-  color: #6f42c1;
-  font-size: 1.1rem;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-}
-
-.location-input-group .form-control {
-  border: none;
-  background: transparent;
-  padding: 12px 8px 12px 8px;
-  height: auto;
-  font-size: 0.95rem;
-  color: #333;
-  flex: 1;
-  outline: none;
   box-shadow: none !important;
+  color: #2c3e50;
 }
 
-.location-input-group .form-control::placeholder {
-  color: #6c757d;
-  font-weight: 400;
-  transition: all 0.3s ease;
+/* Smooth Loading Animation */
+.room-search-form-card .btn-success:active {
+  transform: translateY(0) scale(0.98);
+  transition: all 0.1s ease;
 }
 
-.location-input-group .form-control:focus::placeholder {
-  color: #adb5bd;
-  transform: translateX(2px);
-}
-
-/* Near Me Button - Integrated Style */
-.near-me-input-btn {
-  border: none;
-  background: transparent;
-  color: #6f42c1;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
-  margin: 4px 4px 4px 0;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.near-me-input-btn::before {
+/* Add subtle gradient overlay */
+.room-search-form-card::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(111, 66, 193, 0.1), transparent);
-  transition: left 0.5s ease;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #6f42c1, #8b5bd1, #9b6bd3, #6f42c1);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+  border-radius: 20px 20px 0 0;
 }
 
-.near-me-input-btn:hover {
-  background: #6f42c1;
-  color: #ffffff;
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.near-me-input-btn:hover::before {
-  left: 100%;
-}
 
-.near-me-input-btn:active {
-  background: #5a3a9e;
-  transform: scale(0.98);
-}
-
-.near-me-input-btn i {
-  font-size: 0.9rem;
-  transition: transform 0.3s ease;
-}
-
-.near-me-input-btn:hover i {
-  transform: rotate(15deg);
-}
-
-/* Mobile Responsive Adjustments */
-@media (max-width: 768px) {
-  .location-input-group {
-    min-height: 44px;
-    border-radius: 10px;
-  }
-  
-  .location-input-group .input-group-text {
-    padding: 0 0 0 12px;
-    font-size: 1rem;
-  }
-  
-  .location-input-group .form-control {
-    padding: 10px 6px;
-    font-size: 0.9rem;
-  }
-  
-  .near-me-input-btn {
-    font-size: 0.8rem;
-    padding: 6px 12px;
-    margin: 3px 3px 3px 0;
-  }
-}
-.input-group.custom-group {
-  border: 1px solid #ced4da;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.input-group.custom-group .form-control {
-  border: none;
-  box-shadow: none;
-}
-
-.input-group.custom-group .input-group-text {
-  background-color: #fff;
-  border: none;
-}
-
-.near-me-btn {
-  border: none;
-  background-color: #f8f9fa;
-  color: #000;
-  font-weight: 500;
-  border-left: 1px solid #dee2e6;
-  padding: 0 12px;
-  transition: background 0.2s ease;
-}
-
-.near-me-btn:hover {
-  background-color: #e2e6ea;
-}

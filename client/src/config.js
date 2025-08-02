@@ -4,33 +4,27 @@ import axios from 'axios';
 const getBaseURL = () => {
   // FORCE LOCALHOST FOR LOCAL DEVELOPMENT
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log('🔧 LOCAL DEVELOPMENT: Forcing localhost:5000');
     return 'http://localhost:5000';
   }
 
   // Development mode check FIRST - highest priority
   if (process.env.NODE_ENV === 'development') {
     const devUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
-    console.log('🔧 DEVELOPMENT MODE: Using', devUrl);
     return devUrl;
   }
 
   // EMERGENCY FIX: Force correct URL for production
   if (process.env.NODE_ENV === 'production') {
-    console.log('🚨 PRODUCTION MODE: Forcing correct backend URL');
     return 'https://roomrento.onrender.com';
   }
   
   // Always use production URL if available
   if (process.env.REACT_APP_API_URL) {
-    console.log('Using REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
     return process.env.REACT_APP_API_URL;
   }
   
   // Production mode - try multiple backend URLs
   const currentHost = window.location.hostname;
-  console.log('Current hostname:', currentHost);
-  
   // If frontend is on Vercel
   if (currentHost.includes('vercel.app')) {
     // Try custom backend URL from environment variable first
@@ -39,14 +33,12 @@ const getBaseURL = () => {
     }
     // Use BASE_URL from env or fallback
     const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
-    console.log('Using Vercel URL:', url);
     return url;
   }
   
   // If frontend is on Render
   if (currentHost.includes('onrender.com')) {
     const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
-    console.log('Using Render URL:', url);
     return url;
   }
   
@@ -54,7 +46,6 @@ const getBaseURL = () => {
   if (currentHost.includes('roomrento.com')) {
     // Try primary backend first, then fallbacks
     const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
-    console.log('Using custom domain URL:', url);
     return url;
   }
   
@@ -66,21 +57,12 @@ const getBaseURL = () => {
   ].filter(Boolean);
   
   const fallbackUrl = possibleBackends[0];
-  console.log('Using fallback URL:', fallbackUrl);
-  console.log('Available backends:', possibleBackends);
   return fallbackUrl;
 };
 
 const BASE_URL = getBaseURL();
 
 // Debug information
-console.log('🚀 RoomRento API Configuration:');
-console.log('- NODE_ENV:', process.env.NODE_ENV);
-console.log('- REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
-console.log('- REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
-console.log('- Final BASE_URL:', BASE_URL);
-console.log('- Current hostname:', window.location.hostname);
-
 // API configuration with error handling
 export const API_CONFIG = {
   baseURL: BASE_URL,
@@ -104,8 +86,6 @@ export const apiClient = axios.create({
 // Add request interceptor for debugging
 apiClient.interceptors.request.use(
   (config) => {
-    console.log('🚀 API Request:', config.method?.toUpperCase(), config.url);
-    console.log('🔗 Full URL:', config.baseURL + config.url);
     return config;
   },
   (error) => {
@@ -117,7 +97,6 @@ apiClient.interceptors.request.use(
 // Add response interceptor with retry logic
 apiClient.interceptors.response.use(
   (response) => {
-    console.log('✅ API Response:', response.status, response.config.url);
     return response;
   },
   async (error) => {
@@ -136,14 +115,12 @@ apiClient.interceptors.response.use(
       
       for (const backend of alternativeBackends) {
         try {
-          console.log('🔄 Trying alternative backend:', backend);
           const retryResponse = await apiClient({
             ...originalRequest,
             baseURL: backend
           });
           return retryResponse;
         } catch (retryError) {
-          console.log('❌ Alternative backend failed:', backend);
         }
       }
     }

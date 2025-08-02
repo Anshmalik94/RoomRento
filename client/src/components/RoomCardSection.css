@@ -1,3 +1,201 @@
+/* Horizontal Advertisement Styles */
+.roomrento-horizontal-ad {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 1.5rem;
+}
+
+.horizontal-ad-container {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.horizontal-ad-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+}
+
+.ad-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.ad-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  animation: float 3s ease-in-out infinite;
+}
+
+.ad-icon i {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.ad-text {
+  flex: 1;
+  color: white;
+}
+
+.ad-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ad-subtitle {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ad-action {
+  display: flex;
+  align-items: center;
+}
+
+.btn-explore {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.btn-explore:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.ad-sparkles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  font-size: 1rem;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.sparkle-1 {
+  top: 15%;
+  right: 20%;
+  animation-delay: 0s;
+}
+
+.sparkle-2 {
+  bottom: 20%;
+  left: 15%;
+  animation-delay: 0.7s;
+}
+
+.sparkle-3 {
+  top: 60%;
+  right: 10%;
+  animation-delay: 1.4s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design for Horizontal Ad */
+@media (max-width: 768px) {
+  .horizontal-ad-container {
+    padding: 1rem;
+  }
+  
+  .ad-content {
+    gap: 0.75rem;
+  }
+  
+  .ad-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .ad-icon i {
+    font-size: 1.2rem;
+  }
+  
+  .ad-title {
+    font-size: 1rem;
+  }
+  
+  .ad-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .btn-explore {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .roomrento-horizontal-ad {
+    max-width: 95vw;
+  }
+  
+  .horizontal-ad-container {
+    padding: 0.8rem;
+  }
+  
+  .ad-content {
+    gap: 0.5rem;
+  }
+  
+  .ad-title {
+    font-size: 0.95rem;
+  }
+  
+  .ad-subtitle {
+    font-size: 0.75rem;
+  }
+}
+
 .room-card-section {
   min-height: 100%;
   padding: 2rem 0;

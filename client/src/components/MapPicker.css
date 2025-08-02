@@ -132,3 +132,35 @@
   padding: 8px !important;
   font-family: 'Inter', sans-serif !important;
 }
+
+/* Minimize Google logo visibility while keeping it present for compliance */
+.map-container .gmnoprint {
+  opacity: 0.3 !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.map-container:hover .gmnoprint {
+  opacity: 0.6 !important;
+}
+
+/* Make Google logo smaller and less prominent */
+.map-container img[src*="google"] {
+  opacity: 0.3 !important;
+  filter: grayscale(50%) !important;
+  transition: all 0.3s ease !important;
+}
+
+.map-container:hover img[src*="google"] {
+  opacity: 0.6 !important;
+  filter: grayscale(20%) !important;
+}
+
+/* Hide attribution text while keeping logo */
+.map-container .gmnoprint a[target="_blank"] {
+  font-size: 0 !important;
+}
+
+.map-container .gmnoprint a[target="_blank"]:after {
+  content: "";
+  font-size: 0 !important;
+}

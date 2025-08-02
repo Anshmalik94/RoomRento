@@ -3,7 +3,33 @@ import "./RoomCardSection.css";
 
 const RoomCardSection = () => {
   return (
-    <div className="room-card-section d-flex justify-content-center align-items-center">
+    <div className="room-card-section d-flex flex-column justify-content-center align-items-center">
+      {/* Horizontal Advertisement - Above Room Image */}
+      <div className="roomrento-horizontal-ad mb-4">
+        <div className="horizontal-ad-container">
+          <div className="ad-content">
+            <div className="ad-icon">
+              <i className="bi bi-house-heart-fill"></i>
+            </div>
+            <div className="ad-text">
+              <div className="ad-title">Find Your Perfect Room</div>
+              <div className="ad-subtitle">Premium accommodations at affordable prices</div>
+            </div>
+            <div className="ad-action">
+              <button className="btn-explore">
+                <i className="bi bi-arrow-right-circle-fill me-1"></i>
+            Just Book Now 
+              </button>
+            </div>
+          </div>
+          <div className="ad-sparkles">
+            <div className="sparkle sparkle-1">✨</div>
+            <div className="sparkle sparkle-2">⭐</div>
+            <div className="sparkle sparkle-3">💫</div>
+          </div>
+        </div>
+      </div>
+      
       <div className="room-card-wrapper">
         <div className="room-image-container">
           <img

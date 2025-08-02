@@ -54,21 +54,6 @@ function TestimonialsSection() {
         
         {/* Desktop Carousel - Hidden on mobile */}
         <div id="testimonialsCarouselDesktop" className="carousel slide d-none d-md-block" data-bs-ride="carousel">
-          {/* Desktop Indicators */}
-          <div className="carousel-indicators">
-            {desktopSlides.map((_, index) => (
-              <button 
-                key={index}
-                type="button" 
-                data-bs-target="#testimonialsCarouselDesktop" 
-                data-bs-slide-to={index} 
-                className={index === 0 ? 'active' : ''}
-                aria-current={index === 0 ? 'true' : 'false'}
-                aria-label={`Slide ${index + 1}`}>
-              </button>
-            ))}
-          </div>
-
           {/* Desktop Carousel Items */}
           <div className="carousel-inner">
             {desktopSlides.map((slideTestimonials, slideIndex) => (
@@ -76,15 +61,24 @@ function TestimonialsSection() {
                 key={slideIndex}
                 className={`carousel-item ${slideIndex === 0 ? 'active' : ''}`}
               >
-                <div className="row g-3 justify-content-center">
+                <div className="row g-4 justify-content-center">
                   {slideTestimonials.map((t, index) => (
                     <div className="col-xl-4 col-lg-4 col-md-6" key={index}>
-                      <div className="card h-100 shadow-sm border-0 p-2 testimonial-card mx-auto">
-                        <div className="user-icon-wrapper mb-2 mx-auto">
-                          <i className="fas fa-user testimonial-user-icon"></i>
+                      <div className="card h-100 shadow-sm border-0 testimonial-card mx-auto">
+                        <div className="card-body p-4 text-center">
+                          <div className="user-icon-wrapper mb-3 mx-auto">
+                            <i className="bi bi-person-fill testimonial-user-icon"></i>
+                          </div>
+                          <h5 className="mb-2 fw-bold text-dark">{t.name}</h5>
+                          <div className="mb-3">
+                            <i className="bi bi-star-fill text-warning me-1"></i>
+                            <i className="bi bi-star-fill text-warning me-1"></i>
+                            <i className="bi bi-star-fill text-warning me-1"></i>
+                            <i className="bi bi-star-fill text-warning me-1"></i>
+                            <i className="bi bi-star-fill text-warning"></i>
+                          </div>
+                          <p className="text-muted fst-italic mb-0">"{t.review}"</p>
                         </div>
-                        <h5 className="mb-1 text-center fw-semibold">{t.name}</h5>
-                        <p className="text-muted fst-italic mt-1 text-center small">"{t.review}"</p>
                       </div>
                     </div>
                   ))}
@@ -95,40 +89,25 @@ function TestimonialsSection() {
 
           {/* Desktop Controls */}
           <button 
-            className="carousel-control-prev" 
+            className="carousel-control-prev testimonial-nav-btn" 
             type="button" 
             data-bs-target="#testimonialsCarouselDesktop" 
             data-bs-slide="prev">
-            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span className="carousel-control-prev-icon testimonial-nav-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Previous</span>
           </button>
           <button 
-            className="carousel-control-next" 
+            className="carousel-control-next testimonial-nav-btn" 
             type="button" 
             data-bs-target="#testimonialsCarouselDesktop" 
             data-bs-slide="next">
-            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+            <span className="carousel-control-next-icon testimonial-nav-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Next</span>
           </button>
         </div>
 
         {/* Mobile Carousel - Hidden on desktop */}
         <div id="testimonialsCarouselMobile" className="carousel slide d-md-none" data-bs-ride="carousel">
-          {/* Mobile Indicators */}
-          <div className="carousel-indicators">
-            {testimonials.map((_, index) => (
-              <button 
-                key={index}
-                type="button" 
-                data-bs-target="#testimonialsCarouselMobile" 
-                data-bs-slide-to={index} 
-                className={index === 0 ? 'active' : ''}
-                aria-current={index === 0 ? 'true' : 'false'}
-                aria-label={`Slide ${index + 1}`}>
-              </button>
-            ))}
-          </div>
-
           {/* Mobile Carousel Items */}
           <div className="carousel-inner">
             {testimonials.map((t, index) => (
@@ -137,13 +116,22 @@ function TestimonialsSection() {
                 key={index}
               >
                 <div className="row g-3 justify-content-center">
-                  <div className="col-10 col-sm-8">
-                    <div className="card h-100 shadow-sm border-0 p-2 testimonial-card mx-auto">
-                      <div className="user-icon-wrapper mb-2 mx-auto">
-                        <i className="fas fa-user testimonial-user-icon"></i>
+                  <div className="col-11 col-sm-9">
+                    <div className="card h-100 shadow-sm border-0 testimonial-card mx-auto">
+                      <div className="card-body p-4 text-center">
+                        <div className="user-icon-wrapper mb-3 mx-auto">
+                          <i className="bi bi-person-fill testimonial-user-icon"></i>
+                        </div>
+                        <h5 className="mb-2 fw-bold text-dark">{t.name}</h5>
+                        <div className="mb-3">
+                          <i className="bi bi-star-fill text-warning me-1"></i>
+                          <i className="bi bi-star-fill text-warning me-1"></i>
+                          <i className="bi bi-star-fill text-warning me-1"></i>
+                          <i className="bi bi-star-fill text-warning me-1"></i>
+                          <i className="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p className="text-muted fst-italic mb-0">"{t.review}"</p>
                       </div>
-                      <h5 className="mb-1 text-center fw-semibold">{t.name}</h5>
-                      <p className="text-muted fst-italic mt-1 text-center small">"{t.review}"</p>
                     </div>
                   </div>
                 </div>
@@ -153,19 +141,19 @@ function TestimonialsSection() {
 
           {/* Mobile Controls */}
           <button 
-            className="carousel-control-prev" 
+            className="carousel-control-prev testimonial-nav-btn" 
             type="button" 
             data-bs-target="#testimonialsCarouselMobile" 
             data-bs-slide="prev">
-            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span className="carousel-control-prev-icon testimonial-nav-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Previous</span>
           </button>
           <button 
-            className="carousel-control-next" 
+            className="carousel-control-next testimonial-nav-btn" 
             type="button" 
             data-bs-target="#testimonialsCarouselMobile" 
             data-bs-slide="next">
-            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+            <span className="carousel-control-next-icon testimonial-nav-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Next</span>
           </button>
         </div>

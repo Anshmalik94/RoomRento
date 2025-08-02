@@ -199,7 +199,6 @@ const AddHotel = ({ token, isEdit = false }) => {
   const reverseGeocode = async (lat, lng) => {
     try {
       if (!window.google || !window.google.maps || !window.google.maps.Geocoder) {
-        console.warn("Google Maps not available for geocoding");
         return null;
       }
 
@@ -320,7 +319,10 @@ const AddHotel = ({ token, isEdit = false }) => {
       
       // Reset form after successful submission
       setTimeout(() => {
-        window.location.href = '/my-listings';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          window.location.href = '/my-listings';
+        }, 100);
       }, 2000);
       
     } catch (error) {

@@ -1,0 +1,54 @@
+/* Direct Button Text Visibility - No Hover Effects */
+
+/* Force all button spans to always be visible */
+span {
+  display: inline !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Remove all Bootstrap responsive hiding classes */
+.d-none,
+.d-sm-none,
+.d-md-none,
+.d-lg-none,
+.d-xl-none {
+  display: inline !important;
+}
+
+.d-sm-inline,
+.d-md-inline,
+.d-lg-inline,
+.d-xl-inline {
+  display: inline !important;
+}
+
+/* Force button text to show without any conditions */
+.btn span,
+button span,
+a span,
+.btn-room span,
+.btn-responsive span,
+.btn-primary span,
+.btn-secondary span,
+.btn-outline-primary span {
+  display: inline !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  white-space: nowrap !important;
+}
+
+/* Buttons should show text always */
+.btn,
+button,
+a.btn {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Remove any transitions that hide text */
+* {
+  transition: none !important;
+}

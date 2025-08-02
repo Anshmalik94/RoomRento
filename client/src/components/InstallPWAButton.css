@@ -1,0 +1,129 @@
+/* PWA Install Button Styling */
+.pwa-install-container {
+  margin: 1rem 0;
+}
+
+.pwa-install-button-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pwa-install-btn {
+  background: linear-gradient(135deg, #673ab7 0%, #9c27b0 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-width: 200px;
+}
+
+.pwa-install-btn:hover {
+  background: linear-gradient(135deg, #5e35b1 0%, #8e24aa 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(103, 58, 183, 0.3) !important;
+  color: white;
+}
+
+.pwa-install-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(103, 58, 183, 0.2) !important;
+}
+
+.pwa-install-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.pwa-install-btn:hover::before {
+  left: 100%;
+}
+
+.pwa-install-btn i {
+  font-size: 1.1rem;
+}
+
+/* iOS Prompt Styling */
+.ios-install-prompt {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border: 1px solid rgba(103, 58, 183, 0.2);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.ios-install-prompt .bi-phone {
+  color: #673ab7;
+}
+
+.ios-install-prompt .bi-share {
+  color: #2196f3;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .pwa-install-btn {
+    min-width: auto;
+    width: 100%;
+    max-width: 280px;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem !important;
+  }
+  
+  .ios-install-prompt {
+    margin: 0 1rem;
+  }
+}
+
+/* Animation Enhancement */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(103, 58, 183, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(103, 58, 183, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(103, 58, 183, 0);
+  }
+}
+
+.pwa-install-btn:focus {
+  animation: pulse 1.5s infinite;
+  outline: none;
+}
+
+/* Enhanced PWA Detection - Hide when installed */
+@media (display-mode: standalone) {
+  .pwa-install-container {
+    display: none !important;
+  }
+}
+
+/* Hide for iOS standalone mode */
+@media (display-mode: standalone), (-webkit-display-mode: standalone) {
+  .pwa-install-container {
+    display: none !important;
+  }
+}
+
+/* Hide when running as app on mobile */
+@media (display-mode: minimal-ui) {
+  .pwa-install-container {
+    display: none !important;
+  }
+}
+
+/* Additional check for installed PWAs */
+.pwa-installed .pwa-install-container {
+  display: none !important;
+}

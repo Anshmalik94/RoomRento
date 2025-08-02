@@ -1,0 +1,461 @@
+/* Navbar Responsive CSS */
+/* ==================== */
+
+/* Force transparent black navbar styling */
+.navbar {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Override any Bootstrap navbar backgrounds */
+.navbar-dark {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Ensure navbar stays transparent */
+.navbar.bg-dark,
+.navbar[style*="background"] {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link {
+  color: #ffffff !important;
+}
+
+/* Desktop navbar link styling */
+.navbar .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.navbar .nav-link:hover {
+  color: #f8f9fa !important;
+}
+
+/* Active link styling */
+.navbar .nav-link.active {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Mobile nav link hover effects */
+.nav-link-mobile:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  transform: translateX(5px);
+  color: #ffffff !important;
+}
+
+.nav-link-mobile.active {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-left: 3px solid #ffffff;
+}
+
+/* Mobile sidebar dark styling */
+.mobile-sidebar {
+  background-color: #212529 !important;
+  color: #ffffff !important;
+}
+
+/* User dropdown styling */
+.dropdown-menu {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  margin-top: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Mobile sidebar transitions */
+.mobile-sidebar {
+  transition: left 0.3s ease;
+}
+
+/* Responsive utilities */
+@media (max-width: 991.98px) {
+  .navbar-brand {
+    font-size: 1.75rem !important;
+    color: #ffffff !important;
+  }
+  
+  .navbar .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand {
+    font-size: 1.5rem !important;
+    color: #ffffff !important;
+  }
+  
+  .navbar .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .mobile-sidebar {
+    width: 260px !important;
+  }
+}
+
+/* Hamburger button styling */
+.hamburger-btn {
+  background: none;
+  border: none;
+  color: #ffffff !important;
+  font-size: 1.75rem;
+  padding: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.hamburger-btn:hover {
+  color: #f8f9fa !important;
+}
+
+/* Search input styling */
+.form-control {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+/* Notification bell positioning */
+.notification-container {
+  position: relative;
+}
+
+/* Smooth transitions for all interactive elements */
+.btn, .nav-link, .dropdown-item, .form-control {
+  transition: all 0.2s ease;
+}
+
+/* Ensure proper spacing and alignment */
+.d-flex.align-items-center {
+  gap: 0.5rem;
+}
+
+/* Light theme button styling for login */
+.btn-light {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #212529 !important;
+}
+
+.btn-light:hover {
+  background-color: #f8f9fa !important;
+  border-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.dropdown-item {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+}
+
+.dropdown-item:hover {
+  background: rgba(111, 66, 193, 0.1);
+  color: var(--bs-primary);
+  transform: translateX(3px);
+}
+
+.dropdown-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bs-primary) !important;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(111, 66, 193, 0.1);
+}
+
+/* User Profile Button Enhanced */
+.user-profile-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.user-profile-btn:hover {
+  background: rgba(111, 66, 193, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Login Button Enhanced */
+.login-btn-desktop {
+  background: linear-gradient(135deg, var(--bs-primary), #8e44ad);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+}
+
+.login-btn-desktop:hover {
+  background: linear-gradient(135deg, #5a2e91, #7837a1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+  color: white;
+}
+
+/* Mobile Sidebar Enhancements */
+.mobile-sidebar-professional {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(111, 66, 193, 0.3) transparent;
+}
+
+.mobile-sidebar-professional::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-sidebar-professional::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-sidebar-professional::-webkit-scrollbar-thumb {
+  background: rgba(111, 66, 193, 0.3);
+  border-radius: 2px;
+}
+
+.mobile-sidebar-professional::-webkit-scrollbar-thumb:hover {
+  background: rgba(111, 66, 193, 0.5);
+}
+
+/* Hamburger Button Animation */
+.hamburger-btn-professional {
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn-professional:hover {
+  color: var(--bs-primary) !important;
+  transform: scale(1.1);
+}
+
+/* Notification Bell Enhanced */
+.mobile-notification-icon,
+.desktop-notification-icon {
+  transition: all 0.3s ease;
+}
+
+.mobile-notification-icon:hover,
+.desktop-notification-icon:hover {
+  color: var(--bs-primary-dark, #5a2e91) !important;
+  transform: scale(1.1);
+}
+
+/* Brand Logo Enhanced */
+.navbar-brand {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+}
+
+/* Navigation Link Enhanced */
+.nav-link {
+  font-weight: 500;
+  color: #495057 !important;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 0 0.25rem;
+}
+
+.nav-link:hover {
+  color: var(--bs-primary) !important;
+  background: rgba(111, 66, 193, 0.05);
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  color: var(--bs-primary) !important;
+  background: rgba(111, 66, 193, 0.1);
+  font-weight: 600;
+}
+
+/* Responsive Breakpoints */
+
+/* Large Desktop Enhancements */
+@media (min-width: 1200px) {
+  .navbar-professional {
+    padding: 1rem 0;
+  }
+  
+  .search-container input {
+    height: 48px;
+    font-size: 15px;
+  }
+  
+  .nav-link {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Desktop Enhancements */
+@media (min-width: 992px) {
+  .navbar-professional .container-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Tablet Enhancements */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .mobile-sidebar-professional {
+    width: 300px;
+  }
+  
+  .search-container input {
+    height: 40px;
+  }
+}
+
+/* Mobile Enhancements */
+@media (max-width: 767.98px) {
+  .navbar-professional {
+    padding: 0.5rem 0;
+  }
+  
+  .navbar-professional .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .mobile-sidebar-professional {
+    width: 300px;
+  }
+}
+
+/* Small Mobile Enhancements */
+@media (max-width: 575.98px) {
+  .navbar-professional .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .mobile-sidebar-professional {
+    width: 280px;
+  }
+  
+  .navbar-brand span {
+    font-size: 16px !important;
+  }
+}
+
+/* Very Small Mobile */
+@media (max-width: 374px) {
+  .mobile-sidebar-professional {
+    width: 260px;
+  }
+  
+  .navbar-brand span {
+    font-size: 15px !important;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .navbar-professional {
+    background: rgba(33, 37, 41, 0.95) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .dropdown-menu {
+    background: rgba(33, 37, 41, 0.95);
+    color: #fff;
+  }
+  
+  .mobile-sidebar-professional {
+    background: #212529 !important;
+    color: #fff;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-professional,
+  .search-container,
+  .nav-link-mobile,
+  .dropdown-item,
+  .user-profile-btn,
+  .login-btn-desktop,
+  .hamburger-btn-professional,
+  .mobile-notification-icon,
+  .desktop-notification-icon,
+  .navbar-brand,
+  .nav-link {
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .nav-link-mobile:hover,
+  .dropdown-item:hover,
+  .user-profile-btn:hover,
+  .login-btn-desktop:hover,
+  .hamburger-btn-professional:hover,
+  .navbar-brand:hover,
+  .nav-link:hover {
+    transform: none !important;
+  }
+}
+
+/* Focus Styles for Accessibility */
+.hamburger-btn-professional:focus,
+.search-container input:focus,
+.nav-link:focus,
+.dropdown-item:focus,
+.user-profile-btn:focus,
+.login-btn-desktop:focus {
+  outline: 2px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .navbar-professional {
+    border-bottom: 2px solid #000;
+  }
+  
+  .nav-link,
+  .dropdown-item {
+    border: 1px solid transparent;
+  }
+  
+  .nav-link:hover,
+  .dropdown-item:hover {
+    border-color: var(--bs-primary);
+  }
+}

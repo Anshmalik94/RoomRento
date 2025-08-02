@@ -1,0 +1,10 @@
+
+> client@0.1.0 build
+> set NODE_OPTIONS=--no-deprecation && react-scripts build
+
+Creating an optimized production build...
+Failed to compile.
+
+Error: Can't resolve './styles/google-button-override.css' in 'C:\Users\DELL\Desktop\RoomRento\client\src'
+
+

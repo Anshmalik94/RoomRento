@@ -153,7 +153,7 @@ const MyBookingRequests = () => {
                     </div>
                   </Card.Header>
                   
-                  <Card.Body>
+                  <Card.Body className="px-4 py-3">
                     <div className="mb-3">
                       <strong className="text-muted d-block">Property</strong>
                       <h5 className="mb-1">{booking.room?.title}</h5>
@@ -207,7 +207,7 @@ const MyBookingRequests = () => {
                   </Card.Body>
 
                   {booking.status === 'pending' && (
-                    <Card.Footer className="bg-white">
+                    <Card.Footer className="bg-white border-top border-2 border-warning-subtle rounded-bottom-4 px-4 py-3">
                       <Button 
                         variant="outline-danger" 
                         size="sm" 
@@ -220,7 +220,7 @@ const MyBookingRequests = () => {
                   )}
 
                   {booking.status === 'accepted' && (
-                    <Card.Footer className="bg-success bg-opacity-10">
+                    <Card.Footer className="bg-success bg-opacity-10 border-top border-2 border-success-subtle rounded-bottom-4 px-4 py-3">
                       <div className="text-center">
                         <small className="text-success fw-bold">
                           <i className="bi bi-check-circle me-1"></i>
@@ -231,7 +231,7 @@ const MyBookingRequests = () => {
                   )}
 
                   {booking.status === 'booked' && (
-                    <Card.Footer className="bg-info bg-opacity-10">
+                    <Card.Footer className="bg-info bg-opacity-10 border-top border-2 border-info-subtle rounded-bottom-4 px-4 py-3">
                       <div className="text-center">
                         <small className="text-info fw-bold">
                           <i className="bi bi-calendar-check me-1"></i>
@@ -242,7 +242,7 @@ const MyBookingRequests = () => {
                   )}
 
                   {booking.status === 'declined' && (
-                    <Card.Footer className="bg-danger bg-opacity-10">
+                    <Card.Footer className="bg-danger bg-opacity-10 border-top border-2 border-danger-subtle rounded-bottom-4 px-4 py-3">
                       <div className="text-center">
                         <small className="text-danger fw-bold">
                           <i className="bi bi-x-circle me-1"></i>

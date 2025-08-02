@@ -7,7 +7,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import BASE_URL from "../config";
 import "./RoomsList.css";
 
-function RoomsList({ filters }) {
+function RoomsList({ filters = {} }) {
   const [rooms, setRooms] = useState([]);
   const [filteredRooms, setFilteredRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +24,17 @@ function RoomsList({ filters }) {
     const lat = queryParams.get("lat");
     const lng = queryParams.get("lng");
     const nearby = queryParams.get("nearby");
+    const isFiltered = queryParams.get("filtered") === "true";
+    
+    // Get all filter parameters from URL
+    const urlFilters = {
+      propertyType: queryParams.get("propertyType") || 'Room',
+      location: queryParams.get("location") || '',
+      roomType: queryParams.get("roomType") || '',
+      budget: queryParams.get("budget") || '',
+      roomCategory: queryParams.get("roomCategory") || '',
+      nearby: nearby === 'true'
+    };
 
     let apiUrl = `${BASE_URL}/api/rooms`;
 
@@ -39,100 +50,218 @@ function RoomsList({ filters }) {
       .get(apiUrl)
       .then((res) => {
         setRooms(res.data);
-        setFilteredRooms(res.data);
+        
+        // Apply URL filters with AND logic if this is a filtered search
+        let filteredData = [...res.data];
+        
+        if (isFiltered) {
+          // Check if any actual filters are provided
+          const hasActualFilters = (
+            (urlFilters.location && urlFilters.location.trim() !== '') ||
+            (urlFilters.roomType && urlFilters.roomType.trim() !== '') ||
+            (urlFilters.budget && urlFilters.budget.trim() !== '') ||
+            (urlFilters.roomCategory && urlFilters.roomCategory.trim() !== '')
+          );
+
+          // If this is a filtered search but no actual filters, show empty results
+          if (!hasActualFilters) {
+            filteredData = [];
+          } else {
+            // Apply location filter (AND logic) - Strict matching
+            if (urlFilters.location && urlFilters.location.trim() !== '') {
+              filteredData = filteredData.filter((room) => {
+                if (!room.location) return false;
+                
+                const roomLocation = (room.location || '').toLowerCase().trim();
+                const filterLocation = urlFilters.location.toLowerCase().trim();
+                
+                // Exact match or location contains the filter
+                return roomLocation === filterLocation || 
+                       roomLocation.includes(filterLocation);
+              });
+            }
+
+            // Apply room type filter (AND logic)
+            if (urlFilters.roomType && urlFilters.roomType.trim() !== '') {
+              filteredData = filteredData.filter((room) => {
+                if (!room.roomType) return false;
+                return room.roomType.toLowerCase() === urlFilters.roomType.toLowerCase();
+              });
+            }
+
+            // Apply budget filter (AND logic) - Range based
+            if (urlFilters.budget && urlFilters.budget.trim() !== '') {
+              filteredData = filteredData.filter((room) => {
+                const roomPrice = parseInt(room.price, 10);
+                if (isNaN(roomPrice)) return false;
+                
+                const budgetRange = urlFilters.budget;
+                if (budgetRange === '0-2000') {
+                  return roomPrice >= 0 && roomPrice <= 2000;
+                } else if (budgetRange === '2000-5000') {
+                  return roomPrice > 2000 && roomPrice <= 5000;
+                } else if (budgetRange === '5000-8000') {
+                  return roomPrice > 5000 && roomPrice <= 8000;
+                } else if (budgetRange === '8000-12000') {
+                  return roomPrice > 8000 && roomPrice <= 12000;
+                } else if (budgetRange === '12000-20000') {
+                  return roomPrice > 12000 && roomPrice <= 20000;
+                } else if (budgetRange === '20000-50000') {
+                  return roomPrice > 20000 && roomPrice <= 50000;
+                } else if (budgetRange === '50000+') {
+                  return roomPrice > 50000;
+                }
+                return false;
+              });
+            }
+
+            // Apply room category filter (AND logic) - now includes room type options
+            if (urlFilters.roomCategory && urlFilters.roomCategory.trim() !== '') {
+              filteredData = filteredData.filter((room) => {
+                const category = urlFilters.roomCategory;
+                
+                // Handle room type options (Single, Double, Separate, Shared)
+                if (["Single", "Double", "Separate", "Shared"].includes(category)) {
+                  return room.roomType && room.roomType.toLowerCase().includes(category.toLowerCase());
+                }
+                
+                // Handle furniture categories
+                if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(category)) {
+                  return room.furnished && room.furnished.toLowerCase().includes(category.toLowerCase());
+                }
+                
+                // Handle PG categories
+                if (category === "PgType") {
+                  return room.roomType && room.roomType.toLowerCase().includes("pg");
+                } else if (category === "GirlsPg") {
+                  return room.roomType && (
+                    room.roomType.toLowerCase().includes("girls") ||
+                    room.roomType.toLowerCase().includes("girls pg") ||
+                    room.roomType.toLowerCase().includes("pg for girls")
+                  );
+                } else if (category === "BoysPg") {
+                  return room.roomType && (
+                    room.roomType.toLowerCase().includes("boys") ||
+                    room.roomType.toLowerCase().includes("boys pg") ||
+                    room.roomType.toLowerCase().includes("pg for boys")
+                  );
+                }
+                
+                return false;
+              });
+            }
+          }
+        }
+        
+        setFilteredRooms(filteredData);
         setLoading(false);
       })
       .catch((err) => {
-        setError("Failed to load rooms. Please try again.");
+        console.error("Error fetching rooms:", err);
+        setError("Unable to fetch rooms at the moment. Please try again later.");
         setLoading(false);
       });
   }, [location.search]);
 
   useEffect(() => {
-    console.log("Filters applied:", filters);
-    console.log("Rooms data from API:", rooms);
-
     let result = [...rooms]; // Create a copy to avoid mutation
 
-    // Apply filters with proper logic
+    // Apply filters with proper logic - if any filter is applied, only show matching results
     const hasFilters = Object.values(filters).some(value => 
       value !== '' && value !== null && value !== undefined && value !== false
     );
 
-    if (!hasFilters) {
-      // No filters applied, show all rooms
-      setFilteredRooms(result);
-      return;
-    }
+    // Always apply filters if they exist - don't show all rooms when no match
+    if (hasFilters) {
+      // Apply location filter - Strict matching
+      if (filters.location && filters.location.trim() !== '') {
+        result = result.filter((room) => {
+          if (!room.location && !room.city) return false;
+          
+          const roomLocation = (room.location || '').toLowerCase().trim();
+          const roomCity = (room.city || '').toLowerCase().trim();
+          const filterLocation = filters.location.toLowerCase().trim();
+          
+          // Exact match or city name contains the filter (but stricter)
+          return roomLocation === filterLocation || 
+                 roomCity === filterLocation ||
+                 roomLocation.includes(filterLocation) ||
+                 roomCity.includes(filterLocation);
+        });
+      }
 
-    // Apply location filter
-    if (filters.location && filters.location.trim() !== '') {
-      result = result.filter((room) => {
-        if (!room.location && !room.city) return false;
-        
-        const roomLocation = (room.location || '').toLowerCase();
-        const roomCity = (room.city || '').toLowerCase();
-        const filterLocation = filters.location.toLowerCase();
-        
-        return roomLocation.includes(filterLocation) || 
-               roomCity.includes(filterLocation) ||
-               roomLocation === filterLocation ||
-               roomCity === filterLocation;
-      });
-    }
+      // Apply room type filter
+      if (filters.roomType && filters.roomType.trim() !== '') {
+        result = result.filter((room) => {
+          if (!room.roomType) return false;
+          return room.roomType.toLowerCase() === filters.roomType.toLowerCase();
+        });
+      }
 
-    // Apply room type filter
-    if (filters.roomType && filters.roomType.trim() !== '') {
-      result = result.filter((room) => {
-        if (!room.roomType) return false;
-        return room.roomType.toLowerCase() === filters.roomType.toLowerCase();
-      });
-    }
-
-    // Apply budget filter
-    if (filters.budget && filters.budget.trim() !== '') {
-      const maxBudget = parseInt(filters.budget, 10);
-      if (!isNaN(maxBudget)) {
+      // Apply budget filter - Range based
+      if (filters.budget && filters.budget.trim() !== '') {
         result = result.filter((room) => {
           const roomPrice = parseInt(room.price, 10);
-          return !isNaN(roomPrice) && roomPrice <= maxBudget;
+          if (isNaN(roomPrice)) return false;
+          
+          const budgetRange = filters.budget;
+          if (budgetRange === '0-2000') {
+            return roomPrice >= 0 && roomPrice <= 2000;
+          } else if (budgetRange === '2000-5000') {
+            return roomPrice > 2000 && roomPrice <= 5000;
+          } else if (budgetRange === '5000-8000') {
+            return roomPrice > 5000 && roomPrice <= 8000;
+          } else if (budgetRange === '8000-12000') {
+            return roomPrice > 8000 && roomPrice <= 12000;
+          } else if (budgetRange === '12000-20000') {
+            return roomPrice > 12000 && roomPrice <= 20000;
+          } else if (budgetRange === '20000-50000') {
+            return roomPrice > 20000 && roomPrice <= 50000;
+          } else if (budgetRange === '50000+') {
+            return roomPrice > 50000;
+          }
+          return false;
+        });
+      }
+
+      // Apply room category filter (now includes room type options)
+      if (filters.roomCategory && filters.roomCategory.trim() !== '') {
+        result = result.filter((room) => {
+          const category = filters.roomCategory;
+          
+          // Handle room type options (Single, Double, Separate, Shared)
+          if (["Single", "Double", "Separate", "Shared"].includes(category)) {
+            return room.roomType && room.roomType.toLowerCase().includes(category.toLowerCase());
+          }
+          
+          // Handle furniture categories
+          if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(category)) {
+            return room.furnished && room.furnished.toLowerCase().includes(category.toLowerCase());
+          }
+          
+          // Handle PG categories
+          if (category === "PgType") {
+            return room.roomType && room.roomType.toLowerCase().includes("pg");
+          } else if (category === "GirlsPg") {
+            return room.roomType && (
+              room.roomType.toLowerCase().includes("girls") ||
+              room.roomType.toLowerCase().includes("girls pg") ||
+              room.roomType.toLowerCase().includes("pg for girls")
+            );
+          } else if (category === "BoysPg") {
+            return room.roomType && (
+              room.roomType.toLowerCase().includes("boys") ||
+              room.roomType.toLowerCase().includes("boys pg") ||
+              room.roomType.toLowerCase().includes("pg for boys")
+            );
+          }
+          
+          return false;
         });
       }
     }
 
-    // Apply room category filter
-    if (filters.roomCategory && filters.roomCategory.trim() !== '') {
-      result = result.filter((room) => {
-        const category = filters.roomCategory;
-        
-        if (["Furnished", "Semi-Furnished", "Unfurnished"].includes(category)) {
-          return room.furnished && room.furnished.toLowerCase().includes(category.toLowerCase());
-        } else if (category === "PgType") {
-          return room.roomType && room.roomType.toLowerCase().includes("pg");
-        } else if (category === "GirlsPg") {
-          return room.roomType && (
-            room.roomType.toLowerCase().includes("girls") ||
-            room.roomType.toLowerCase().includes("girls pg") ||
-            room.roomType.toLowerCase().includes("pg for girls")
-          );
-        } else if (category === "BoysPg") {
-          return room.roomType && (
-            room.roomType.toLowerCase().includes("boys") ||
-            room.roomType.toLowerCase().includes("boys pg") ||
-            room.roomType.toLowerCase().includes("pg for boys")
-          );
-        }
-        
-        return false;
-      });
-    }
-
-    // Log filtered results
-    console.log("Filtered results:", result);
-    console.log("Applied filters:", filters);
-    console.log("Number of results:", result.length);
-
-    // Update filtered rooms
+    // Update filtered rooms - if no filters, show all; if filters but no match, show empty
     setFilteredRooms(result);
 
     // Auto-scroll to results section

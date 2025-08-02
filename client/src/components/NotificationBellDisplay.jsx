@@ -5,9 +5,7 @@ import LoadingSpinner from './LoadingSpinner';
 import './NotificationBell.css';
 
 const NotificationBellDisplay = ({ bellIcon }) => {
-  console.log('🚀 NotificationBellDisplay component rendered!');
   const { notifications, unreadCount, markSingleAsRead, fetchNotifications } = useNotifications();
-  console.log('📊 NotificationBellDisplay data:', { notifications: notifications?.length, unreadCount });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -53,23 +51,17 @@ const NotificationBellDisplay = ({ bellIcon }) => {
   }, []);
 
   const handleDropdownToggle = () => {
-    console.log('🔔 NotificationBellDisplay clicked, current state:', isDropdownOpen);
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleViewAllNotifications = () => {
-    console.log('📄 View All clicked');
     setIsDropdownOpen(false);
     navigate('/notifications');
   };
 
   const handleNotificationClick = (notification) => {
-    console.log('🎯 Notification clicked in Display:', notification._id, notification.message);
-    console.log('🔍 Notification details:', notification);
-    
     // Mark as read if unread
     if (!notification.isRead) {
-      console.log('📝 Marking as read in Display:', notification._id);
       handleMarkAsRead(notification._id);
     }
     
@@ -89,8 +81,6 @@ const NotificationBellDisplay = ({ bellIcon }) => {
     } else if (notification.type === 'booking_approved' || notification.type === 'booking_rejected') {
       navigationPath = '/my-bookings';
     }
-    
-    console.log('🌍 Navigating to:', navigationPath);
     setIsDropdownOpen(false);
     
     if (navigationPath !== '#') {
@@ -99,11 +89,9 @@ const NotificationBellDisplay = ({ bellIcon }) => {
   };
 
   const handleMarkAsRead = async (notificationId) => {
-    console.log('🔄 Marking notification as read in Display:', notificationId);
     setLoading(true);
     try {
       await markSingleAsRead(notificationId);
-      console.log('✅ Successfully marked as read:', notificationId);
     } catch (error) {
       console.error('❌ Error marking notification as read:', error);
     } finally {
@@ -183,8 +171,24 @@ const NotificationBellDisplay = ({ bellIcon }) => {
           {notifications.length > 0 && (
             <div className="notification-footer">
               <button 
-                className="btn btn-sm btn-link"
+                className="btn btn-sm btn-link view-all-btn-custom"
                 onClick={handleViewAllNotifications}
+                style={{
+                  color: '#6f42c1 !important',
+                  fontWeight: '600 !important',
+                  textDecoration: 'none !important',
+                  border: 'none !important',
+                  backgroundColor: 'transparent !important',
+                  fontSize: '14px !important'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#5a2d91 !important';
+                  e.target.style.textDecoration = 'underline !important';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#6f42c1 !important';
+                  e.target.style.textDecoration = 'none !important';
+                }}
               >
                 View all notifications
               </button>

@@ -17,8 +17,6 @@ const TopRatedList = () => {
         const response = await axios.get(`${API_URL}/api/rooms`, {
           timeout: 10000 // 10 second timeout
         });
-        console.log('TopRatedList API Response:', response.data);
-        
         // Filter for highly rated properties or just show available ones
         const validListings = Array.isArray(response.data) ? response.data : [];
         setListings(validListings);
@@ -36,7 +34,6 @@ const TopRatedList = () => {
           setError('No internet connection.');
         } else {
           // For development, be less alarming
-          console.warn('TopRatedList: Could not load data, showing empty state');
           setListings([]); // Just show empty instead of error
           setError(null);
         }
@@ -62,16 +59,28 @@ const TopRatedList = () => {
 
   return (
     <div className="container my-5">
-      <h2 className="fw-bold mb-4 text-center">Top Rated Listing</h2>
-      <div className="d-flex overflow-auto" style={{ gap: '1rem', padding: '1rem 0' }}>
+      <h2 className="fw-bold mb-4 text-center text-dark">Top Rated Properties</h2>
+      <div className="d-flex overflow-auto" style={{ gap: '1.5rem', padding: '1rem 0' }}>
         {listings.map((listing) => (
           <div
             key={listing._id}
-            className="card flex-shrink-0 shadow-sm border-0 rounded"
-            style={{ width: '200px', minWidth: '200px', transition: 'all 0.3s ease', cursor: 'pointer' }}
+            className="card flex-shrink-0 shadow-sm border-0 rounded-3 top-rated-card"
+            style={{ 
+              width: '220px', 
+              minWidth: '220px', 
+              transition: 'all 0.3s ease', 
+              cursor: 'pointer',
+              borderRadius: '16px'
+            }}
             onClick={() => {
-              const redirectUrl = `/room/${listing._id}`;
-              window.location.href = redirectUrl;
+              // Scroll to top before navigation for better UX
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+              
+              // Small delay to allow scroll to start before navigation
+              setTimeout(() => {
+                const redirectUrl = `/room/${listing._id}`;
+                window.location.href = redirectUrl;
+              }, 100);
             }}
           >
             {listing.images && listing.images.length > 0 ? (
@@ -79,28 +88,44 @@ const TopRatedList = () => {
                 src={listing.images[0]}
                 className="card-img-top"
                 alt={listing.title}
-                style={{ height: '100px', objectFit: 'cover' }}
+                style={{ 
+                  height: '140px', 
+                  objectFit: 'cover',
+                  borderRadius: '16px 16px 0 0'
+                }}
               />
             ) : (
               <div
                 className="card-img-top d-flex align-items-center justify-content-center bg-light"
-                style={{ height: '100px' }}
+                style={{ 
+                  height: '140px',
+                  borderRadius: '16px 16px 0 0'
+                }}
               >
                 <i className="bi bi-image display-4 text-muted"></i>
               </div>
             )}
-            <div className="card-body">
-              <h5 className="card-title fw-bold mb-2" style={{ fontSize: '0.9rem' }}>{listing.title}</h5>
-              <p className="card-text text-muted mb-2" style={{ fontSize: '0.8rem' }}>
-                {listing.location || listing.propertyType}
+            <div className="card-body" style={{ padding: '1rem' }}>
+              <h5 className="card-title fw-bold mb-2 text-dark" style={{ fontSize: '0.95rem', lineHeight: '1.3' }}>
+                {listing.title}
+              </h5>
+              <p className="card-text text-muted mb-3" style={{ fontSize: '0.8rem' }}>
+                <i className="bi bi-geo-alt me-1"></i>
+                {listing.city || listing.location || listing.propertyType}
               </p>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <span className="badge bg-success" style={{ fontSize: '0.7rem' }}>
-                  {listing.rating || 'Highly Rated'}
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="badge bg-success px-2 py-1" style={{ fontSize: '0.7rem', borderRadius: '8px' }}>
+                  <i className="bi bi-star-fill me-1"></i>
+                  {listing.rating || '4.5'}
                 </span>
-                <span className="fw-bold text-end" style={{ fontSize: '0.8rem' }}>
-                  ₹{listing.price?.toLocaleString() || 'N/A'}
-                </span>
+                <div className="text-end">
+                  <span className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>
+                    ₹{listing.price?.toLocaleString() || 'N/A'}
+                  </span>
+                  <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>
+                    per month
+                  </small>
+                </div>
               </div>
             </div>
           </div>

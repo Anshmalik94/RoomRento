@@ -144,6 +144,79 @@
   text-decoration: underline;
 }
 
+/* View All links styling */
+.notification-dropdown a[href="/notifications"] {
+  color: #6f42c1 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+}
+
+.notification-dropdown a[href="/notifications"]:hover {
+  color: #5a2d91 !important;
+  text-decoration: underline !important;
+}
+
+/* More specific selectors for view all links */
+.notification-dropdown .view-all-link {
+  color: #6f42c1 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.notification-dropdown .view-all-link:hover,
+.notification-dropdown .view-all-link:focus,
+.notification-dropdown .view-all-link:active {
+  color: #5a2d91 !important;
+  text-decoration: underline !important;
+  background-color: transparent !important;
+}
+
+/* Override any Bootstrap or global styles */
+.notification-dropdown a.view-all-link,
+.notification-dropdown a.view-all-link:link,
+.notification-dropdown a.view-all-link:visited {
+  color: #6f42c1 !important;
+  text-decoration: none !important;
+}
+
+/* Force color for view all button - highest specificity */
+.view-all-btn-custom,
+.view-all-btn-custom:hover,
+.view-all-btn-custom:focus,
+.view-all-btn-custom:active,
+.view-all-btn-custom:visited,
+.btn.btn-sm.btn-link.view-all-btn-custom {
+  color: #6f42c1 !important;
+  text-decoration: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.view-all-btn-custom:hover {
+  color: #5a2d91 !important;
+  text-decoration: underline !important;
+}
+
+/* Global override for notification view all buttons */
+.notification-footer .btn-link,
+.notification-footer .btn.btn-link {
+  color: #6f42c1 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.notification-footer .btn-link:hover,
+.notification-footer .btn.btn-link:hover {
+  color: #5a2d91 !important;
+  text-decoration: underline !important;
+}
+
 .no-notifications {
   padding: 32px 16px;
   text-align: center;

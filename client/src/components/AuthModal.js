@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
 import BASE_URL from "../config";
@@ -6,6 +6,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import ToastMessage from "./ToastMessage";
 import "./AuthModal.css";
+import { fixGoogleButtonText } from "../utils/googleButtonFix";
 
 function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -27,6 +28,17 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
     setToastType(type);
     setShowToast(true);
   };
+
+  // Fix Google button text when modal opens
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        fixGoogleButtonText();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [show]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -201,6 +213,11 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
               onError={() => {
                 showToastMessage("Google Login Failed", "error");
               }}
+              text="signin_with"
+              size="medium"
+              width="280"
+              locale="en"
+              theme="outline"
             />
           </div>
           

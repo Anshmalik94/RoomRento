@@ -55,10 +55,6 @@ function AuthForm({ setToken }) {
       const payload = isLogin
         ? { email: formData.email, password: formData.password }
         : formData;
-
-      console.log('Sending request to:', `${BASE_URL}${endpoint}`);
-      console.log('Payload:', payload);
-      
       const res = await apiClient.post(endpoint, payload);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);

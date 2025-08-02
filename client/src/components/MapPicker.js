@@ -10,7 +10,6 @@ function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
     
     // Check if Google Maps is available
     if (!window.google || !window.google.maps || !window.google.maps.Map) {
-      console.warn("Google Maps not available, showing placeholder");
       return;
     }
 
@@ -20,6 +19,17 @@ function MapPicker({ setLatLng, latitude, longitude, onLocationSelect }) {
       const map = new window.google.maps.Map(mapRef.current, {
         center: { lat: latitude || 20.5937, lng: longitude || 78.9629 },
         zoom: latitude && longitude ? 15 : 5,
+        // Disable default controls
+        disableDefaultUI: true,
+        // Enable only essential controls
+        zoomControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        // Keep gesture handling for user interaction
+        gestureHandling: 'cooperative'
       });
 
       if (latitude && longitude) {
