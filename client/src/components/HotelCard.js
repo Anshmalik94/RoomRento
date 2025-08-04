@@ -86,53 +86,8 @@ function HotelCard({ hotel }) {
     setTimeout(() => setIsToggling(false), 300);
   };
 
-  // Function to detect if image is light or dark
-  const getImageBrightness = useCallback((imageSrc) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = this.width;
-      canvas.height = this.height;
-      
-      try {
-        ctx.drawImage(this, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        
-        let colorSum = 0;
-        let pixelCount = 0;
-        
-        // Sample pixels to calculate average brightness
-        for (let i = 0; i < data.length; i += 16) { // Sample every 4th pixel
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          
-          // Calculate luminance using standard formula
-          const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
-          colorSum += luminance;
-          pixelCount++;
-        }
-        
-        const avgBrightness = colorSum / pixelCount;
-        const isLight = avgBrightness > 128; // Threshold for light/dark
-        
-        setImageColor(isLight ? 'dark' : 'light'); // dark text on light bg, light text on dark bg
-      } catch (error) {
-        // Fallback to light text if image analysis fails
-        setImageColor('light');
-      }
-    };
-    
-    img.onerror = function() {
-      // Fallback to light text if image fails to load
-      setImageColor('light');
-    };
-    
-    img.src = imageSrc;
-  }, []);
+  // Function removed - image brightness detection was not being used
+  // const getImageBrightness = useCallback((imageSrc) => { ... }, []);
 
   // Define getImageUrl function before useEffect
   const getImageUrl = useCallback(() => {
@@ -145,10 +100,7 @@ function HotelCard({ hotel }) {
       : `${API_URL}/${firstImage}`;
   }, [hotel]);
 
-  useEffect(() => {
-    const imageUrl = getImageUrl();
-    getImageBrightness(imageUrl);
-  }, [hotel, getImageUrl, getImageBrightness]); // Add dependencies
+  // Removed useEffect for image brightness detection as it was not being used
 
   const imageUrl = getImageUrl();
   const isOwner = currentUserId === hotel.owner?._id;
@@ -169,7 +121,8 @@ function HotelCard({ hotel }) {
   //         }
   //       });
   //       if (res.ok) window.location.reload();
-  //     } catch (error) {
+  //     } catch (error) {
+
   //     }
   //   }
   // };
@@ -208,16 +161,6 @@ function HotelCard({ hotel }) {
     if (window.confirm('Are you sure you want to delete this hotel?')) {
       // Delete logic here
     }
-  };
-
-  const handleWhatsApp = (e) => {
-    e.preventDefault();
-    window.open(`https://wa.me/${hotel.contactNumber || '1234567890'}`, '_blank');
-  };
-
-  const handleCall = (e) => {
-    e.preventDefault();
-    window.location.href = `tel:${hotel.contactNumber || '1234567890'}`;
   };
 
   return (
