@@ -14,7 +14,7 @@ function AboutSection() {
           <div className="col-lg-6 mb-4 mb-lg-0">
             <div className="about-image-wrapper">
               <img
-                src="/images/assets/image1.jpg"
+                src="/images/assets/Image1.jpg"
                 alt="About RoomRento"
                 className="about-main-image img-fluid"
                 onError={(e) => {
