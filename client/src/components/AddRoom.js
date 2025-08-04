@@ -50,6 +50,18 @@ function AddRoom({ token, isEdit = false }) {
   
   const navigate = useNavigate();
 
+  // Toast utility function - Define before useEffect that uses it
+  const showToastMessage = useCallback((message, variant = 'success') => {
+    setToastMessage(message);
+    setToastVariant(variant);
+    setShowToast(true);
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+      setShowToast(false);
+    }, 5000);
+  }, []);
+
   // Fetch property data for editing
   useEffect(() => {
     const fetchPropertyData = async () => {
@@ -136,18 +148,6 @@ function AddRoom({ token, isEdit = false }) {
   ];
 
   const furnishedOptions = ['Fully Furnished', 'Semi Furnished', 'Unfurnished'];
-
-  // Toast utility function
-  const showToastMessage = useCallback((message, variant = 'success') => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-    
-    // Auto hide after 5 seconds
-    setTimeout(() => {
-      setShowToast(false);
-    }, 5000);
-  }, []);
 
   // Toast helper functions
   const getToastBg = (variant) => {
