@@ -13,10 +13,12 @@ server/.env
 server/uploads/*
 !server/uploads/.gitkeep
 
+# uploaded files only - ignore user uploaded images but keep project assets
+server/uploads/*.png
+server/uploads/*.jpg
+server/uploads/*.jpeg
+server/uploads/*.gif
+
 # misc
 .DS_Store
 .env
-*.png
-*.jpg
-*.jpeg
-*.gif
