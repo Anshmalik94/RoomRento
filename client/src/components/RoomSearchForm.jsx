@@ -55,6 +55,13 @@ function RoomSearchForm({ filters, onSubmit, token, onLoginRequired }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    // Check if user is logged in before allowing search
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert('Please login to search properties');
+      return;
+    }
+    
     // Determine destination route based on property type
     let destinationRoute = '/rooms'; // default
     if (formFilters.propertyType === 'Hotel') {

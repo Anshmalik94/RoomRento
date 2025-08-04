@@ -109,11 +109,11 @@ function BottomNav({ handleRentifyClick }) {
           </NavLink>
         ) : (
           <NavLink 
-            to="/bookings"
+            to="/saved-rooms"
             className="nav-item"
           >
-            <i className="bi bi-calendar-check"></i>
-            <span>Bookings</span>
+            <i className="bi bi-heart-fill"></i>
+            <span>Saved</span>
           </NavLink>
         )}
 

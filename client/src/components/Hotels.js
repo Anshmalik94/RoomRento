@@ -178,6 +178,13 @@ function Hotels() {
                   className="btn btn-lg px-4"
                   style={{backgroundColor: '#6f42c1', color: 'white', border: 'none'}}
                   onClick={() => {
+                    // Check if user is logged in before allowing hotel listing
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                      alert('Please login to list your hotel');
+                      return;
+                    }
+                    
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     setTimeout(() => {
                       window.location.href = '/add-hotel';

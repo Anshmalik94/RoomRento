@@ -382,6 +382,14 @@ function HotelCard({ hotel }) {
             <Link 
               to={`/room/${hotel._id}`} 
               className="btn w-100 text-decoration-none d-flex align-items-center justify-content-center"
+              onClick={(e) => {
+                // Check if user is logged in before allowing navigation
+                if (!token) {
+                  e.preventDefault();
+                  alert('Please login to book hotels');
+                  return;
+                }
+              }}
               style={{
                 background: 'linear-gradient(135deg, #28a745, #20c997)',
                 color: 'white',

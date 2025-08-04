@@ -478,22 +478,25 @@ const ResponsiveNavbar = ({
           className={`mobile-sidebar position-fixed h-100 shadow-lg ${isMobileSidebarOpen ? 'open' : ''}`}
           style={{
             top: 0,
-            left: isMobileSidebarOpen ? '0' : '-300px',
-            width: '280px',
+            left: isMobileSidebarOpen ? '0' : '-200px',
+            width: '200px',
             zIndex: 1050,
             transition: 'left 0.3s ease',
             overflowY: 'auto',
-            backgroundColor: '#212529'
+            backgroundColor: '#212529',
+            maxHeight: '100vh',
+            paddingBottom: '60px',
+            transform: isMobileSidebarOpen ? 'translateX(0)' : 'translateX(-100%)'
           }}
         >
           {/* Sidebar Header */}
-          <div className="d-flex align-items-center justify-content-between p-3 border-bottom" style={{ backgroundColor: '#343a40', borderBottomColor: '#495057 !important' }}>
+          <div className="d-flex align-items-center justify-content-between px-2 py-2 border-bottom" style={{ backgroundColor: '#343a40', borderBottomColor: '#495057 !important', minHeight: '50px' }}>
             <div className="d-flex align-items-center">
               <img 
                 src="/images/logo.png" 
                 alt="RoomRento" 
-                width="28" 
-                height="28" 
+                width="18" 
+                height="18" 
                 className="me-2" 
                 style={{objectFit: 'contain'}}
                 onError={(e) => {
@@ -504,47 +507,62 @@ const ResponsiveNavbar = ({
                     const textLogo = document.createElement('div');
                     textLogo.className = 'me-2 d-flex align-items-center justify-content-center';
                     textLogo.style.cssText = `
-                      width: 28px; height: 28px; background-color: #212529; 
-                      border-radius: 6px; color: #fff; font-weight: 900; 
-                      font-size: 14px; font-family: Arial Black, sans-serif;
+                      width: 18px; height: 18px; background-color: #212529; 
+                      border-radius: 3px; color: #fff; font-weight: 900; 
+                      font-size: 9px; font-family: Arial Black, sans-serif;
                     `;
                     textLogo.textContent = 'R';
                     e.target.parentNode.insertBefore(textLogo, e.target);
                   }
                 }}
               />
-              <h5 className="mb-0 fw-bold" style={{ color: '#ffffff' }}>RoomRento</h5>
+              <h6 className="mb-0 fw-bold flex-grow-1" style={{ color: '#ffffff', fontSize: '12px', lineHeight: '1' }}>RoomRento</h6>
+              <button 
+                className="btn btn-link p-0 d-flex align-items-center justify-content-center ms-auto"
+                onClick={closeMobileSidebar}
+                style={{ 
+                  fontSize: '14px', 
+                  color: '#ffffff', 
+                  lineHeight: '1',
+                  width: '20px',
+                  height: '20px',
+                  minWidth: '20px',
+                  textDecoration: 'none'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                  e.target.style.borderRadius = '3px';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                }}
+              >
+                <FaTimes />
+              </button>
             </div>
-            <button 
-              className="btn btn-link p-0"
-              onClick={closeMobileSidebar}
-              style={{ fontSize: '20px', color: '#ffffff' }}
-            >
-              <FaTimes />
-            </button>
           </div>
 
           {/* User Info Section */}
           {token && (
-            <div className="p-3 border-bottom" style={{ backgroundColor: '#343a40', borderBottomColor: '#495057 !important' }}>
+            <div className="px-2 py-1 border-bottom" style={{ backgroundColor: '#343a40', borderBottomColor: '#495057 !important' }}>
               <div className="d-flex align-items-center">
                 <div 
-                  className="rounded-circle d-flex align-items-center justify-content-center me-3"
+                  className="rounded-circle d-flex align-items-center justify-content-center me-2"
                   style={{
-                    width: '50px',
-                    height: '50px',
+                    width: '28px',
+                    height: '28px',
                     backgroundColor: '#212529',
                     color: 'white'
                   }}
                 >
-                  <FaUser style={{ fontSize: '16px' }} />
+                  <FaUser style={{ fontSize: '10px' }} />
                 </div>
                 <div>
-                  <h6 className="mb-0" style={{ color: '#ffffff' }}>{userInfo.name || 'User'}</h6>
-                  <small className="text-light">{userInfo.email}</small>
+                  <h6 className="mb-0" style={{ color: '#ffffff', fontSize: '11px' }}>{userInfo.name || 'User'}</h6>
+                  <small className="text-light" style={{ fontSize: '9px' }}>{userInfo.email}</small>
                   <div>
-                    <span className={`badge ${userRole === 'owner' ? 'bg-success' : 'bg-dark'}`}>
-                      {userRole === 'owner' ? 'Property Owner' : 'User'}
+                    <span className={`badge ${userRole === 'owner' ? 'bg-success' : 'bg-dark'}`} style={{ fontSize: '7px' }}>
+                      {userRole === 'owner' ? 'Owner' : 'User'}
                     </span>
                   </div>
                 </div>
@@ -557,7 +575,7 @@ const ResponsiveNavbar = ({
             <ul className="list-unstyled mb-0">
               <li>
                 <Link 
-                  className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                  className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                   to="/"
                   onClick={closeMobileSidebar}
                   style={{ 
@@ -566,16 +584,20 @@ const ResponsiveNavbar = ({
                     backgroundColor: 'transparent',
                     borderBottom: '1px solid rgba(255,255,255,0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                  }}
                 >
-                  <FaHome className="me-3" style={{ color: '#ffffff', fontSize: '16px' }} />
-                  <span style={{ fontSize: '14px', fontWeight: '500' }}>Home</span>
+                  <FaHome className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                  <span style={{ fontSize: '11px', fontWeight: '500' }}>Home</span>
                 </Link>
               </li>
               <li>
                 <Link 
-                  className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                  className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                   to="/rooms"
                   onClick={closeMobileSidebar}
                   style={{ 
@@ -584,16 +606,20 @@ const ResponsiveNavbar = ({
                     backgroundColor: 'transparent',
                     borderBottom: '1px solid rgba(255,255,255,0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                  }}
                 >
-                  <FaBed className="me-3" style={{ color: '#ffffff', fontSize: '16px' }} />
-                  <span style={{ fontSize: '16px', fontWeight: '500' }}>Rooms</span>
+                  <FaBed className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                  <span style={{ fontSize: '11px', fontWeight: '500' }}>Rooms</span>
                 </Link>
               </li>
               <li>
                 <Link 
-                  className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                  className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                   to="/hotels"
                   onClick={closeMobileSidebar}
                   style={{ 
@@ -602,16 +628,20 @@ const ResponsiveNavbar = ({
                     backgroundColor: 'transparent',
                     borderBottom: '1px solid rgba(255,255,255,0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                  }}
                 >
-                  <FaBuilding className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                  <span style={{ fontSize: '16px', fontWeight: '500' }}>Hotels</span>
+                  <FaBuilding className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                  <span style={{ fontSize: '11px', fontWeight: '500' }}>Hotels</span>
                 </Link>
               </li>
               <li>
                 <Link 
-                  className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                  className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                   to="/shop"
                   onClick={closeMobileSidebar}
                   style={{ 
@@ -620,11 +650,15 @@ const ResponsiveNavbar = ({
                     backgroundColor: 'transparent',
                     borderBottom: '1px solid rgba(255,255,255,0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                  }}
                 >
-                  <FaStore className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                  <span style={{ fontSize: '16px', fontWeight: '500' }}>Shop</span>
+                  <FaStore className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                  <span style={{ fontSize: '11px', fontWeight: '500' }}>Shop</span>
                 </Link>
               </li>
             </ul>
@@ -632,8 +666,8 @@ const ResponsiveNavbar = ({
             {/* Role-based Menu */}
             {token && (
               <>
-                <div className="px-3 py-2" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                  <h6 className="text-light text-uppercase small mb-0" style={{ fontSize: '11px', letterSpacing: '1px', fontWeight: '600' }}>
+                <div className="px-2 py-1" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                  <h6 className="text-light text-uppercase small mb-0" style={{ fontSize: '8px', letterSpacing: '1px', fontWeight: '600' }}>
                     {userRole === 'owner' ? 'Owner Panel' : 'User Panel'}
                   </h6>
                 </div>
@@ -642,7 +676,7 @@ const ResponsiveNavbar = ({
                     <>
                       <li>
                         <button 
-                          className="btn text-decoration-none d-flex align-items-center p-3 nav-link-mobile w-100 text-start border-0 bg-transparent"
+                          className="btn text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile w-100 text-start border-0 bg-transparent"
                           onClick={() => { handleRentifyClick(); closeMobileSidebar(); }}
                           style={{ 
                             color: '#ffffff',
@@ -650,16 +684,20 @@ const ResponsiveNavbar = ({
                             backgroundColor: 'transparent',
                             borderBottom: '1px solid rgba(255,255,255,0.1)'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'transparent';
+                          }}
                         >
-                          <FaPlus className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                          <span style={{ fontSize: '16px', fontWeight: '500' }}>Add Property</span>
+                          <FaPlus className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>Add Property</span>
                         </button>
                       </li>
                       <li>
                         <Link 
-                          className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                          className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                           to="/my-listings"
                           onClick={closeMobileSidebar}
                           style={{ 
@@ -668,16 +706,20 @@ const ResponsiveNavbar = ({
                             backgroundColor: 'transparent',
                             borderBottom: '1px solid rgba(255,255,255,0.1)'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'transparent';
+                          }}
                         >
-                          <FaList className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                          <span style={{ fontSize: '16px', fontWeight: '500' }}>My Listings</span>
+                          <FaList className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>My Listings</span>
                         </Link>
                       </li>
                       <li>
                         <Link 
-                          className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                          className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                           to="/owner-dashboard"
                           onClick={closeMobileSidebar}
                           style={{ 
@@ -686,16 +728,20 @@ const ResponsiveNavbar = ({
                             backgroundColor: 'transparent',
                             borderBottom: '1px solid rgba(255,255,255,0.1)'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'transparent';
+                          }}
                         >
-                          <FaTachometerAlt className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                          <span style={{ fontSize: '16px', fontWeight: '500' }}>Dashboard</span>
+                          <FaTachometerAlt className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>Dashboard</span>
                         </Link>
                       </li>
                       <li>
                         <Link 
-                          className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                          className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                           to="/profile"
                           onClick={closeMobileSidebar}
                           style={{ 
@@ -704,11 +750,15 @@ const ResponsiveNavbar = ({
                             backgroundColor: 'transparent',
                             borderBottom: '1px solid rgba(255,255,255,0.1)'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'transparent';
+                          }}
                         >
-                          <FaUser className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                          <span style={{ fontSize: '16px', fontWeight: '500' }}>Profile</span>
+                          <FaUser className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>Profile</span>
                         </Link>
                       </li>
                     </>
@@ -716,7 +766,7 @@ const ResponsiveNavbar = ({
                     <>
                       <li>
                         <Link 
-                          className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                          className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                           to="/saved-rooms"
                           onClick={closeMobileSidebar}
                           style={{ 
@@ -725,16 +775,20 @@ const ResponsiveNavbar = ({
                             backgroundColor: 'transparent',
                             borderBottom: '1px solid rgba(255,255,255,0.1)'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'transparent';
+                          }}
                         >
-                          <FaHeart className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                          <span style={{ fontSize: '16px', fontWeight: '500' }}>Saved Properties</span>
+                          <FaHeart className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>Saved Properties</span>
                         </Link>
                       </li>
                       <li>
                         <Link 
-                          className="text-decoration-none d-flex align-items-center p-3 nav-link-mobile"
+                          className="text-decoration-none d-flex align-items-center py-1 px-2 nav-link-mobile"
                           to="/profile"
                           onClick={closeMobileSidebar}
                           style={{ 
@@ -743,71 +797,77 @@ const ResponsiveNavbar = ({
                             backgroundColor: 'transparent',
                             borderBottom: '1px solid rgba(255,255,255,0.1)'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'transparent';
+                          }}
                         >
-                          <FaUser className="me-3" style={{ color: '#ffffff', fontSize: '18px' }} />
-                          <span style={{ fontSize: '16px', fontWeight: '500' }}>Profile</span>
+                          <FaUser className="me-2" style={{ color: '#ffffff', fontSize: '12px' }} />
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>Profile</span>
                         </Link>
                       </li>
                     </>
                   )}
                 </ul>
-
-                {/* Login/Logout */}
-                <div className="p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: 'auto' }}>
-                  {!token ? (
-                    <button 
-                      className="btn w-100 d-flex align-items-center justify-content-center"
-                      onClick={() => { handleLoginModalShow(); closeMobileSidebar(); }}
-                      style={{ 
-                        backgroundColor: 'rgba(255,255,255,0.1)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        color: '#ffffff',
-                        padding: '12px',
-                        borderRadius: '8px',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = 'rgba(255,255,255,0.2)';
-                        e.target.style.borderColor = 'rgba(255,255,255,0.3)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                        e.target.style.borderColor = 'rgba(255,255,255,0.2)';
-                      }}
-                    >
-                      <FaUser className="me-2" />
-                      <span style={{ fontWeight: '500' }}>Login</span>
-                    </button>
-                  ) : (
-                    <button 
-                      className="btn w-100 d-flex align-items-center justify-content-center"
-                      onClick={() => { handleLogout(); closeMobileSidebar(); }}
-                      style={{ 
-                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
-                        border: '1px solid rgba(220, 53, 69, 0.3)',
-                        color: '#ffffff',
-                        padding: '12px',
-                        borderRadius: '8px',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.3)';
-                        e.target.style.borderColor = 'rgba(220, 53, 69, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
-                        e.target.style.borderColor = 'rgba(220, 53, 69, 0.3)';
-                      }}
-                    >
-                      <FaSignOutAlt className="me-2" />
-                      <span style={{ fontWeight: '500' }}>Logout</span>
-                    </button>
-                  )}
-                </div>
               </>
             )}
+
+            {/* Login/Logout - Always show */}
+            <div className="p-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: 'auto' }}>
+              {!token ? (
+                <button 
+                  className="btn w-100 d-flex align-items-center justify-content-center"
+                  onClick={() => { handleLoginModalShow(); closeMobileSidebar(); }}
+                  style={{ 
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    color: '#ffffff',
+                    padding: '6px',
+                    borderRadius: '4px',
+                    transition: 'all 0.2s ease',
+                    fontSize: '11px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255,255,255,0.2)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                    e.target.style.borderColor = 'rgba(255,255,255,0.2)';
+                  }}
+                >
+                  <FaUser className="me-1" style={{ fontSize: '10px' }} />
+                  <span style={{ fontWeight: '500' }}>Login</span>
+                </button>
+              ) : (
+                <button 
+                  className="btn w-100 d-flex align-items-center justify-content-center"
+                  onClick={() => { handleLogout(); closeMobileSidebar(); }}
+                  style={{ 
+                    backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                    border: '1px solid rgba(220, 53, 69, 0.3)',
+                    color: '#ffffff',
+                    padding: '6px',
+                    borderRadius: '4px',
+                    transition: 'all 0.2s ease',
+                    fontSize: '11px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.3)';
+                    e.target.style.borderColor = 'rgba(220, 53, 69, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
+                    e.target.style.borderColor = 'rgba(220, 53, 69, 0.3)';
+                  }}
+                >
+                  <FaSignOutAlt className="me-1" style={{ fontSize: '10px' }} />
+                  <span style={{ fontWeight: '500' }}>Logout</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </>

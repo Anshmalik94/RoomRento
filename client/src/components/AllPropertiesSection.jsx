@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { API_URL } from '../config';
 import './RoomsList.css'; // Reuse existing styles
+import './RoomCard.css'; // Premium card styles
 import TopRatedList from './TopRatedList';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -79,6 +80,55 @@ const AllPropertiesSection = ({ filters, token, onLoginRequired }) => {
     window.dispatchEvent(new CustomEvent('savedPropertiesChanged', {
       detail: { propertyId, isSaved: newSavedState }
     }));
+  };
+
+  const handleShare = async (e, property) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareData = {
+      title: property.title,
+      text: `Check out this amazing ${property.propertyType.toLowerCase()}: ${property.title}`,
+      url: `${window.location.origin}/room/${property._id}`
+    };
+
+    try {
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: Copy link to clipboard
+        await navigator.clipboard.writeText(shareData.url);
+        
+        // Show a toast or alert
+        const toast = document.createElement('div');
+        toast.innerHTML = `
+          <div style="
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            background: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border-radius: 8px; 
+            z-index: 9999;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          ">
+            <i class="bi bi-check-circle me-2"></i>
+            Link copied to clipboard!
+          </div>
+        `;
+        document.body.appendChild(toast);
+        
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
   };
 
   const fetchAllProperties = useCallback(async () => {
@@ -169,27 +219,25 @@ const AllPropertiesSection = ({ filters, token, onLoginRequired }) => {
     <div id="explore-newly-listed" className="container my-5 all-properties-section" style={{ paddingBottom: '80px' /* Mobile bottom nav space */ }}>
       <div className="row mb-5">
         <div className="col-12 text-center">
-          <h2 className="fw-bold mb-3 animate__animated animate__fadeInUp" style={{ 
+          <h2 className="fw-bold mb-3" style={{ 
             fontSize: '2.5rem', 
-            color: '#000',
+            color: '#222',
             letterSpacing: '-0.5px',
-            animationDelay: '0.2s'
+            marginBottom: '1rem'
           }}>
             Explore Newly Listed
           </h2>
-          <p className="text-muted lead mb-0 animate__animated animate__fadeInUp" style={{ 
+          <p className="text-muted lead mb-0" style={{ 
             fontSize: '1.1rem',
-            color: '#666',
-            animationDelay: '0.4s'
+            color: '#666'
           }}>
             Discover the latest rooms, hotels, and shops available for rent
           </p>
-          <div className="mx-auto mt-3 animate__animated animate__fadeInUp" style={{
+          <div className="mx-auto mt-3" style={{
             width: '60px',
             height: '4px',
-            background: 'linear-gradient(45deg, #6f42c1, #fff)',
-            borderRadius: '2px',
-            animationDelay: '0.6s'
+            background: 'linear-gradient(45deg, #6f42c1, #8e44ad)',
+            borderRadius: '2px'
           }}></div>
         </div>
       </div>
@@ -204,14 +252,23 @@ const AllPropertiesSection = ({ filters, token, onLoginRequired }) => {
         <div className="row g-4">
           {properties.slice(0, 6).map((property, index) => {
             const handlePropertyClick = (property) => {
-    // Scroll to top before navigation for better UX
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    
-    // Small delay to allow scroll to start before navigation
-    setTimeout(() => {
-      window.location.href = getRedirectUrl(property);
-    }, 100);
-  };
+              // Check if user is logged in before allowing navigation
+              if (!userToken) {
+                // Show login modal if onLoginRequired is provided
+                if (onLoginRequired) {
+                  onLoginRequired();
+                }
+                return;
+              }
+              
+              // Scroll to top before navigation for better UX
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+              
+              // Small delay to allow scroll to start before navigation
+              setTimeout(() => {
+                window.location.href = getRedirectUrl(property);
+              }, 100);
+            };
 
   const getRedirectUrl = (property) => {
               switch (property.propertyType) {
@@ -223,158 +280,133 @@ const AllPropertiesSection = ({ filters, token, onLoginRequired }) => {
             };
 
             return (
-              <div key={`${property.propertyType}-${property._id}-${index}`} className="col-lg-4 col-md-6">
-                <div className="card h-100 room-card-modern"
+              <div key={`${property.propertyType}-${property._id}-${index}`} className="col-lg-4 col-md-6 mb-4">
+                <div className="premium-property-card"
                      onClick={() => handlePropertyClick(property)}>
-                  <div className="position-relative" style={{ height: '280px', flexShrink: 0, overflow: 'hidden' }}>
+                  <div className="premium-image-container">
                     {/* Image */}
                     {property.images && property.images.length > 0 ? (
                       <img
                         src={property.images[0]}
-                        className="card-img-top"
+                        className="premium-property-image"
                         alt={property.title}
-                        style={{ height: '100%', width: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
                       />
                     ) : (
-                      <div className="card-img-top d-flex align-items-center justify-content-center bg-light" style={{ height: '100%' }}>
+                      <div className="premium-property-image d-flex align-items-center justify-content-center bg-light">
                         <i className={`bi ${getPropertyIcon(property.propertyType)} display-4 text-muted`}></i>
                       </div>
                     )}
                     
-                    {/* Property Type Badge */}
-                    <div className="position-absolute top-0 start-0 m-3">
+                    {/* Top Left - Property Type Badge */}
+                    <div className="premium-actions-top-left">
                       <span 
-                        className="badge px-3 py-2 rounded-pill"
+                        className="premium-type-badge"
                         style={{ 
                           backgroundColor: `${getPropertyColor(property.propertyType)}`, 
-                          color: 'white', 
-                          fontSize: '0.85rem',
-                          fontWeight: '600'
                         }}
                       >
                         <i className={`bi ${getPropertyIcon(property.propertyType)} me-1`}></i>
                         {property.propertyType}
                       </span>
                     </div>
+                    
+                    {/* Top Right Actions */}
+                    <div className="premium-actions-top">
+                      {/* Save Heart Icon */}
+                      {currentUserId !== property.user?._id && userToken && (
+                        <button
+                          className="premium-action-btn save-btn"
+                          onClick={(e) => handleSaveToggle(e, property._id)}
+                        >
+                          <i 
+                            className={`bi ${savedProperties.has(property._id) ? 'bi-heart-fill' : 'bi-heart'}`}
+                          ></i>
+                        </button>
+                      )}
 
-                    {/* Save Heart Icon - Top Right */}
-                    {currentUserId !== property.user?._id && userToken && (
+                      {/* Share Button */}
                       <button
-                        className="position-absolute"
-                        style={{
-                          top: '12px',
-                          right: '12px',
-                          background: 'rgba(255, 255, 255, 0.9)',
-                          border: 'none',
-                          borderRadius: '50%',
-                          width: '40px',
-                          height: '40px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease',
-                          zIndex: 10,
-                          backdropFilter: 'blur(10px)'
-                        }}
-                        onClick={(e) => handleSaveToggle(e, property._id)}
-                        onMouseEnter={(e) => {
-                          e.target.style.transform = 'scale(1.1)';
-                          e.target.style.background = 'white';
-                          e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = 'scale(1)';
-                          e.target.style.background = 'rgba(255, 255, 255, 0.9)';
-                          e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-                        }}
+                        className="premium-action-btn share-btn"
+                        onClick={(e) => handleShare(e, property)}
                       >
-                        <i 
-                          className={`bi ${savedProperties.has(property._id) ? 'bi-heart-fill' : 'bi-heart'}`}
-                          style={{ 
-                            color: savedProperties.has(property._id) ? '#ff6b6b' : getPropertyColor(property.propertyType),
-                            fontSize: '18px',
-                            transition: 'all 0.3s ease'
-                          }}
-                        ></i>
+                        <i className="bi bi-share"></i>
                       </button>
-                    )}
-
-                    {/* Price Badge */}
-                    <div className="position-absolute bottom-0 end-0 m-3">
-                      <div className="px-3 py-2 rounded-pill d-flex align-items-center"
-                           style={{ 
-                             background: `linear-gradient(135deg, ${getPropertyColor(property.propertyType)}dd, ${getPropertyColor(property.propertyType)}ee)`,
-                             backdropFilter: 'blur(10px)',
-                             border: '1px solid rgba(255, 255, 255, 0.2)',
-                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                           }}>
-                        <span className="fw-bold text-white" style={{ fontSize: '1.1rem' }}>
-                          ₹{property.price?.toLocaleString()}
-                        </span>
-                        <small className="text-white ms-1" style={{ opacity: 0.9 }}>
-                          {property.propertyType === 'Room' && '/month'}
-                          {property.propertyType === 'Hotel' && '/night'}
-                          {property.propertyType === 'Shop' && '/month'}
-                        </small>
-                      </div>
                     </div>
 
-                    {/* Gradient Overlay */}
-                    <div className="position-absolute bottom-0 start-0 end-0" 
-                         style={{
-                           height: '100px',
-                           background: 'linear-gradient(transparent, rgba(0,0,0,0.3))',
-                           pointerEvents: 'none'
-                         }}>
+                    {/* Price Badge */}
+                    <div className="premium-price-badge">
+                      <span className="premium-price-amount">
+                        ₹{property.price?.toLocaleString()}
+                      </span>
+                      <span className="premium-price-period">
+                        {property.propertyType === 'Room' && '/month'}
+                        {property.propertyType === 'Hotel' && '/night'}
+                        {property.propertyType === 'Shop' && '/month'}
+                      </span>
                     </div>
                   </div>
                   
-                  <div className="card-body p-4 d-flex flex-column" style={{ flex: 1 }}>
-                    <div className="mb-3">
-                      <h5 className="card-title fw-bold mb-2 text-dark" style={{ fontSize: '1.2rem', lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        {property.title}
-                      </h5>
-                      <div className="d-flex align-items-center text-muted mb-2">
-                        <i className="bi bi-geo-alt me-2" style={{ color: getPropertyColor(property.propertyType) }}></i>
-                        <span className="text-truncate" style={{ fontSize: '0.95rem' }}>
-                          {property.location}
-                        </span>
-                      </div>
+                  <div className="premium-card-details">
+                    <div className="premium-title-rating">
+                      <h3 className="premium-property-title" style={{ 
+                        display: 'block !important',
+                        visibility: 'visible !important',
+                        fontSize: '18px',
+                        fontWeight: '700',
+                        color: '#6f42c1 !important',
+                        margin: '0 0 12px 0',
+                        lineHeight: '1.3'
+                      }}>
+                        {property.title || property.name || `${property.propertyType} Available in ${property.location}` || 'Property Available for Rent'}
+                      </h3>
                     </div>
                     
-                    <p className="card-text text-muted mb-3" style={{ fontSize: '0.9rem', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {property.description?.substring(0, 85) + "..." || "Property available for rent"}
-                    </p>
+                    <div className="premium-location">
+                      <i className="bi bi-geo-alt"></i>
+                      <span>{property.location}</span>
+                    </div>
                     
-                    <div className="mt-auto">
-                      <div className="d-flex flex-wrap gap-2">
-                        {property.propertyType === 'Room' && property.roomType && (
-                          <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-                            <i className="bi bi-house me-1"></i>
-                            {property.roomType}
-                          </span>
-                        )}
-                        {property.propertyType === 'Hotel' && property.totalRooms && (
-                          <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-                            <i className="bi bi-door-closed me-1"></i>
-                            {property.totalRooms} rooms
-                          </span>
-                        )}
-                        {property.propertyType === 'Shop' && property.businessType && (
-                          <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-                            <i className="bi bi-briefcase me-1"></i>
-                            {property.businessType}
-                          </span>
-                        )}
-                        {(property.amenities || property.facilities) && (property.amenities || property.facilities).length > 0 && (
-                          <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-                            <i className="bi bi-star me-1"></i>
-                            {(property.amenities || property.facilities).length} amenities
-                          </span>
-                        )}
+                    {/* Property Details in Row Format like Image */}
+                    <div className="property-details-row mt-3 mb-2">
+                      <div className="detail-item">
+                        <i className="bi bi-tag-fill me-1"></i>
+                        <span className="detail-text">Type: {property.propertyType}</span>
                       </div>
+                      
+                      {property.propertyType === 'Room' && property.roomType && (
+                        <div className="detail-item">
+                          <i className="bi bi-house-door me-1"></i>
+                          <span className="detail-text">{property.roomType}</span>
+                        </div>
+                      )}
+                      
+                      {property.propertyType === 'Room' && property.furnished && (
+                        <div className="detail-item">
+                          <i className="bi bi-house-gear-fill me-1"></i>
+                          <span className="detail-text">Furnished: {property.furnished}</span>
+                        </div>
+                      )}
+                      
+                      {property.propertyType === 'Hotel' && property.totalRooms && (
+                        <div className="detail-item">
+                          <i className="bi bi-door-closed-fill me-1"></i>
+                          <span className="detail-text">{property.totalRooms} rooms</span>
+                        </div>
+                      )}
+                      
+                      {property.propertyType === 'Shop' && property.businessType && (
+                        <div className="detail-item">
+                          <i className="bi bi-briefcase-fill me-1"></i>
+                          <span className="detail-text">{property.businessType}</span>
+                        </div>
+                      )}
+                      
+                      {property.parking && (
+                        <div className="detail-item">
+                          <i className="bi bi-car-front-fill me-1"></i>
+                          <span className="detail-text">Parking: {property.parking === true || property.parking === 'true' ? 'Available' : property.parking}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -401,7 +433,10 @@ const AllPropertiesSection = ({ filters, token, onLoginRequired }) => {
       )}
 
       {/* Add TopRatedList component */}
-      <TopRatedList />
+      <TopRatedList 
+        token={userToken}
+        onLoginRequired={onLoginRequired}
+      />
     </div>
   );
 };

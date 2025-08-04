@@ -1,52 +1,629 @@
-/* Modern Professional Room Card Styles */
-.room-card-modern {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+/* ===== PREMIUM AIRBNB-STYLE PROPERTY CARD ===== */
+
+/* Base mobile-first premium card */
+.premium-property-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  background: #fff !important;
-  height: 600px !important; /* Exact fixed height for ALL cards */
-  min-height: 600px !important; 
-  max-height: 600px !important; 
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important; /* Prevent any overflow */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.room-card-modern .card-body {
-  flex: 1 !important; /* Allow card body to fill remaining space */
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  padding: 1.5rem !important; /* Fixed padding */
-  overflow: hidden !important; /* Prevent content overflow */
+.premium-property-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
-/* Fixed Image Height */
-.room-card-modern .position-relative {
-  height: 280px !important; /* Fixed image height */
-  flex-shrink: 0 !important; /* Prevent image from shrinking */
-  overflow: hidden !important;
+/* Image Container */
+.premium-image-container {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
 }
 
-.room-card-modern:hover {
-  transform: translateY(-8px) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+.premium-property-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.room-card-modern:hover img {
-  transform: scale(1.05) !important;
+.premium-property-card:hover .premium-property-image {
+  transform: scale(1.05);
 }
 
-/* Save Heart Button Hover Effects */
-.save-heart-modern:hover {
-  transform: scale(1.15) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+/* Top Right Actions */
+.premium-actions-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
 }
 
-/* Action Button Hover Effects */
-.room-card-modern .btn:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+/* Top Left Actions */
+.premium-actions-top-left {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.premium-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6f42c1, #8e44ad);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.premium-action-btn:hover {
+  background: linear-gradient(135deg, #8e44ad, #6f42c1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.premium-action-btn i {
+  font-size: 14px;
+  color: white;
+}
+
+.save-btn.saved {
+  background: linear-gradient(135deg, #FF385C, #e91e63);
+}
+
+.save-btn.saved i {
+  color: white;
+}
+
+/* Price Badge */
+.premium-price-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: white;
+  color: #333333;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.premium-price-period {
+  font-weight: 400;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Type Badge */
+.premium-type-badge {
+  background: #6f42c1;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 8px;
+}
+
+/* Property Details Row */
+.property-details-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.detail-item i {
+  color: #6f42c1;
+  font-size: 12px;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.detail-text {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Card Details */
+.premium-card-details {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+/* Title and Rating Row */
+.premium-title-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.premium-property-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #6f42c1 !important;
+  margin: 0 0 12px 0 !important;
+  line-height: 1.3;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 45px;
+}
+
+.premium-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.premium-rating i {
+  color: #FFD700;
+  font-size: 12px;
+}
+
+.premium-rating-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.premium-reviews-count {
+  font-size: 12px;
+  color: #717171;
+}
+
+/* Location */
+.premium-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: #717171;
+  font-size: 14px;
+}
+
+.premium-location i {
+  font-size: 12px;
+  color: #FF385C;
+}
+
+/* Features */
+.premium-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.premium-feature {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #717171;
+}
+
+.premium-feature i {
+  font-size: 11px;
+  color: #717171;
+}
+
+/* Action Section */
+.premium-action-section {
+  margin-top: auto;
+}
+
+.premium-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  min-height: 44px;
+}
+
+.premium-btn-primary {
+  background: linear-gradient(135deg, #FF385C, #E31C5F);
+  color: white;
+  width: 100%;
+}
+
+.premium-btn-primary:hover {
+  background: linear-gradient(135deg, #E31C5F, #D70466);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+  color: white;
+}
+
+/* Owner Actions */
+.premium-owner-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.premium-owner-actions .premium-btn {
+  flex: 1;
+}
+
+.premium-btn-edit {
+  background: #F7F7F7;
+  color: #222222;
+  border: 1px solid #DDDDDD;
+}
+
+.premium-btn-edit:hover {
+  background: #EBEBEB;
+  transform: translateY(-1px);
+  color: #222222;
+}
+
+.premium-btn-delete {
+  background: #FFF5F5;
+  color: #E53E3E;
+  border: 1px solid #FEB2B2;
+}
+
+.premium-btn-delete:hover {
+  background: #FED7D7;
+  transform: translateY(-1px);
+  color: #E53E3E;
+}
+
+/* Contact Actions */
+.premium-contact-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.premium-contact-actions .premium-btn {
+  flex: 1;
+}
+
+.premium-btn-whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.premium-btn-whatsapp:hover {
+  background: #128C7E;
+  transform: translateY(-1px);
+  color: white;
+}
+
+.premium-btn-call {
+  background: #007BFF;
+  color: white;
+}
+
+.premium-btn-call:hover {
+  background: #0056B3;
+  transform: translateY(-1px);
+  color: white;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS (Mobile-First)
+   ============================================ */
+
+/* Base Mobile Styles (up to 575px) */
+@media (max-width: 575.98px) {
+  .premium-property-title {
+    font-size: 16px !important;
+    line-height: 1.4;
+    min-height: 40px;
+    font-weight: 700 !important;
+    color: #6f42c1 !important;
+  }
+  
+  .all-properties-section h2 {
+    font-size: 1.8rem !important;
+    color: #222 !important;
+  }
+  
+  .all-properties-section .lead {
+    font-size: 1rem !important;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .premium-image-container {
+    height: 260px;
+  }
+  
+  .premium-property-title {
+    font-size: 17px;
+  }
+  
+  .premium-actions-top {
+    top: 16px;
+    right: 16px;
+  }
+  
+  .premium-action-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .premium-action-btn i {
+    font-size: 15px;
+  }
+  
+  .premium-price-badge {
+    bottom: 16px;
+    left: 16px;
+    padding: 8px 16px;
+    font-size: 15px;
+  }
+  
+  .premium-card-details {
+    padding: 20px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .premium-image-container {
+    height: 280px;
+  }
+  
+  .premium-property-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .premium-rating-value {
+    font-size: 15px;
+  }
+  
+  .premium-location {
+    font-size: 15px;
+  }
+  
+  .premium-feature {
+    font-size: 14px;
+  }
+  
+  .premium-btn {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .premium-image-container {
+    height: 300px;
+  }
+  
+  .premium-property-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  }
+  
+  .premium-property-card:hover .premium-property-image {
+    transform: scale(1.08);
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .premium-image-container {
+    height: 320px;
+  }
+  
+  .premium-property-title {
+    font-size: 19px;
+  }
+}
+
+/* ===== THEME INTEGRATION ===== */
+/* Using RoomRento brand colors */
+.premium-btn-primary {
+  background: linear-gradient(135deg, var(--bs-primary, #6f42c1), #8e44ad) !important;
+}
+
+.premium-btn-primary:hover {
+  background: linear-gradient(135deg, #8e44ad, #6f42c1) !important;
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3) !important;
+}
+
+.premium-location i {
+  color: var(--bs-primary, #6f42c1) !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .premium-property-card {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+  
+  .premium-property-title {
+    color: #ffffff;
+  }
+  
+  .premium-rating-value {
+    color: #ffffff;
+  }
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS (Mobile-First)
+   ============================================ */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .room-card-modern {
+    min-height: 480px !important;
+  }
+  
+  .room-card-image {
+    height: 220px !important;
+  }
+  
+  .room-card-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .room-location-text {
+    font-size: 0.9rem !important;
+  }
+  
+  .save-heart-modern {
+    width: 40px;
+    height: 40px;
+    bottom: 12px;
+    right: 12px;
+  }
+  
+  .room-action-btn {
+    padding: 0.7rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .room-primary-btn {
+    padding: 0.9rem !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .room-card-modern {
+    min-height: 520px !important;
+  }
+  
+  .room-card-image {
+    height: 250px !important;
+  }
+  
+  .room-card-title {
+    font-size: 1.2rem !important;
+    min-height: 2.8rem;
+  }
+  
+  .room-location-text {
+    font-size: 0.95rem !important;
+  }
+  
+  .room-type-badge,
+  .room-price-badge {
+    font-size: 0.75rem !important;
+  }
+  
+  .room-verified-badge {
+    font-size: 0.75rem !important;
+  }
+  
+  .room-feature-badge {
+    font-size: 0.75rem !important;
+  }
+  
+  .save-heart-modern {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .room-action-btn {
+    padding: 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .room-primary-btn {
+    padding: 1rem !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .room-card-modern {
+    min-height: 550px !important;
+  }
+  
+  .room-card-image {
+    height: 270px !important;
+  }
+  
+  .room-card-title {
+    font-size: 1.25rem !important;
+  }
+  
+  .room-card-modern:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .room-card-modern:hover img {
+    transform: scale(1.03) !important;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .room-card-modern {
+    min-height: 580px !important;
+  }
+  
+  .room-card-image {
+    height: 280px !important;
+  }
+  
+  .room-card-modern:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18) !important;
+  }
+  
+  .room-card-modern:hover img {
+    transform: scale(1.05) !important;
+  }
 }
 
 /* Price Badge Animation */

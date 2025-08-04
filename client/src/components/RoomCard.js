@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Card, Badge } from "react-bootstrap";
 import { API_URL } from "../config";
 import './RoomCard.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -141,300 +140,242 @@ function RoomCard({ room }) {
     window.location.href = `tel:${room.owner?.phone || '1234567890'}`;
   };
 
+  const handleShare = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareData = {
+      title: displayTitle,
+      text: `Check out this amazing property: ${displayTitle}`,
+      url: `${window.location.origin}/room/${room._id}`
+    };
+
+    try {
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: Copy link to clipboard
+        await navigator.clipboard.writeText(shareData.url);
+        
+        // Show a toast or alert
+        const toast = document.createElement('div');
+        toast.innerHTML = `
+          <div style="
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            background: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border-radius: 8px; 
+            z-index: 9999;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          ">
+            <i class="bi bi-check-circle me-2"></i>
+            Link copied to clipboard!
+          </div>
+        `;
+        document.body.appendChild(toast);
+        
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
   return (
-    <Card 
-      className="h-100 border-0 shadow-lg room-card-modern"
-      style={{ 
-        borderRadius: '16px',
-        overflow: 'hidden',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-      }}
-    >
-      {/* Image Section with Overlays */}
-      <div className="position-relative" style={{ height: "280px" }}>
-        <Card.Img
-          variant="top"
-          src={imageUrl}
-          alt={displayTitle}
-          className="w-100 h-100"
-          style={{ 
-            objectFit: "cover",
-            transition: 'transform 0.3s ease'
-          }}
-          onError={(e) => {
-            e.target.src = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
-          }}
-        />
-        
-        {/* Gradient Overlay for better text readability */}
-        <div 
-          className="position-absolute w-100 h-100"
-          style={{
-            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)',
-            top: 0,
-            left: 0
-          }}
-        />
-        
-        {/* Property Type Badge - Top Left */}
-        <div className="position-absolute top-0 start-0 m-3">
-          <Badge 
-            className="px-3 py-2 fw-bold text-uppercase"
-            style={{
-              background: 'linear-gradient(135deg, #6f42c1, #8e44ad)',
-              border: 'none',
-              borderRadius: '25px',
-              fontSize: '0.75rem',
-              letterSpacing: '0.5px',
-              boxShadow: '0 4px 12px rgba(111, 66, 193, 0.3)'
-            }}
-          >
-            {room.type || room.roomType || 'Room'}
-          </Badge>
-        </div>
-
-        {/* Price Badge - Top Right */}
-        <div className="position-absolute top-0 end-0 m-3">
-          <Badge 
-            className="px-3 py-2 fw-bold"
-            style={{
-              background: 'rgba(111, 66, 193, 0.9)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '25px',
-              fontSize: '0.9rem',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-            }}
-          >
-            ₹{room.price === 0 ? 'Free' : room.price?.toLocaleString()}
-            <small className="text-white ms-1">/month</small>
-          </Badge>
-        </div>
-
-        {/* Save Heart Button - Bottom Right of Image */}
-        {!isOwner && (
-          <button
-            className="position-absolute save-heart-modern"
-            style={{
-              bottom: '12px',
-              right: '12px',
-              background: isSaved ? '#dc3545' : 'rgba(255, 255, 255, 0.95)',
-              border: 'none',
-              borderRadius: '50%',
-              width: '44px',
-              height: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-              cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              zIndex: 10,
-              transform: isToggling ? 'scale(1.2)' : 'scale(1)'
-            }}
-            onClick={handleSaveToggle}
-            disabled={isToggling}
-          >
-            <i 
-              className={`bi ${isSaved ? 'bi-heart-fill' : 'bi-heart'}`}
-              style={{ 
-                color: isSaved ? 'white' : '#dc3545',
-                fontSize: '20px',
-                transition: 'all 0.3s ease'
+    <div className="col-12 col-md-6 col-lg-4 mb-4">
+      <Link 
+        to={`/room/${room._id}`}
+        className="text-decoration-none text-dark"
+        onClick={(e) => {
+          // Check if user is logged in before allowing navigation
+          if (!token) {
+            e.preventDefault();
+            alert('Please login to view room details');
+            return;
+          }
+        }}
+      >
+        <div className="premium-property-card">
+          {/* Image Section with Overlays */}
+          <div className="premium-image-container">
+            <img
+              src={imageUrl}
+              alt={displayTitle}
+              className="premium-property-image"
+              onError={(e) => {
+                e.target.src = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
               }}
             />
-          </button>
-        )}
-
-        {/* Verification Badge - Bottom Left */}
-        {room.owner?.isVerified && (
-          <div className="position-absolute bottom-0 start-0 m-3">
-            <Badge 
-              className="px-2 py-1 fw-semibold d-flex align-items-center"
-              style={{
-                background: 'rgba(40, 167, 69, 0.95)',
-                border: 'none',
-                borderRadius: '20px',
-                fontSize: '0.75rem'
-              }}
-            >
-              <i className="bi bi-patch-check-fill me-1" style={{ fontSize: '0.8rem' }} />
-              Verified
-            </Badge>
-          </div>
-        )}
-      </div>
-
-      {/* Card Body */}
-      <Card.Body className="p-4 d-flex flex-column">
-        {/* Title */}
-        <Card.Title 
-          className="fw-bold mb-3 text-dark"
-          style={{
-            fontSize: '1.25rem',
-            lineHeight: '1.4',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            minHeight: '2.8rem'
-          }}
-        >
-          {displayTitle}
-        </Card.Title>
-
-        {/* Location */}
-        <div className="d-flex align-items-center mb-3 text-muted">
-          <i className="bi bi-geo-alt-fill me-2" style={{ color: '#6f42c1', fontSize: '1rem' }} />
-          <span className="text-truncate" style={{ fontSize: '0.95rem' }}>
-            {room.city && room.city !== "N/A" ? room.city : "City not specified"}
-          </span>
-        </div>
-
-        {/* Features/Amenities */}
-        <div className="d-flex flex-wrap gap-2 mb-4">
-          {room.roomType && (
-            <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-              <i className="bi bi-house me-1" />
-              {room.roomType}
-            </span>
-          )}
-          {room.furnished && (
-            <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-              <i className="bi bi-tools me-1" />
-              {room.furnished}
-            </span>
-          )}
-          {room.parking && (
-            <span className="badge bg-light text-dark border px-2 py-1" style={{ fontSize: '0.75rem' }}>
-              <i className="bi bi-car-front me-1" />
-              Parking
-            </span>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-auto">
-          {isOwner ? (
-            <div className="row g-2">
-              <div className="col-6">
-                <button 
-                  className="btn w-100 d-flex align-items-center justify-content-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(111, 66, 193, 0.1), rgba(111, 66, 193, 0.2))',
-                    color: '#6f42c1',
-                    border: '1px solid rgba(111, 66, 193, 0.3)',
-                    borderRadius: '12px',
-                    padding: '0.75rem',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.3s ease'
+            
+            {/* Top Right Actions - Save & Share */}
+            <div className="premium-actions-top">
+              {!isOwner && (
+                <button
+                  className="premium-action-btn save-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSaveToggle(e);
                   }}
-                  onClick={handleEdit}
+                  disabled={isToggling}
                 >
-                  <i className="bi bi-pencil-square me-1" />
-                  Edit
+                  <i className={`bi ${isSaved ? 'bi-heart-fill' : 'bi-heart'}`} 
+                     style={{ color: isSaved ? '#FF385C' : '#6f42c1' }} />
                 </button>
-              </div>
-              <div className="col-6">
-                <button 
-                  className="btn w-100 d-flex align-items-center justify-content-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.2))',
-                    color: '#dc3545',
-                    border: '1px solid rgba(220, 53, 69, 0.3)',
-                    borderRadius: '12px',
-                    padding: '0.75rem',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onClick={handleDelete}
-                >
-                  <i className="bi bi-trash3 me-1" />
-                  Delete
-                </button>
-              </div>
-            </div>
-          ) : hasBooked ? (
-            <div className="row g-2">
-              <div className="col-6">
-                <button 
-                  className="btn w-100 d-flex align-items-center justify-content-center"
-                  style={{
-                    background: 'linear-gradient(135deg, #25d366, #128c7e)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '0.75rem',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    boxShadow: '0 4px 12px rgba(37, 211, 102, 0.3)'
-                  }}
-                  onClick={handleWhatsApp}
-                >
-                  <i className="bi bi-whatsapp me-1" />
-                  WhatsApp
-                </button>
-              </div>
-              <div className="col-6">
-                <button 
-                  className="btn w-100 d-flex align-items-center justify-content-center"
-                  style={{
-                    background: 'linear-gradient(135deg, #6f42c1, #8e44ad)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '0.75rem',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    boxShadow: '0 4px 12px rgba(111, 66, 193, 0.3)'
-                  }}
-                  onClick={handleCall}
-                >
-                  <i className="bi bi-telephone me-1" />
-                  Call
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Link 
-              to={`/room/${room._id}`} 
-              className="btn w-100 text-decoration-none d-flex align-items-center justify-content-center"
-              style={{
-                background: canBeBooked 
-                  ? 'linear-gradient(135deg, #6f42c1, #8e44ad)' 
-                  : 'linear-gradient(135deg, #28a745, #20c997)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '1rem',
-                fontWeight: '700',
-                fontSize: '1rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                boxShadow: canBeBooked 
-                  ? '0 6px 20px rgba(111, 66, 193, 0.4)' 
-                  : '0 6px 20px rgba(40, 167, 69, 0.4)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
-            >
-              {canBeBooked ? (
-                <>
-                  <i className="bi bi-calendar-check-fill me-2" style={{ fontSize: '1.1rem' }} />
-                  Book Now
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-eye-fill me-2" style={{ fontSize: '1.1rem' }} />
-                  View Details
-                </>
               )}
-            </Link>
-          )}
+              <button
+                className="premium-action-btn share-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleShare(e);
+                }}
+              >
+                <i className="bi bi-share" style={{ color: '#6f42c1' }}></i>
+              </button>
+            </div>
+
+            {/* Price Badge - Bottom Left */}
+            <div className="premium-price-badge">
+              ₹{room.price === 0 ? 'Free' : room.price?.toLocaleString()}
+              <span className="premium-price-period">/month</span>
+            </div>
+          </div>
+
+          {/* Card Details */}
+          <div className="premium-card-details">
+            {/* Title and Rating Row */}
+            <div className="premium-title-rating">
+              <h3 className="premium-property-title" style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#6f42c1',
+                margin: '0 0 12px 0',
+                lineHeight: '1.3'
+              }}>{displayTitle}</h3>
+              <div className="premium-rating">
+                <i className="bi bi-star-fill"></i>
+                <span className="premium-rating-value">4.8</span>
+                <span className="premium-reviews-count">(127)</span>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="premium-location">
+              <i className="bi bi-geo-alt-fill"></i>
+              <span>{room.city && room.city !== "N/A" ? room.city : "Location"}</span>
+            </div>
+
+            {/* Property Details in Row Format */}
+            <div className="property-details-row">
+              <div className="detail-item">
+                <i className="bi bi-tag-fill me-1"></i>
+                <span className="detail-text">Type: {room.type || 'Room'}</span>
+              </div>
+              
+              {room.roomType && (
+                <div className="detail-item">
+                  <i className="bi bi-house-door-fill me-1"></i>
+                  <span className="detail-text">{room.roomType}</span>
+                </div>
+              )}
+              
+              {room.furnished && (
+                <div className="detail-item">
+                  <i className="bi bi-house-gear-fill me-1"></i>
+                  <span className="detail-text">Furnished: {room.furnished}</span>
+                </div>
+              )}
+              
+              {room.parking && (
+                <div className="detail-item">
+                  <i className="bi bi-car-front-fill me-1"></i>
+                  <span className="detail-text">Parking: {room.parking === true || room.parking === 'true' ? 'Available' : room.parking}</span>
+                </div>
+              )}
+              
+              {room.area && (
+                <div className="detail-item">
+                  <i className="bi bi-arrows-fullscreen me-1"></i>
+                  <span className="detail-text">{room.area} sq ft</span>
+                </div>
+              )}
+              
+              {!room.area && (
+                <div className="detail-item">
+                  <i className="bi bi-arrows-fullscreen me-1"></i>
+                  <span className="detail-text">1200 sq ft</span>
+                </div>
+              )}
+            </div>
+
+            {/* Action Button or Owner Controls */}
+            <div className="premium-action-section">
+              {isOwner ? (
+                <div className="premium-owner-actions">
+                  <button 
+                    className="premium-btn premium-btn-edit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleEdit(e);
+                    }}
+                  >
+                    <i className="bi bi-pencil"></i>
+                    Edit
+                  </button>
+                  <button 
+                    className="premium-btn premium-btn-delete"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete(e);
+                    }}
+                  >
+                    <i className="bi bi-trash"></i>
+                    Delete
+                  </button>
+                </div>
+              ) : hasBooked ? (
+                <div className="premium-contact-actions">
+                  <button 
+                    className="premium-btn premium-btn-whatsapp"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleWhatsApp(e);
+                    }}
+                  >
+                    <i className="bi bi-whatsapp"></i>
+                    WhatsApp
+                  </button>
+                  <button 
+                    className="premium-btn premium-btn-call"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleCall(e);
+                    }}
+                  >
+                    <i className="bi bi-telephone"></i>
+                    Call
+                  </button>
+                </div>
+              ) : (
+                <button className="premium-btn premium-btn-primary">
+                  <i className="bi bi-calendar-check"></i>
+                  {canBeBooked ? 'Book Now' : 'View Details'}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-      </Card.Body>
-    </Card>
+      </Link>
+    </div>
   );
 }
 

@@ -9,6 +9,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 // Global CSS fixes
 import "./components/ButtonTextFix.css";
 import "./styles/mobile-enhancements.css";
+import "./styles/responsive-framework.css";
 
 // Components
 import ResponsiveNavbar from "./components/ResponsiveNavbar";

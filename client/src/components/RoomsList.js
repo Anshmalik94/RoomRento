@@ -330,9 +330,7 @@ function RoomsList({ filters = {} }) {
         <Row className="g-3 g-md-4 row-responsive">
           {displayedRooms.length > 0 ? (
             displayedRooms.map((room) => (
-              <Col xs={12} sm={6} lg={4} xl={3} key={room._id} className="d-flex">
-                <RoomCard room={room} />
-              </Col>
+              <RoomCard room={room} key={room._id} />
             ))
           ) : (
             <Col xs={12}>

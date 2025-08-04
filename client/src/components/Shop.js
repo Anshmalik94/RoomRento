@@ -262,6 +262,12 @@ function Shop() {
                   className="btn btn-lg px-4"
                   style={{backgroundColor: '#6f42c1', color: 'white', border: 'none'}}
                   onClick={() => {
+                    // Check if user is logged in before allowing shop listing
+                    if (!token) {
+                      alert('Please login to list your shop');
+                      return;
+                    }
+                    
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     setTimeout(() => {
                       window.location.href = '/add-shop';
@@ -281,6 +287,12 @@ function Shop() {
             <div className="col-lg-4 col-md-6 mb-4" key={shop._id}>
               <div className="card h-100 room-card-modern"
                    onClick={() => {
+                     // Check if user is logged in before allowing navigation
+                     if (!token) {
+                       alert('Please login to view shop details');
+                       return;
+                     }
+                     
                      window.scrollTo({ top: 0, behavior: 'smooth' });
                      setTimeout(() => {
                        window.location.href = `/room/${shop._id}`;

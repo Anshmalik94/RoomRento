@@ -4,10 +4,12 @@ import { API_URL } from '../config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './TopRatedList.css';
 
-const TopRatedList = () => {
+const TopRatedList = ({ token, onLoginRequired }) => {
   const [listings, setListings] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  const userToken = token || localStorage.getItem("token");
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -73,6 +75,15 @@ const TopRatedList = () => {
               borderRadius: '16px'
             }}
             onClick={() => {
+              // Check if user is logged in before allowing navigation
+              if (!userToken) {
+                // Show login modal if onLoginRequired is provided
+                if (onLoginRequired) {
+                  onLoginRequired();
+                }
+                return;
+              }
+              
               // Scroll to top before navigation for better UX
               window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
               

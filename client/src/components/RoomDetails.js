@@ -629,7 +629,13 @@ function RoomDetails() {
 
       {/* Top Rated Listings Section */}
       <div className="container-fluid py-5" style={{backgroundColor: '#f8f9fa'}}>
-        <TopRatedList />
+        <TopRatedList 
+          token={localStorage.getItem("token")}
+          onLoginRequired={() => {
+            // Navigate to login if user is not authenticated
+            navigate('/login');
+          }}
+        />
       </div>
     </div>
   );
