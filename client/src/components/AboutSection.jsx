@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AboutSection.css';
 import { STATS_ARRAY } from '../config/statistics';
+import { IMAGE_PATHS } from '../config/imagePaths';
 
 function AboutSection() {
   const stats = STATS_ARRAY;
@@ -14,11 +15,11 @@ function AboutSection() {
           <div className="col-lg-6 mb-4 mb-lg-0">
             <div className="about-image-wrapper">
               <img
-                src="/images/assets/Image1.jpg"
+                src={IMAGE_PATHS.ABOUT_IMAGE_1}
                 alt="About RoomRento"
                 className="about-main-image img-fluid"
                 onError={(e) => {
-                  e.target.src = "/images/banner.png";
+                  e.target.src = IMAGE_PATHS.BANNER;
                   e.target.onerror = () => {
                     e.target.style.display = 'none';
                   };
