@@ -6,7 +6,6 @@ import BASE_URL from "../config";
 import "./Shop.css";
 
 function Shop() {
-  const [originalShops, setOriginalShops] = useState([]);
   const [filteredShops, setFilteredShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -92,7 +91,6 @@ function Shop() {
       const res = await axios.get(`${BASE_URL}/api/shops`);
       // Check if response has shops array (paginated) or is direct array
       const fetchedShops = res.data.shops || res.data;
-      setOriginalShops(fetchedShops);
       
       // Apply filters if this is a filtered search
       const queryParams = new URLSearchParams(location.search);
@@ -173,7 +171,6 @@ function Shop() {
     } catch (err) {
       console.error("Error fetching shop items:", err);
       setError("Failed to load shop items");
-      setOriginalShops([]);
       setFilteredShops([]);
     } finally {
       setLoading(false);

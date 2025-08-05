@@ -153,6 +153,18 @@ const NotificationsPage = () => {
     );
   }
 
+  // Show error if any
+  if (error) {
+    return (
+      <div className="container py-4">
+        <div className="alert alert-danger">
+          <h4>Error</h4>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   // Show message if no token
   const token = localStorage.getItem('token');
   if (!token) {

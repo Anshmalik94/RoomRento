@@ -552,11 +552,10 @@ function AddRoom({ token, isEdit = false }) {
       }
 
       // Determine API endpoint and method based on edit mode
-      let response;
       if (isEdit && id) {
         // Update existing property
         const endpoint = propertyType === 'Hotel' ? 'hotels' : propertyType === 'Shop' ? 'shops' : 'rooms';
-        response = await axios.put(`${API_URL}/api/${endpoint}/${id}`, formData, {
+        await axios.put(`${API_URL}/api/${endpoint}/${id}`, formData, {
           headers: { 
             Authorization: `Bearer ${authToken}`,
             'Content-Type': 'multipart/form-data'
@@ -568,7 +567,7 @@ function AddRoom({ token, isEdit = false }) {
         });
       } else {
         // Create new property
-        response = await axios.post(`${API_URL}/api/rooms`, formData, {
+        await axios.post(`${API_URL}/api/rooms`, formData, {
           headers: { 
             Authorization: `Bearer ${authToken}`,
             'Content-Type': 'multipart/form-data'

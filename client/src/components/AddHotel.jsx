@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MapPicker from './MapPicker';
 import { loadGoogleMapsScript } from './LoadGoogleMaps';
-import ErrorBoundary from './ErrorBoundary';
 import { API_URL } from '../config';
-import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddRoom.css';
-import { Toast, ToastContainer } from 'react-bootstrap';
 
 const AddHotel = ({ token, isEdit = false }) => {
-  const { id } = useParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -31,11 +27,6 @@ const AddHotel = ({ token, isEdit = false }) => {
         setMapsLoaded(true); // Continue anyway
       });
   }, []);
-  
-  // Toast states
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastVariant, setToastVariant] = useState('success');
 
   const [hotelData, setHotelData] = useState({
     title: '',

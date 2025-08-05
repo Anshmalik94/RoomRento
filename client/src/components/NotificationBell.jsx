@@ -93,7 +93,7 @@ const NotificationBell = ({ bellIcon }) => {
       setUnreadCount(prev => Math.max(0, prev - 1));
 
       // Call the correct API endpoint
-      const response = await axios.patch(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
+      await axios.patch(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
         headers: { Authorization: `Bearer ${currentToken}` }
       });
       // Refetch to ensure backend sync after a delay

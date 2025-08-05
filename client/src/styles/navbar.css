@@ -82,6 +82,24 @@
 /* Mobile sidebar transitions */
 .mobile-sidebar {
   transition: left 0.3s ease;
+  left: -100% !important; /* Ensure sidebar is completely hidden when closed */
+}
+
+.mobile-sidebar.open {
+  left: 0 !important; /* Slide in when open */
+}
+
+/* Prevent sidebar from showing partially on mobile */
+@media (max-width: 768px) {
+  .mobile-sidebar {
+    left: -100% !important;
+    transform: none !important; /* Remove any transforms that might cause positioning issues */
+  }
+  
+  .mobile-sidebar.open {
+    left: 0 !important;
+    transform: none !important;
+  }
 }
 
 /* Responsive utilities */

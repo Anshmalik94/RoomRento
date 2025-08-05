@@ -445,22 +445,50 @@ a:hover {
   box-shadow: var(--shadow-lg) !important;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Custom Scrollbar - Hide for mobile */
+@media (max-width: 768px) {
+  /* Hide all scrollbars on mobile */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Firefox */
+  html {
+    scrollbar-width: none;
+  }
+  
+  /* IE and Edge */
+  body {
+    -ms-overflow-style: none;
+    overflow-x: hidden !important; /* Prevent horizontal scroll on mobile */
+  }
+  
+  /* Ensure container doesn't cause horizontal overflow */
+  .container,
+  .container-fluid {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: var(--light-gray);
-}
+/* Desktop scrollbar styling */
+@media (min-width: 769px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--secondary-gray);
-  border-radius: 4px;
-}
+  ::-webkit-scrollbar-track {
+    background: var(--light-gray);
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-purple);
+  ::-webkit-scrollbar-thumb {
+    background: var(--secondary-gray);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-purple);
+  }
 }
 
 /* Smooth Scrolling */
