@@ -1,4 +1,4 @@
-/* ===== MOBILE-FIRST AUTH MODAL STYLES ===== */
+/* ===== MODERN AUTH MODAL - BLACK TO WHITE WITH PURPLE ACCENTS ===== */
 
 /* Base mobile styles */
 .auth-modal .modal-dialog {
@@ -14,58 +14,85 @@
 
 .auth-modal .modal-content {
   border: none;
-  border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   background: transparent;
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
 }
 
-/* Modal backdrop with enhanced blur effect */
+/* Enhanced modal backdrop with transparent overlay */
 .auth-modal .modal-backdrop {
-  backdrop-filter: blur(8px);
-  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  background: transparent !important;
 }
 
-/* Main Auth Modal Container - Mobile First */
+/* Override Bootstrap default backdrop */
+.modal-backdrop {
+  background: transparent !important;
+}
+
+.auth-modal .modal-backdrop.show {
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+/* Main Auth Modal Container - Modern Design */
 .auth-modal-container {
-  background: rgba(0, 0, 0, 0.85) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  padding: 1.5rem 1rem;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%) !important;
+  border: 1px solid rgba(139, 69, 255, 0.1) !important;
+  padding: 2rem 1.5rem;
   text-align: center;
   position: relative;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 24px;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(139, 69, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   min-height: auto;
+  overflow: hidden;
 }
 
+/* Subtle gradient overlay */
 .auth-modal-container::before {
-  display: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(180deg, rgba(139, 69, 255, 0.03) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Close button - Mobile optimized */
+/* Ensure content is above overlay */
+.auth-modal-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Close button - Modern minimalist design */
 .auth-modal-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 16px;
+  right: 16px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(139, 69, 255, 0.1);
+  border: 1px solid rgba(139, 69, 255, 0.2);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
+  color: #6b46c1;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(139, 69, 255, 0.15);
   line-height: 1;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   touch-action: manipulation;
@@ -73,75 +100,91 @@
 
 .auth-modal-close:hover,
 .auth-modal-close:focus {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(139, 69, 255, 0.15);
   transform: rotate(90deg) scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  color: #ff6b6b;
-  border-color: rgba(255, 107, 107, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 69, 255, 0.25);
+  color: #8b45ff;
+  border-color: rgba(139, 69, 255, 0.3);
 }
 
-/* ROOMRENTO Brand Title - Mobile optimized */
+/* ROOMRENTO Brand Title - Purple gradient */
 .auth-modal-brand-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8b45ff 0%, #6b46c1 50%, #7c3aed 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.75rem;
+  letter-spacing: 1px;
   text-align: center;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  text-shadow: none;
 }
 
-/* Logo Container */
+/* Logo Container - Enhanced */
 .auth-modal-logo-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 8px;
+  background: linear-gradient(135deg, rgba(139, 69, 255, 0.05), rgba(107, 70, 193, 0.03));
+  border-radius: 16px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .auth-modal-logo-img {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 12px;
+  filter: drop-shadow(0 4px 8px rgba(139, 69, 255, 0.15));
 }
 
-/* Welcome back text - Dark Theme */
+/* Welcome back text - Modern typography */
 .auth-modal-welcome-text {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #ffffff;
-  margin-bottom: 15px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
   text-align: center;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.4;
 }
 
-/* Google Login - Simple clean styling */
+/* Google Login - Enhanced styling */
 .auth-modal-google-login {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
   width: 100%;
 }
 
 .auth-modal-google-login > div {
   width: 100%;
-  max-width: 280px;
+  max-width: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .auth-modal-google-login iframe {
   width: 100% !important;
-  max-width: 280px !important;
+  max-width: 320px !important;
+  border-radius: 12px !important;
 }
 
-/* Or divider - Dark Theme */
+/* Or divider - Clean modern design */
 .auth-modal-divider {
   position: relative;
   text-align: center;
-  margin: 12px 0;
-  color: #ffffff;
+  margin: 1.5rem 0;
+  color: #6b7280;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 14px;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .auth-modal-divider::before {
@@ -151,133 +194,186 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(90deg, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);
   z-index: 1;
 }
 
 .auth-modal-divider::after {
   content: 'or';
-  background: rgba(0, 0, 0, 0.8) !important;
-  padding: 0 10px;
+  background: #ffffff;
+  padding: 0 16px;
   position: relative;
   z-index: 2;
   display: inline-block;
+  color: #9ca3af;
 }
 
-/* Input Groups */
+/* Input Groups - Modern glassmorphism design */
 .auth-modal-input-group {
   position: relative;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .auth-modal-input-group input,
 .auth-modal-input-group select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  color: #ffffff;
-  font-size: 14px;
+  padding: 14px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  color: #1f2937 !important;
+  font-size: 15px;
   font-weight: 400;
-  transition: all 0.3s ease;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific styling for password inputs to ensure visibility */
+.auth-modal-input-group input[type="password"] {
+  color: #1f2937 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  -webkit-text-security: disc;
 }
 
 .auth-modal-input-group input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: #9ca3af !important;
+  font-weight: 400;
 }
 
 .auth-modal-input-group input:focus,
 .auth-modal-input-group select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  border-color: #8b45ff;
+  box-shadow: 
+    0 0 0 3px rgba(139, 69, 255, 0.1),
+    0 4px 12px rgba(139, 69, 255, 0.15);
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #1f2937 !important;
 }
 
 .auth-modal-input-group select {
-  color: #ffffff;
+  color: #1f2937 !important;
+  cursor: pointer;
 }
 
 .auth-modal-input-group select option {
-  background: #333333;
-  color: #ffffff;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 8px;
 }
 
-/* Register Form Grid */
+/* Register Form Grid - Enhanced spacing */
 .auth-modal-register-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 /* Mobile responsive grid */
 @media (max-width: 480px) {
   .auth-modal-register-form-grid {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 12px;
   }
   
   .auth-modal-input-group input,
   .auth-modal-input-group select {
-    padding: 10px 12px;
+    padding: 14px 16px;
     font-size: 16px; /* Prevents zoom on iOS */
   }
   
   .auth-modal-continue-btn {
-    padding: 12px;
+    padding: 16px;
     font-size: 16px;
+  }
+  
+  .auth-modal-container {
+    padding: 1.5rem 1rem !important;
   }
 }
 
-/* Role Selector */
+/* Role Selector - Enhanced styling */
 .auth-modal-role-selector {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 .auth-modal-role-selector select {
-  padding-left: 15px;
+  padding-left: 16px;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
-/* Continue Button - Dark Theme */
+/* Continue Button - Purple gradient */
 .auth-modal-continue-btn {
   width: 100%;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #8b45ff 0%, #7c3aed 50%, #6b46c1 100%);
+  border: none;
+  border-radius: 12px;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 16px;
+  box-shadow: 
+    0 4px 12px rgba(139, 69, 255, 0.3),
+    0 2px 4px rgba(139, 69, 255, 0.2);
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-modal-continue-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
 }
 
 .auth-modal-continue-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(139, 69, 255, 0.4),
+    0 4px 8px rgba(139, 69, 255, 0.3);
+  background: linear-gradient(135deg, #9333ea 0%, #8b45ff 50%, #7c3aed 100%);
+}
+
+.auth-modal-continue-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.auth-modal-continue-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .auth-modal-continue-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  background: #9ca3af;
+  box-shadow: none;
 }
 
-/* Loading Spinner */
+/* Loading Spinner - Purple theme */
 .loading-spinner {
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: #ffffff;
@@ -290,114 +386,68 @@
   }
 }
 
-/* Terms - Dark Theme */
+/* Terms - Modern typography */
 .auth-modal-terms {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.4;
-  margin-bottom: 15px;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
 }
 
-/* Toggle - Dark Theme */
+/* Toggle - Enhanced design */
 .auth-modal-toggle {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 13px;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #6b7280;
+  font-size: 14px;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
 }
 
 .auth-modal-toggle span {
-  color: #ffffff;
+  color: #8b45ff;
   font-weight: 600;
   cursor: pointer;
-  margin-left: 5px;
-  text-decoration: underline;
+  margin-left: 6px;
+  text-decoration: none;
   transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
 }
 
 .auth-modal-toggle span:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color: #7c3aed;
+  border-bottom-color: #7c3aed;
 }
 
-/* Modal Transition Effects */
+/* Modal Transition Effects - Smooth animations */
 .auth-modal.fade .modal-dialog {
-  transition: transform 0.3s ease-out;
-  transform: translate(0, -50px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(0, -30px) scale(0.95);
+  opacity: 0;
 }
 
 .auth-modal.show .modal-dialog {
-  transform: none;
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
 }
 
-/* Mobile Responsive - Override with important */
+/* Mobile Responsive - Enhanced mobile experience */
 @media (max-width: 576px) {
   .auth-modal .modal-dialog {
     margin: 1rem;
-    max-width: 85%;
-    width: 85%;
+    max-width: 90%;
+    width: 90%;
   }
   
   .auth-modal-container {
-    padding: 18px 12px !important;
+    padding: 1.5rem 1.25rem !important;
     margin: 0;
-    background: rgba(0, 0, 0, 0.8) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 12px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  }
-  
-  .auth-modal-brand-title {
-    font-size: 1.3rem;
-    margin-bottom: 6px;
-    color: #ffffff;
-  }
-  
-  .auth-modal-welcome-text {
-    font-size: 0.9rem;
-    margin-bottom: 18px;
-    color: #ffffff;
-  }
-  
-  .auth-modal-register-form-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  
-  .auth-modal-logo-img {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-/* Input Icons for Registration */
-.auth-modal-input-group .input-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(0, 0, 0, 0.5);
-  z-index: 2;
-}
-
-.auth-modal-input-group input.with-icon {
-  padding-left: 45px;
-}
-
-/* ============================================
-   RESPONSIVE BREAKPOINTS (Mobile-First)
-   ============================================ */
-
-/* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) {
-  .auth-modal .modal-dialog {
-    padding: 1.5rem;
-  }
-  
-  .auth-modal-container {
-    padding: 2rem 1.5rem;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%) !important;
+    border: 1px solid rgba(139, 69, 255, 0.1) !important;
     border-radius: 20px;
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(139, 69, 255, 0.05);
   }
   
   .auth-modal-brand-title {
@@ -405,40 +455,137 @@
     margin-bottom: 0.75rem;
   }
   
+  .auth-modal-welcome-text {
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .auth-modal-register-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .auth-modal-logo-img {
+    width: 44px;
+    height: 44px;
+  }
+  
   .auth-modal-close {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     top: 12px;
     right: 12px;
-    font-size: 15px;
+    font-size: 14px;
+  }
+}
+
+/* Input validation states */
+.auth-modal-input-group input:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.auth-modal-input-group input:valid:not(:placeholder-shown) {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Enhanced focus styles for accessibility */
+.auth-modal-continue-btn:focus-visible,
+.auth-modal-close:focus-visible,
+.auth-modal-input-group input:focus-visible,
+.auth-modal-input-group select:focus-visible {
+  outline: 2px solid #8b45ff;
+  outline-offset: 2px;
+}
+
+/* Enhanced hover effects for better UX */
+.auth-modal-input-group input:hover:not(:focus) {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.auth-modal-input-group select:hover:not(:focus) {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS (Mobile-First Enhanced)
+   ============================================ */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .auth-modal .modal-dialog {
+    padding: 1.5rem;
+    max-width: 420px;
+  }
+  
+  .auth-modal-container {
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+  }
+  
+  .auth-modal-brand-title {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  
+  .auth-modal-close {
+    width: 38px;
+    height: 38px;
+    top: 18px;
+    right: 18px;
+    font-size: 16px;
+  }
+  
+  .auth-modal-welcome-text {
+    font-size: 1.3rem;
+    margin-bottom: 1.75rem;
   }
 }
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   .auth-modal .modal-dialog {
-    max-width: 450px;
-    margin: 1rem auto;
+    max-width: 460px;
+    margin: 2rem auto;
     height: auto;
     padding: 2rem;
   }
   
   .auth-modal-container {
-    padding: 2.5rem 2rem;
-    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    border-radius: 24px;
   }
   
   .auth-modal-brand-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    letter-spacing: 1px;
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: 1.2px;
   }
   
   .auth-modal-close {
-    width: 36px;
-    height: 36px;
-    top: 15px;
-    right: 15px;
+    width: 40px;
+    height: 40px;
+    top: 20px;
+    right: 20px;
+    font-size: 18px;
+  }
+  
+  .auth-modal-welcome-text {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+  }
+  
+  .auth-modal-input-group input,
+  .auth-modal-input-group select {
+    padding: 16px 18px;
+    font-size: 15px;
+  }
+  
+  .auth-modal-continue-btn {
+    padding: 16px 28px;
     font-size: 16px;
   }
 }
@@ -446,21 +593,97 @@
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
   .auth-modal .modal-dialog {
-    max-width: 480px;
+    max-width: 500px;
   }
   
   .auth-modal-container {
-    padding: 3rem 2.5rem;
+    padding: 3.5rem 3rem;
   }
   
   .auth-modal-brand-title {
-    font-size: 1.6rem;
+    font-size: 1.875rem;
+  }
+  
+  .auth-modal-welcome-text {
+    font-size: 1.5rem;
   }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
   .auth-modal .modal-dialog {
-    max-width: 500px;
+    max-width: 520px;
+  }
+  
+  .auth-modal-container {
+    padding: 4rem 3.5rem;
+  }
+}
+
+/* Dark mode support for system preferences */
+@media (prefers-color-scheme: dark) {
+  .auth-modal .modal-backdrop {
+    background: transparent !important;
+  }
+  
+  .auth-modal-container {
+    background: linear-gradient(145deg, #1f2937 0%, #111827 100%) !important;
+    border-color: rgba(139, 69, 255, 0.2) !important;
+  }
+  
+  .auth-modal-welcome-text {
+    color: #f9fafb;
+  }
+  
+  .auth-modal-input-group input,
+  .auth-modal-input-group select {
+    background: rgba(31, 41, 55, 0.8);
+    border-color: #374151;
+    color: #f9fafb !important;
+  }
+  
+  .auth-modal-input-group input[type="password"] {
+    color: #f9fafb !important;
+    background: rgba(31, 41, 55, 0.9) !important;
+  }
+  
+  .auth-modal-input-group input::placeholder {
+    color: #9ca3af !important;
+  }
+  
+  .auth-modal-terms {
+    color: #9ca3af;
+  }
+  
+  .auth-modal-toggle {
+    color: #9ca3af;
+  }
+  
+  .auth-modal-divider::after {
+    background: #1f2937;
+  }
+}
+
+/* Print styles (hide modal when printing) */
+@media print {
+  .auth-modal {
+    display: none !important;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .auth-modal-container,
+  .auth-modal-close,
+  .auth-modal-continue-btn,
+  .auth-modal-input-group input,
+  .auth-modal-input-group select,
+  .auth-modal.fade .modal-dialog {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .loading-spinner {
+    animation: none !important;
   }
 }

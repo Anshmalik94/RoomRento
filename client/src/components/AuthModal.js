@@ -204,7 +204,9 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
           </div>
           
           {/* Welcome back text */}
-          <h2 className="auth-modal-welcome-text">Welcome back</h2>
+          <h2 className="auth-modal-welcome-text">
+            {isLogin ? "Welcome back!" : "Join RoomRento"}
+          </h2>
           
           {/* Google Login Button */}
           <div className="auth-modal-google-login">
@@ -213,11 +215,12 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
               onError={() => {
                 showToastMessage("Google Login Failed", "error");
               }}
-              text="signin_with"
-              size="medium"
-              width="280"
+              text={isLogin ? "signin_with" : "signup_with"}
+              size="large"
+              width="320"
               locale="en"
               theme="outline"
+              shape="rectangular"
             />
           </div>
           
@@ -307,13 +310,15 @@ function AuthModal({ show, onHide, setToken, onSuccessRedirect }) {
               {loading ? (
                 <span className="loading-spinner"></span>
               ) : (
-                'Continue'
+                isLogin ? 'Sign In' : 'Create Account'
               )}
             </button>
             
             {/* Terms and Privacy */}
             <div className="auth-modal-terms">
-              By continuing, you agree to our Terms and Privacy Policy.
+              By {isLogin ? 'signing in' : 'creating an account'}, you agree to our{' '}
+              <span style={{ color: '#8b45ff', cursor: 'pointer' }}>Terms of Service</span> and{' '}
+              <span style={{ color: '#8b45ff', cursor: 'pointer' }}>Privacy Policy</span>.
             </div>
           </form>
           
