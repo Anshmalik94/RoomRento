@@ -98,7 +98,10 @@ router.post("/login", async (req, res) => {
         const demoCredentials = {
           'demo@owner.com': { password: 'demo123', role: 'owner', name: 'Demo Owner' },
           'demo@renter.com': { password: 'demo123', role: 'renter', name: 'Demo Renter' },
-          'test@test.com': { password: 'test123', role: 'renter', name: 'Test User' }
+          'test@test.com': { password: 'test123', role: 'renter', name: 'Test User' },
+          'admin@roomrento.com': { password: 'admin123', role: 'admin', name: 'Admin User' },
+          'ajeetkumar97111@gmail.com': { password: 'admin@ajeet1', role: 'admin', name: 'Ajeet Kumar' },
+          'Natikkumar1111@gmail.com': { password: 'admin@natik1', role: 'admin', name: 'Natik Kumar' }
         };
         
         const demoUser = demoCredentials[email];
@@ -226,7 +229,21 @@ router.post("/google-login", async (req, res) => {
 // Get User Profile with smart fallback
 router.get("/profile", auth, async (req, res) => {
   try {
-    // Try database first
+    // Handle demo users
+    if (req.user.id && req.user.id.startsWith('demo_')) {
+      const demoProfile = {
+        _id: req.user.id,
+        name: req.user.name || 'Demo User',
+        email: req.user.email || 'demo@example.com',
+        role: req.user.role || 'renter',
+        phone: '',
+        address: '',
+        demo: true
+      };
+      return res.json(demoProfile);
+    }
+
+    // Try database for real users
     try {
       const user = await User.findById(req.user.id).select('-password');
       if (!user) {
@@ -259,6 +276,20 @@ router.put("/profile", auth, async (req, res) => {
   const { name, email, phone, address } = req.body;
 
   try {
+    // Handle demo users - return updated demo profile without database interaction
+    if (req.user.id && req.user.id.startsWith('demo_')) {
+      const updatedDemoProfile = {
+        _id: req.user.id,
+        name: name || req.user.name || 'Demo User',
+        email: email || req.user.email || 'demo@example.com',
+        role: req.user.role || 'renter',
+        phone: phone || '',
+        address: address || '',
+        demo: true
+      };
+      return res.json(updatedDemoProfile);
+    }
+
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });

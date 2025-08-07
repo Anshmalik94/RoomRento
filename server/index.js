@@ -20,6 +20,7 @@ const hotelRoutes = require('./routes/hotels');
 const shopRoutes = require('./routes/shops');
 const notificationRoutes = require('./routes/notifications');
 const helpRoutes = require('./routes/help');
+const adminRoutes = require('./routes/admin');
 const notificationService = require('./services/realTimeNotificationService');
 
 const app = express();
@@ -65,6 +66,16 @@ io.use(async (socket, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Handle demo users differently
+    if (decoded.id && decoded.id.startsWith('demo_')) {
+      socket.userId = decoded.id;
+      socket.userRole = decoded.role || 'renter';
+      socket.userName = decoded.name || 'Demo User';
+      socket.isDemo = true;
+      return next();
+    }
+    
     const User = require('./models/User');
     const user = await User.findById(decoded.id);
     
@@ -255,6 +266,7 @@ app.use('/api/hotels', hotelRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/help', helpRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ✅ Health Check
 app.get('/', (req, res) => {

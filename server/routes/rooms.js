@@ -198,6 +198,66 @@ router.patch('/:id/toggle-visibility', auth, async (req, res) => {
     }
 });
 
+// Update Room
+router.put('/:id', auth, upload.array('images', 10), async (req, res) => {
+    try {
+        const room = await Room.findById(req.params.id);
+        
+        if (!room) {
+            return res.status(404).json({ error: 'Room not found' });
+        }
+        
+        // Check if user owns this room
+        if (room.user.toString() !== req.user.id) {
+            return res.status(403).json({ error: 'Not authorized to update this room' });
+        }
+        
+        // Handle new images
+        let images = room.images; // Keep existing images by default
+        if (req.files && req.files.length > 0) {
+            // If new images uploaded, use them
+            images = req.files.map(file => file.path);
+        }
+        
+        // Parse facilities if it's a string
+        let facilities = req.body.facilities;
+        if (typeof facilities === 'string') {
+            try {
+                facilities = JSON.parse(facilities);
+            } catch (e) {
+                // If parsing fails, treat as comma-separated string
+                facilities = facilities.split(',').map(f => f.trim());
+            }
+        }
+        
+        // Update room data
+        const updateData = {
+            ...req.body,
+            latitude: parseFloat(req.body.latitude) || room.latitude,
+            longitude: parseFloat(req.body.longitude) || room.longitude,
+            images,
+            facilities: facilities || room.facilities,
+            user: req.user.id, // Ensure user remains the same
+        };
+        
+        const updatedRoom = await Room.findByIdAndUpdate(
+            req.params.id, 
+            updateData,
+            { new: true, runValidators: true }
+        ).populate('user', 'name email phone');
+        
+        // Send success response
+        res.json({ 
+            message: 'Room updated successfully', 
+            room: updatedRoom 
+        });
+        
+    } catch (err) {
+        console.error('Update room error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Delete Room
 router.delete('/:id', auth, async (req, res) => {
     try {

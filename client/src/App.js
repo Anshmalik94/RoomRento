@@ -35,6 +35,9 @@ import NotificationsPage from "./components/NotificationsPage";
 import ScrollToTop from "./components/ScrollToTop";
 import SavedProperties from "./components/SavedProperties";
 
+// Admin Components
+import AdminApp from "./admin/AdminApp";
+
 // Homepage Sections
 import HeroSection from "./components/HeroSection";
 import RoomSearchForm from "./components/RoomSearchForm";
@@ -139,6 +142,7 @@ function App() {
     const location = useLocation();
     const navigate = useNavigate();
     const isLoginPage = location.pathname === '/login';
+    const isAdminRoute = location.pathname.startsWith('/admin');
 
     // Reset body padding
     useEffect(() => {
@@ -248,7 +252,7 @@ function App() {
         />
         
         {/* Responsive Navbar Component */}
-        {!isLoginPage && (
+        {!isLoginPage && !isAdminRoute && (
           <ResponsiveNavbar 
             token={token}
             userInfo={userInfo}
@@ -268,6 +272,9 @@ function App() {
           }}
         >
           <Routes>
+            {/* Admin Routes */}
+            <Route path="/admin/*" element={<AdminApp />} />
+            
             {/* Public Routes */}
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={token ? <Navigate to="/" /> : <Navigate to="/" />} />
@@ -300,7 +307,7 @@ function App() {
         </main>
 
         {/* BottomNav - Fixed at bottom for mobile only */}
-        {!isLoginPage && token && <BottomNav handleRentifyClick={handleRentifyClick} />}
+        {!isLoginPage && !isAdminRoute && token && <BottomNav handleRentifyClick={handleRentifyClick} />}
 
         {/* Rentify Modal */}
         <Modal 
@@ -458,6 +465,9 @@ function App() {
           <meta name="twitter:description" content="List or rent properties easily with RoomRento." />
           <meta name="twitter:image" content="https://roomrento.com/images/twitter-banner.png" />
         </Helmet>
+
+        {/* Footer - Only show for non-admin routes */}
+        {!isAdminRoute && <Footer />}
       </>
     );
   };
@@ -469,7 +479,6 @@ function App() {
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <AppContent />
-            <Footer />
           </div>
         </div>
       </NotificationProvider>
