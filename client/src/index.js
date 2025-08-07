@@ -25,9 +25,20 @@ root.render(
   </React.StrictMode>
 );
 
-// Register service worker for PWA functionality
-if ('serviceWorker' in navigator) {
+// Register service worker for PWA functionality - TEMPORARILY DISABLED
+// Disable service worker to fix API fetch issues
+if (false && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // Unregister existing service workers
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+        console.log('Service worker unregistered');
+      }
+    });
+    
+    // Don't register new service worker for now
+    /*
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
         // Service worker registered successfully
@@ -35,5 +46,6 @@ if ('serviceWorker' in navigator) {
       .catch((registrationError) => {
         console.error('SW registration failed:', registrationError);
       });
+    */
   });
 }

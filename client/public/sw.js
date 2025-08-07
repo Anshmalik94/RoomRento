@@ -1,71 +1,63 @@
 /* eslint-env serviceworker */
 /* eslint-disable no-restricted-globals */
 
-// Simple service worker for PWA functionality
+// Disabled Service Worker to prevent API interference
 
-const CACHE_NAME = 'roomrento-v2';
-const urlsToCache = [
-  '/',
-  '/images/logo.png',
-  '/images/logo56.png',
-  '/images/banner.png',
-  '/manifest.json',
-  '/favicon.ico'
-];
+const CACHE_NAME = 'roomrento-disabled';
 
-// Install event
+// Install event - Skip caching
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-  );
-  // Force waiting service worker to become active
+  console.log('Service Worker: Install - Caching disabled');
+  // Skip waiting to immediately activate
   self.skipWaiting();
 });
 
-// Fetch event - Network first with cache fallback
+// Fetch event - Always use network, never cache API calls
 self.addEventListener('fetch', (event) => {
-  // Skip caching for API requests
-  if (event.request.url.includes('/api/')) {
-    event.respondWith(fetch(event.request));
+  // For API calls, always fetch from network
+  if (event.request.url.includes('/api/') || 
+      event.request.url.includes('localhost:5000') ||
+      event.request.url.includes('roomrento.onrender.com')) {
+    
+    console.log('Service Worker: Bypassing cache for API call:', event.request.url);
+    
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          console.log('Service Worker: Network response:', response.status, event.request.url);
+          return response;
+        })
+        .catch(error => {
+          console.log('Service Worker: Network error:', error, event.request.url);
+          throw error; // Re-throw to let the app handle it
+        })
+    );
     return;
   }
 
+  // For static files, try network first, then cache
   event.respondWith(
     fetch(event.request)
-      .then((response) => {
-        // If online, cache the response and return it
-        if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
+      .then(response => {
         return response;
       })
       .catch(() => {
-        // If offline, try to serve from cache
         return caches.match(event.request);
       })
   );
 });
 
-// Activate event
+// Activate event - Clear old caches
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker: Activate - API caching disabled');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-          return null;
+          return caches.delete(cacheName);
         })
       );
     })
   );
-  // Claim control of all clients
   self.clients.claim();
 });

@@ -2,62 +2,22 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
+  console.log('🔍 Config Debug Info:');
+  console.log('  - hostname:', window.location.hostname);
+  console.log('  - NODE_ENV:', process.env.NODE_ENV);
+  console.log('  - REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+  console.log('  - REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
+
   // FORCE LOCALHOST FOR LOCAL DEVELOPMENT
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.log('✅ Using localhost backend');
     return 'http://localhost:5000';
   }
 
-  // Development mode check FIRST - highest priority
-  if (process.env.NODE_ENV === 'development') {
-    const devUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
-    return devUrl;
-  }
-
-  // EMERGENCY FIX: Force correct URL for production
-  if (process.env.NODE_ENV === 'production') {
-    return 'https://roomrento.onrender.com';
-  }
-  
-  // Always use production URL if available
-  if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL;
-  }
-  
-  // Production mode - try multiple backend URLs
-  const currentHost = window.location.hostname;
-  // If frontend is on Vercel
-  if (currentHost.includes('vercel.app')) {
-    // Try custom backend URL from environment variable first
-    if (process.env.REACT_APP_API_URL) {
-      return process.env.REACT_APP_API_URL;
-    }
-    // Use BASE_URL from env or fallback
-    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
-    return url;
-  }
-  
-  // If frontend is on Render
-  if (currentHost.includes('onrender.com')) {
-    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
-    return url;
-  }
-  
-  // Custom domain check - try multiple backends
-  if (currentHost.includes('roomrento.com')) {
-    // Try primary backend first, then fallbacks
-    const url = process.env.REACT_APP_BASE_URL || 'https://roomrento.onrender.com';
-    return url;
-  }
-  
-  // Fallback to environment variable or try multiple backends
-  const possibleBackends = [
-    process.env.REACT_APP_API_URL,
-    process.env.REACT_APP_BASE_URL,
-    'https://roomrento.onrender.com'
-  ].filter(Boolean);
-  
-  const fallbackUrl = possibleBackends[0];
-  return fallbackUrl;
+  // FOR PRODUCTION DEPLOYMENT - Always use production backend
+  const productionURL = 'https://roomrento.onrender.com';
+  console.log('🚀 Using production backend:', productionURL);
+  return productionURL;
 };
 
 const BASE_URL = getBaseURL();
