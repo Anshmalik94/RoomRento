@@ -27,6 +27,12 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - Network first with cache fallback
 self.addEventListener('fetch', (event) => {
+  // Skip caching for API requests
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
