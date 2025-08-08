@@ -1,0 +1,49 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { HelmetProvider } from 'react-helmet-async';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './custom.css'; // Custom CSS overrides
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// Google OAuth Client ID - use environment variable for production
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || "632276644882-rnbq8prpeepluvtvpdqt0b0hie1rtr2b.apps.googleusercontent.com";
+
+root.render(
+  <React.StrictMode>
+    <HelmetProvider>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <App />
+      </GoogleOAuthProvider>
+    </HelmetProvider>
+  </React.StrictMode>
+);
+
+// COMPLETELY UNREGISTER SERVICE WORKER - NO PWA FUNCTIONALITY
+// This will remove any existing service worker from browser
+if ('serviceWorker' in navigator) {
+  console.log('Unregistering all Service Workers...');
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      console.log('Unregistering Service Worker:', registration.scope);
+      registration.unregister().then(function(boolean) {
+        console.log('Service Worker unregistered:', boolean);
+      });
+    }
+  });
+  
+  // Also clear all caches
+  if ('caches' in window) {
+    caches.keys().then(cacheNames => {
+      cacheNames.forEach(cacheName => {
+        console.log('Deleting cache:', cacheName);
+        caches.delete(cacheName);
+      });
+    });
+  }
+}
