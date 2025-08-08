@@ -14,9 +14,23 @@ const getBaseURL = () => {
     return 'http://localhost:5000';
   }
 
-  // FOR PRODUCTION DEPLOYMENT - Always use production backend
+  // FOR CUSTOM DOMAIN roomrento.com - Always use production backend
+  if (window.location.hostname === 'roomrento.com' || window.location.hostname === 'www.roomrento.com') {
+    const productionURL = 'https://roomrento.onrender.com';
+    console.log('🌍 Custom domain detected, using production backend:', productionURL);
+    return productionURL;
+  }
+
+  // FOR OTHER DEPLOYMENTS - Use environment variables first, then fallback
+  const envApiUrl = process.env.REACT_APP_API_URL || process.env.REACT_APP_BASE_URL;
+  if (envApiUrl) {
+    console.log('🌍 Using environment API URL:', envApiUrl);
+    return envApiUrl;
+  }
+
+  // Fallback to production URL
   const productionURL = 'https://roomrento.onrender.com';
-  console.log('🚀 Using production backend:', productionURL);
+  console.log('🚀 Using fallback production backend:', productionURL);
   return productionURL;
 };
 
