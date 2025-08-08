@@ -8,19 +8,22 @@ const getBaseURL = () => {
   console.log('  - REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
   console.log('  - REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
 
-  // FORCE LOCALHOST FOR LOCAL DEVELOPMENT
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log('✅ Using localhost backend');
-    return 'http://localhost:5000';
-  }
-
-  // FOR CUSTOM DOMAIN roomrento.com - Always use production backend
-  if (window.location.hostname === 'roomrento.com' || window.location.hostname === 'www.roomrento.com') {
+  // ABSOLUTE PRODUCTION OVERRIDE FOR CUSTOM DOMAIN
+  const hostname = window.location.hostname;
+  if (hostname === 'roomrento.com' || hostname === 'www.roomrento.com') {
     const productionURL = 'https://roomrento.onrender.com';
-    console.log('🌍 CUSTOM DOMAIN DETECTED:', window.location.hostname);
+    console.log('🌍 CUSTOM DOMAIN DETECTED:', hostname);
     console.log('🚀 FORCING PRODUCTION BACKEND:', productionURL);
     console.log('📍 Full URL will be:', productionURL + '/api/auth/login');
+    console.log('❌ BLOCKING localhost calls for custom domain');
+    // Return immediately, no localhost allowed
     return productionURL;
+  }
+
+  // FORCE LOCALHOST FOR LOCAL DEVELOPMENT ONLY
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    console.log('✅ Using localhost backend');
+    return 'http://localhost:5000';
   }
 
   // FOR OTHER DEPLOYMENTS - Use environment variables first, then fallback
