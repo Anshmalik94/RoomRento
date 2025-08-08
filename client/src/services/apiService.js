@@ -106,22 +106,16 @@ apiClient.interceptors.response.use(
 );
 
 // Enhanced Login API Function
-export const loginUser = async (email, password) => {
+export const loginUser = async (credentials) => {
   try {
-    console.log('🔐 Starting login process for:', email);
+    console.log('🔐 Starting login process for:', credentials);
     
-    const response = await apiClient.post('/api/auth/login', {
-      email,
-      password
-    });
+    const response = await apiClient.post('/api/auth/login', credentials);
 
-    console.log('✅ Login successful');
-    return {
-      success: true,
-      data: response.data,
-      token: response.data.token,
-      user: response.data.user
-    };
+    console.log('✅ Login successful:', response.data);
+    
+    // Return the actual server response data directly
+    return response.data;
 
   } catch (error) {
     console.error('🔐 Login failed:', error);
@@ -129,41 +123,33 @@ export const loginUser = async (email, password) => {
     // Handle different error types
     if (!error.response) {
       // Network error
-      return {
-        success: false,
-        error: 'NETWORK_ERROR',
-        message: 'Unable to connect to server. Please check your internet connection and try again.',
-        details: error.message
-      };
+      const networkError = new Error('Unable to connect to server. Please check your internet connection and try again.');
+      networkError.type = 'NETWORK_ERROR';
+      networkError.details = error.message;
+      throw networkError;
     }
 
     const status = error.response.status;
     const errorData = error.response.data;
 
     if (status === 400 || status === 401) {
-      return {
-        success: false,
-        error: 'AUTH_ERROR',
-        message: errorData.message || 'Invalid email or password',
-        details: errorData
-      };
+      const authError = new Error(errorData.message || errorData.msg || 'Invalid email or password');
+      authError.type = 'AUTH_ERROR';
+      authError.details = errorData;
+      throw authError;
     }
 
     if (status >= 500) {
-      return {
-        success: false,
-        error: 'SERVER_ERROR',
-        message: 'Server error. Please try again later.',
-        details: errorData
-      };
+      const serverError = new Error('Server error. Please try again later.');
+      serverError.type = 'SERVER_ERROR';
+      serverError.details = errorData;
+      throw serverError;
     }
 
-    return {
-      success: false,
-      error: 'UNKNOWN_ERROR',
-      message: 'Something went wrong. Please try again.',
-      details: error.message
-    };
+    const unknownError = new Error('Something went wrong. Please try again.');
+    unknownError.type = 'UNKNOWN_ERROR';
+    unknownError.details = error.message;
+    throw unknownError;
   }
 };
 

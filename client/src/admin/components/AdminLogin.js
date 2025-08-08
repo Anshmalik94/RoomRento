@@ -29,13 +29,20 @@ const AdminLogin = ({ onLogin }) => {
     try {
       const data = await loginUser(formData);
       console.log('Admin login response:', data);
+      console.log('User role from response:', data.role);
+      console.log('User object from response:', data.user);
 
-      if (data.role === 'admin' || data.role === 'owner') {
+      // Check both data.role and data.user.role for compatibility
+      const userRole = data.role || data.user?.role;
+      console.log('Final role check:', userRole);
+
+      if (userRole === 'admin' || userRole === 'owner') {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         onLogin(data.user);
         navigate('/admin/dashboard');
       } else {
+        console.log('Role check failed. User role:', userRole);
         setError('Access denied. Admin privileges required.');
       }
     } catch (error) {
