@@ -17,7 +17,9 @@ const getBaseURL = () => {
   // FOR CUSTOM DOMAIN roomrento.com - Always use production backend
   if (window.location.hostname === 'roomrento.com' || window.location.hostname === 'www.roomrento.com') {
     const productionURL = 'https://roomrento.onrender.com';
-    console.log('🌍 Custom domain detected, using production backend:', productionURL);
+    console.log('🌍 CUSTOM DOMAIN DETECTED:', window.location.hostname);
+    console.log('🚀 FORCING PRODUCTION BACKEND:', productionURL);
+    console.log('📍 Full URL will be:', productionURL + '/api/auth/login');
     return productionURL;
   }
 
@@ -60,6 +62,13 @@ export const apiClient = axios.create({
 // Add request interceptor for debugging
 apiClient.interceptors.request.use(
   (config) => {
+    console.log('🚀 API REQUEST:', {
+      url: config.url,
+      baseURL: config.baseURL,
+      fullURL: (config.baseURL || '') + config.url,
+      method: config.method.toUpperCase(),
+      headers: config.headers
+    });
     return config;
   },
   (error) => {
