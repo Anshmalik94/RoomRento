@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AdminPanel.css';
+import { loginUser } from '../../services/apiService';
 
 const AdminLogin = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -23,35 +24,33 @@ const AdminLogin = ({ onLogin }) => {
     setLoading(true);
     setError('');
 
-    console.log('Attempting login with:', formData);
+    console.log('Attempting admin login with:', formData);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await loginUser(formData);
+      console.log('Admin login response:', data);
 
-      const data = await response.json();
-      console.log('Login response:', data);
-
-      if (response.ok) {
-        if (data.role === 'admin' || data.role === 'owner') {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-          onLogin(data.user);
-          navigate('/admin/dashboard');
-        } else {
-          setError('Access denied. Admin privileges required.');
-        }
+      if (data.role === 'admin' || data.role === 'owner') {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        onLogin(data.user);
+        navigate('/admin/dashboard');
       } else {
-        setError(data.msg || 'Login failed');
+        setError('Access denied. Admin privileges required.');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setError('Network error. Please try again.');
+      console.error('Admin login error:', error);
+      
+      // Enhanced error handling for admin login
+      if (error.type === 'NETWORK_ERROR') {
+        setError('Network connection error. Please check your internet connection and try again.');
+      } else if (error.type === 'SERVER_ERROR') {
+        setError('Server is temporarily unavailable. Please wait a moment and try again.');
+      } else if (error.type === 'AUTH_ERROR') {
+        setError(error.message || 'Invalid admin credentials. Please check your email and password.');
+      } else {
+        setError('Login failed. Please try again or contact support if the issue persists.');
+      }
     } finally {
       setLoading(false);
     }

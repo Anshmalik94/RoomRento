@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { apiClient } from "../config";
-import BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { loginUser, apiClient } from "../services/apiService";
 import ToastMessage from "./ToastMessage";
 import "./AuthForm.css";
 
@@ -48,26 +47,66 @@ function AuthForm({ setToken }) {
       return;
     }
 
-    const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
     setLoading(true);
 
     try {
-      const payload = isLogin
-        ? { email: formData.email, password: formData.password }
-        : formData;
-      const res = await apiClient.post(endpoint, payload);
-      setToken(res.data.token);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
-      localStorage.setItem("email", formData.email);
-      if (res.data.name) {
-        localStorage.setItem("userName", res.data.name);
+      if (isLogin) {
+        // Use robust login service
+        console.log('🔐 Attempting login with enhanced API service...');
+        const result = await loginUser(formData.email, formData.password);
+        
+        if (result.success) {
+          console.log('✅ Login successful via enhanced service');
+          setToken(result.token);
+          localStorage.setItem("token", result.token);
+          localStorage.setItem("role", result.user.role);
+          localStorage.setItem("email", result.user.email);
+          if (result.user.name) {
+            localStorage.setItem("userName", result.user.name);
+          }
+          showToastMessage("Login Successful!", "success");
+          setTimeout(() => navigate("/"), 2500);
+        } else {
+          console.error('❌ Login failed:', result);
+          let errorMessage = result.message;
+          
+          // Provide user-friendly error messages
+          if (result.error === 'NETWORK_ERROR') {
+            errorMessage = "Cannot connect to server. Please check your internet connection and try again.";
+          } else if (result.error === 'SERVER_ERROR') {
+            errorMessage = "Server is temporarily unavailable. Please try again in a few moments.";
+          }
+          
+          showToastMessage(errorMessage, "error");
+        }
+      } else {
+        // Registration logic (existing)
+        const res = await apiClient.post("/api/auth/register", formData);
+        setToken(res.data.token);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
+        localStorage.setItem("email", formData.email);
+        if (res.data.name) {
+          localStorage.setItem("userName", res.data.name);
+        }
+        showToastMessage("Registration Successful!", "success");
+        setTimeout(() => navigate("/"), 2500);
       }
-      showToastMessage(isLogin ? "Login Successful!" : "Registration Successful!", "success");
-      setTimeout(() => navigate("/"), 2500);
     } catch (err) {
-      console.error('Auth error:', err);
-      showToastMessage(err.response?.data?.msg || "Failed, please try again.", "error");
+      console.error('❌ Auth error:', err);
+      
+      // Enhanced error handling
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      
+      if (!err.response) {
+        errorMessage = "Cannot connect to server. Please check your internet connection.";
+      } else if (err.response.status >= 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (err.response?.data?.msg) {
+        errorMessage = err.response.data.msg;
+      }
+      
+      showToastMessage(errorMessage, "error");
     } finally {
       setLoading(false);
     }
