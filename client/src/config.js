@@ -8,34 +8,32 @@ const getBaseURL = () => {
   console.log('  - REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
   console.log('  - REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
 
-  // ABSOLUTE PRODUCTION OVERRIDE FOR CUSTOM DOMAIN
+  // ABSOLUTE PRODUCTION OVERRIDE - NEVER ALLOW LOCALHOST IN PRODUCTION
   const hostname = window.location.hostname;
-  if (hostname === 'roomrento.com' || hostname === 'www.roomrento.com') {
+  
+  // PRODUCTION DOMAINS - FORCE PRODUCTION BACKEND
+  if (hostname === 'roomrento.com' || 
+      hostname === 'www.roomrento.com' || 
+      hostname.includes('vercel.app') || 
+      hostname.includes('netlify.app') ||
+      hostname.includes('onrender.com')) {
     const productionURL = 'https://roomrento.onrender.com';
-    console.log('🌍 CUSTOM DOMAIN DETECTED:', hostname);
+    console.log('🌍 PRODUCTION DOMAIN DETECTED:', hostname);
     console.log('🚀 FORCING PRODUCTION BACKEND:', productionURL);
     console.log('📍 Full URL will be:', productionURL + '/api/auth/login');
-    console.log('❌ BLOCKING localhost calls for custom domain');
-    // Return immediately, no localhost allowed
+    console.log('❌ LOCALHOST COMPLETELY BLOCKED');
     return productionURL;
   }
 
-  // FORCE LOCALHOST FOR LOCAL DEVELOPMENT ONLY
+  // ONLY ALLOW LOCALHOST FOR ACTUAL LOCAL DEVELOPMENT
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    console.log('✅ Using localhost backend');
+    console.log('✅ Local development - Using localhost backend');
     return 'http://localhost:5000';
   }
 
-  // FOR OTHER DEPLOYMENTS - Use environment variables first, then fallback
-  const envApiUrl = process.env.REACT_APP_API_URL || process.env.REACT_APP_BASE_URL;
-  if (envApiUrl) {
-    console.log('🌍 Using environment API URL:', envApiUrl);
-    return envApiUrl;
-  }
-
-  // Fallback to production URL
+  // FALLBACK - Always use production for unknown domains
   const productionURL = 'https://roomrento.onrender.com';
-  console.log('🚀 Using fallback production backend:', productionURL);
+  console.log('🚀 Unknown domain - Using production backend:', productionURL);
   return productionURL;
 };
 
