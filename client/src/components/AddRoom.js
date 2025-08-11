@@ -198,7 +198,44 @@ function AddRoom({ token, isEdit = false }) {
     setData({ ...data, facilities: updatedFacilities });
   };
 
-  const handleImageChange = (e) => {
+  // Image compression for faster upload
+  const compressImage = (file, quality = 0.7) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Limit max dimensions for faster upload
+        const maxWidth = 1200;
+        const maxHeight = 900;
+        
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(resolve, 'image/jpeg', quality);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
     
     if (files.length + images.length > 5) {
@@ -206,11 +243,26 @@ function AddRoom({ token, isEdit = false }) {
       return;
     }
 
-    setImages([...images, ...files]);
+    // Show loading for image processing
+    setLoading(true);
     
-    // Create previews
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setImagePreviews([...imagePreviews, ...newPreviews]);
+    try {
+      // Compress images for faster upload
+      const compressedFiles = await Promise.all(
+        files.map(file => compressImage(file, 0.8))
+      );
+      
+      setImages([...images, ...compressedFiles]);
+      
+      // Create previews
+      const newPreviews = compressedFiles.map(file => URL.createObjectURL(file));
+      setImagePreviews([...imagePreviews, ...newPreviews]);
+    } catch (error) {
+      console.error('Image processing error:', error);
+      setMessage('Error processing images');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeImage = (index) => {
@@ -586,9 +638,10 @@ function AddRoom({ token, isEdit = false }) {
       setMessage(successMsg);
       showToastMessage(successMsg, 'success');
       
+      // Faster navigation - reduce delay from 2000ms to 800ms
       setTimeout(() => {
         navigate("/owner-dashboard");
-      }, 2000);
+      }, 800);
     } catch (error) {
       console.error("Error adding room:", error);
       console.error("Error response:", error.response);
@@ -827,10 +880,13 @@ function AddRoom({ token, isEdit = false }) {
                     <div className="d-flex align-items-center justify-content-center">
                       {loading ? (
                         <>
-                          <div className="spinner-border spinner-border-sm me-2" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                          Detecting Location...
+                          <LoadingSpinner 
+                            isLoading={true} 
+                            inline={true} 
+                            size="small" 
+                            showMessage={false} 
+                          />
+                          <span className="ms-2">Detecting Location...</span>
                         </>
                       ) : (
                         <>

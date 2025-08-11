@@ -496,27 +496,28 @@ button:hover {
 /* Responsive Design */
 @media (max-width: 768px) {
   .auth-main-container {
-    padding: 15px;
+    padding: 10px;
   }
   
   .auth-container {
-    padding: 30px 25px;
-    max-width: 350px;
+    padding: 20px 15px;
+    max-width: 320px;
+    margin: 5px;
   }
   
   .auth-title {
-    font-size: 1.8rem;
-    margin-bottom: 25px;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
   }
   
   .register-form-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 15px;
   }
   
   .social-login-buttons {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
   
   .auth-input-group input {
@@ -532,18 +533,39 @@ button:hover {
 
 @media (max-width: 480px) {
   .auth-container {
-    padding: 25px 20px;
-    margin: 10px;
+    padding: 15px 12px;
+    margin: 5px;
+    max-width: 300px;
   }
   
   .auth-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
   }
   
   .social-btn-facebook,
   .social-btn-instagram {
-    font-size: 0.85rem;
-    padding: 10px;
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .auth-input-group input {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .auth-continue-btn {
+    padding: 12px;
+    font-size: 1rem;
+  }
+  
+  .auth-welcome-text {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
   }
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MapPicker from './MapPicker';
+import LoadingSpinner from './LoadingSpinner';
 import { loadGoogleMapsScript } from './LoadGoogleMaps';
 import { API_URL } from '../config';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -779,8 +780,13 @@ const AddHotel = ({ token, isEdit = false }) => {
                     >
                       {isSubmitting ? (
                         <>
-                          <span className="spinner-border spinner-border-sm me-2"></span>
-                          Listing Hotel...
+                          <LoadingSpinner 
+                            isLoading={true} 
+                            inline={true} 
+                            size="small" 
+                            showMessage={false} 
+                          />
+                          <span className="ms-2">Listing Hotel...</span>
                         </>
                       ) : (
                         <>

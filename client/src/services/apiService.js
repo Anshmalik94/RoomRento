@@ -38,10 +38,10 @@ const getBaseURL = () => {
 
 const BASE_URL = getBaseURL();
 
-// Create robust axios instance
+// Create robust axios instance with optimized timeout
 const apiClient = axios.create({
   baseURL: BASE_URL,
-  timeout: 30000, // 30 seconds for Render.com cold starts
+  timeout: 15000, // Reduced from 30s to 15s for better user experience
   headers: {
     'Content-Type': 'application/json',
   },

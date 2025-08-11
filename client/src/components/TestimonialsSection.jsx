@@ -53,7 +53,13 @@ function TestimonialsSection() {
         <h2 className="fw-bold mb-4">What Our Users Say</h2>
         
         {/* Desktop Carousel - Hidden on mobile */}
-        <div id="testimonialsCarouselDesktop" className="carousel slide d-none d-md-block" data-bs-ride="carousel">
+        <div 
+          id="testimonialsCarouselDesktop" 
+          className="carousel slide d-none d-md-block" 
+          data-bs-ride="carousel"
+          data-bs-touch="true"
+          data-bs-interval="5000"
+        >
           {/* Desktop Carousel Items */}
           <div className="carousel-inner">
             {desktopSlides.map((slideTestimonials, slideIndex) => (
@@ -107,7 +113,13 @@ function TestimonialsSection() {
         </div>
 
         {/* Mobile Carousel - Hidden on desktop */}
-        <div id="testimonialsCarouselMobile" className="carousel slide d-md-none" data-bs-ride="carousel">
+        <div 
+          id="testimonialsCarouselMobile" 
+          className="carousel slide d-md-none" 
+          data-bs-ride="carousel"
+          data-bs-touch="true"
+          data-bs-interval="5000"
+        >
           {/* Mobile Carousel Items */}
           <div className="carousel-inner">
             {testimonials.map((t, index) => (

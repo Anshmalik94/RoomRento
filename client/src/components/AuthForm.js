@@ -65,7 +65,8 @@ function AuthForm({ setToken }) {
             localStorage.setItem("userName", result.user.name);
           }
           showToastMessage("Login Successful!", "success");
-          setTimeout(() => navigate("/"), 2500);
+          // Faster navigation - reduce delay from 2500ms to 800ms
+          setTimeout(() => navigate("/"), 800);
         } else {
           console.error('❌ Login failed:', result);
           let errorMessage = result.message;
@@ -90,7 +91,8 @@ function AuthForm({ setToken }) {
           localStorage.setItem("userName", res.data.name);
         }
         showToastMessage("Registration Successful!", "success");
-        setTimeout(() => navigate("/"), 2500);
+        // Faster navigation - reduce delay from 2500ms to 800ms
+        setTimeout(() => navigate("/"), 800);
       }
     } catch (err) {
       console.error('❌ Auth error:', err);

@@ -36,9 +36,10 @@ function HeroSection() {
               
               {/* Subtitle */}
               <p className="hero-subtitle mb-5">
-                Discover comfortable rooms, hotels, and shops with 
-                <strong className="text-primary"> verified listings</strong> and 
-                <strong className="text-primary"> trusted reviews</strong>
+                Book directly with property owners - 
+                <strong className="text-primary"> No Hidden Charges</strong>, 
+                <strong className="text-primary"> Zero Commission</strong>, 
+                <strong className="text-primary"> 100% Transparent Pricing</strong>
               </p>
               
               {/* CTA Buttons */}

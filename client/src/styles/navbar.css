@@ -1,12 +1,26 @@
 /* Navbar Responsive CSS */
 /* ==================== */
 
-/* Force transparent black navbar styling */
+/* Force transparent black navbar styling with compact design */
 .navbar {
   background-color: rgba(0, 0, 0, 0.8) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: none !important;
+  min-height: 48px !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  margin-bottom: 0 !important;
+}
+
+/* Mobile specific navbar adjustments */
+@media (max-width: 575.98px) {
+  .navbar {
+    min-height: 54px !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+    border-bottom: none !important;
+  }
 }
 
 /* Override any Bootstrap navbar backgrounds */
@@ -30,7 +44,7 @@
   color: #ffffff !important;
   font-weight: 500;
   transition: color 0.2s ease;
-  padding: 0.75rem 1rem;
+  padding: 0.4rem 0.75rem;
   font-size: 1rem;
 }
 

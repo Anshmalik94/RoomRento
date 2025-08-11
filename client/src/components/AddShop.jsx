@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MapPicker from './MapPicker';
 import ErrorBoundary from './ErrorBoundary';
+import LoadingSpinner from './LoadingSpinner';
 import { API_URL } from '../config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './AddRoom.css';
@@ -28,7 +29,6 @@ const AddShop = ({ token }) => {
     title: '',
     description: '',
     type: 'Shop',
-    category: 'Retail',
     price: '',
     location: '',
     latitude: null,
@@ -37,11 +37,9 @@ const AddShop = ({ token }) => {
     rules: '',
     contactNumber: '',
     email: '',
-    shopArea: '',
     businessType: '',
     openingHours: '09:00',
     closingHours: '21:00',
-    parkingSpaces: '',
     // Additional fields for address components
     address: '',
     city: '',
@@ -57,7 +55,6 @@ const AddShop = ({ token }) => {
     'Display Windows', 'Signage Space', 'Sound System', 'Lighting'
   ];
 
-  const shopCategories = ['Retail', 'Food & Beverage', 'Services', 'Office Space', 'Warehouse'];
   const businessTypes = [
     'General Store', 'Clothing', 'Electronics', 'Restaurant', 'Cafe', 
     'Salon', 'Medical', 'Office', 'Warehouse', 'Other'
@@ -315,9 +312,7 @@ const AddShop = ({ token }) => {
       case 1:
         if (!shopData.title.trim()) newErrors.title = 'Shop name is required';
         if (!shopData.description.trim()) newErrors.description = 'Description is required';
-        if (!shopData.category) newErrors.category = 'Category is required';
         if (!shopData.businessType) newErrors.businessType = 'Business type is required';
-        if (!shopData.shopArea || shopData.shopArea < 1) newErrors.shopArea = 'Shop area is required';
         break;
       case 2:
         if (!shopData.price || shopData.price < 0) newErrors.price = 'Valid rent amount is required';
@@ -425,21 +420,6 @@ const AddShop = ({ token }) => {
               </div>
               
               <div className="col-md-6">
-                <label className="form-label fw-bold">Category *</label>
-                <select
-                  className={`form-select ${errors.category ? 'is-invalid' : ''}`}
-                  name="category"
-                  value={shopData.category}
-                  onChange={handleInputChange}
-                >
-                  {shopCategories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-                {errors.category && <div className="invalid-feedback">{errors.category}</div>}
-              </div>
-              
-              <div className="col-md-6">
                 <label className="form-label fw-bold">Business Type *</label>
                 <select
                   className={`form-select ${errors.businessType ? 'is-invalid' : ''}`}
@@ -453,33 +433,6 @@ const AddShop = ({ token }) => {
                   ))}
                 </select>
                 {errors.businessType && <div className="invalid-feedback">{errors.businessType}</div>}
-              </div>
-              
-              <div className="col-md-6">
-                <label className="form-label fw-bold">Shop Area (sq ft) *</label>
-                <input
-                  type="number"
-                  className={`form-control ${errors.shopArea ? 'is-invalid' : ''}`}
-                  name="shopArea"
-                  value={shopData.shopArea}
-                  onChange={handleInputChange}
-                  min="1"
-                  placeholder="Area in square feet"
-                />
-                {errors.shopArea && <div className="invalid-feedback">{errors.shopArea}</div>}
-              </div>
-              
-              <div className="col-md-6">
-                <label className="form-label fw-bold">Parking Spaces</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="parkingSpaces"
-                  value={shopData.parkingSpaces}
-                  onChange={handleInputChange}
-                  min="0"
-                  placeholder="Number of parking spaces"
-                />
               </div>
               
               <div className="col-12">
@@ -583,10 +536,13 @@ const AddShop = ({ token }) => {
                       <div className="d-flex align-items-center justify-content-center">
                         {loading ? (
                           <>
-                            <div className="spinner-border spinner-border-sm me-2" role="status">
-                              <span className="visually-hidden">Loading...</span>
-                            </div>
-                            Detecting Location...
+                            <LoadingSpinner 
+                              isLoading={true} 
+                              inline={true} 
+                              size="small" 
+                              showMessage={false} 
+                            />
+                            <span className="ms-2">Detecting Location...</span>
                           </>
                         ) : (
                           <>
@@ -999,8 +955,13 @@ const AddShop = ({ token }) => {
                     >
                       {isSubmitting ? (
                         <>
-                          <span className="spinner-border spinner-border-sm me-2"></span>
-                          Listing Shop...
+                          <LoadingSpinner 
+                            isLoading={true} 
+                            inline={true} 
+                            size="small" 
+                            showMessage={false} 
+                          />
+                          <span className="ms-2">Listing Shop...</span>
                         </>
                       ) : (
                         <>

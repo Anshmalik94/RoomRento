@@ -108,14 +108,21 @@ function App() {
       <HeroSection />
       <div className="container my-5">
         <div className="row g-4 align-items-stretch">
-          <div className="col-lg-7 col-12 order-1 order-lg-1">
+          <div className="col-lg-7 col-12 order-1 order-lg-1 d-none d-lg-block">
             <RoomSearchForm
               token={token}
               onLoginRequired={() => setShowLoginModal(true)}
             />
           </div>
           <div className="col-lg-5 col-12 order-2 order-lg-2 d-flex justify-content-center align-items-start">
-            <RoomCardSection />
+            <div className="d-lg-none w-100 mb-4">
+              {/* Mobile: RoomCardSection takes full width */}
+              <RoomCardSection />
+            </div>
+            <div className="d-none d-lg-block">
+              {/* Desktop: RoomCardSection in sidebar */}
+              <RoomCardSection />
+            </div>
           </div>
         </div>
       </div>
