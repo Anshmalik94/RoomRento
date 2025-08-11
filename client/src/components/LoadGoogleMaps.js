@@ -42,12 +42,29 @@ const loadGoogleMapsScript = () => {
       return;
     }
 
-    // Create script element
+    // Create script element with production environment check
     const script = document.createElement('script');
-    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "AIzaSyADOYPe7t0IbbRuvzmNDbcYHOb98_cCTQk";
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geometry,geocoding`;
+    
+    // Production API key check
+    let apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    
+    // Fallback for production if env var is missing
+    if (!apiKey) {
+      console.warn('⚠️ REACT_APP_GOOGLE_MAPS_API_KEY not found in environment variables');
+      apiKey = "AIzaSyADOYPe7t0IbbRuvzmNDbcYHOb98_cCTQk"; // fallback key
+    }
+    
+    console.log('🗺️ Loading Google Maps with key:', apiKey.substring(0, 10) + '...');
+    
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geometry,geocoding&callback=initGoogleMaps`;
     script.async = true;
     script.defer = true;
+    
+    // Add global callback for more reliable loading
+    window.initGoogleMaps = () => {
+      console.log('✅ Google Maps API loaded successfully');
+      resolve();
+    };
 
     script.onload = () => {
       // Wait a bit for Google Maps to fully initialize

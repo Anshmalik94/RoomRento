@@ -113,6 +113,13 @@ const AddShop = ({ token }) => {
   };
 
   const handleUseCurrentLocation = async () => {
+    // Production Security Check - Geolocation only works on HTTPS
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      const errorMsg = "❌ Location access requires HTTPS. Please use secure connection.";
+      setMessage(errorMsg);
+      return;
+    }
+
     // Check if geolocation is supported
     if (!navigator.geolocation) {
       const errorMsg = "❌ Geolocation is not supported by your browser.";
@@ -124,11 +131,12 @@ const AddShop = ({ token }) => {
     try {
       const permission = await navigator.permissions.query({name: 'geolocation'});
       if (permission.state === 'denied') {
-        const errorMsg = "❌ Location access denied. Please enable location in browser settings.";
+        const errorMsg = "❌ Location access denied. Please enable location in browser settings and refresh.";
         setMessage(errorMsg);
         return;
       }
     } catch (err) {
+      console.log('Permission API not supported, proceeding with geolocation request');
     }
 
     setLoading(true);
@@ -136,7 +144,7 @@ const AddShop = ({ token }) => {
 
     const options = {
       enableHighAccuracy: true,
-      timeout: 15000, // 15 seconds timeout
+      timeout: 20000, // Increased timeout for production
       maximumAge: 300000 // 5 minutes cache
     };
 
@@ -192,17 +200,22 @@ const AddShop = ({ token }) => {
         
         switch(error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = "❌ Location access denied. Please allow location in your browser and try again.";
+            errorMessage = "❌ Location access denied. Please enable location permissions in browser settings and refresh the page.";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = "❌ Location information unavailable. Please check your GPS or try again.";
+            errorMessage = "❌ Location information unavailable. Please check your GPS/internet connection or try again.";
             break;
           case error.TIMEOUT:
-            errorMessage = "❌ Location request timed out. Please try again.";
+            errorMessage = "❌ Location request timed out. Please try again or enter address manually.";
             break;
           default:
-            errorMessage = "❌ An unknown location error occurred. Please try again.";
+            errorMessage = "❌ An error occurred while getting your location. Please try again or enter address manually.";
             break;
+        }
+        
+        // Production specific error message
+        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+          errorMessage = "❌ Location access requires HTTPS connection. Please ensure secure connection.";
         }
         
         setMessage(errorMessage);
